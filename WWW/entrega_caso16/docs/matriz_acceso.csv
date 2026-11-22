@@ -1,0 +1,117 @@
+﻿servicio,ruta,verbo,Anónimo,Lector,Bibliotecario,Administrativo,condicion,control
+N/A,/api/auth/activate,GET,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+S03,/api/auth/activate,POST,PERMITIDO,PERMITIDO,PERMITIDO,PERMITIDO,Rol permitido y reglas del contrato; denegación por defecto,Gateway allowlist + rol; auth rol/propiedad/estado
+N/A,/api/auth/activate,PUT,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/auth/activate,DELETE,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/auth/login,GET,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+S01,/api/auth/login,POST,PERMITIDO,PERMITIDO,PERMITIDO,PERMITIDO,Rol permitido y reglas del contrato; denegación por defecto,Gateway allowlist + rol; auth rol/propiedad/estado
+N/A,/api/auth/login,PUT,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/auth/login,DELETE,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/auth/logout,GET,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+S02,/api/auth/logout,POST,DENEGADO (401/403),PERMITIDO,PERMITIDO,PERMITIDO,Rol permitido y reglas del contrato; denegación por defecto,Gateway allowlist + rol; auth rol/propiedad/estado
+N/A,/api/auth/logout,PUT,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/auth/logout,DELETE,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+S04,/api/auth/me,GET,DENEGADO (401/403),PERMITIDO,PERMITIDO,PERMITIDO,Rol permitido y reglas del contrato; denegación por defecto,Gateway allowlist + rol; auth rol/propiedad/estado
+N/A,/api/auth/me,POST,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/auth/me,PUT,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/auth/me,DELETE,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+S05,/api/catalog,GET,PERMITIDO,PERMITIDO,PERMITIDO,PERMITIDO,Rol permitido y reglas del contrato; denegación por defecto,Gateway allowlist + rol; inventory rol/propiedad/estado
+N/A,/api/catalog,POST,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/catalog,PUT,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/catalog,DELETE,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+S06,/api/catalog/{id},GET,PERMITIDO,PERMITIDO,PERMITIDO,PERMITIDO,Rol permitido y reglas del contrato; denegación por defecto,Gateway allowlist + rol; inventory rol/propiedad/estado
+N/A,/api/catalog/{id},POST,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/catalog/{id},PUT,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/catalog/{id},DELETE,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/copies/{id},GET,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/copies/{id},POST,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+S11,/api/copies/{id},PUT,DENEGADO (401/403),DENEGADO (401/403),PERMITIDO,DENEGADO (401/403),Rol permitido y reglas del contrato; denegación por defecto,Gateway allowlist + rol; inventory rol/propiedad/estado
+S12,/api/copies/{id},DELETE,DENEGADO (401/403),DENEGADO (401/403),PERMITIDO,DENEGADO (401/403),Rol permitido y reglas del contrato; denegación por defecto,Gateway allowlist + rol; inventory rol/propiedad/estado
+N/A,/api/documents,GET,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+S07,/api/documents,POST,DENEGADO (401/403),DENEGADO (401/403),PERMITIDO,DENEGADO (401/403),Rol permitido y reglas del contrato; denegación por defecto,Gateway allowlist + rol; inventory rol/propiedad/estado
+N/A,/api/documents,PUT,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/documents,DELETE,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/documents/{id},GET,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/documents/{id},POST,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+S08,/api/documents/{id},PUT,DENEGADO (401/403),DENEGADO (401/403),PERMITIDO,DENEGADO (401/403),Rol permitido y reglas del contrato; denegación por defecto,Gateway allowlist + rol; inventory rol/propiedad/estado
+S09,/api/documents/{id},DELETE,DENEGADO (401/403),DENEGADO (401/403),PERMITIDO,DENEGADO (401/403),Rol permitido y reglas del contrato; denegación por defecto,Gateway allowlist + rol; inventory rol/propiedad/estado
+N/A,/api/documents/{id}/copies,GET,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+S10,/api/documents/{id}/copies,POST,DENEGADO (401/403),DENEGADO (401/403),PERMITIDO,DENEGADO (401/403),Rol permitido y reglas del contrato; denegación por defecto,Gateway allowlist + rol; inventory rol/propiedad/estado
+N/A,/api/documents/{id}/copies,PUT,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/documents/{id}/copies,DELETE,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+S33,/api/exit-check/{id},GET,DENEGADO (401/403),DENEGADO (401/403),PERMITIDO,DENEGADO (401/403),Rol permitido y reglas del contrato; denegación por defecto,Gateway allowlist + rol; inventory rol/propiedad/estado
+N/A,/api/exit-check/{id},POST,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/exit-check/{id},PUT,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/exit-check/{id},DELETE,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/graphql,GET,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+S32,/api/graphql,POST,DENEGADO (401/403),PERMITIDO,PERMITIDO,PERMITIDO,Lector cuenta propia; contacto solo titular/ADMIN; bibliotecario identidad,Gateway allowlist + rol; graphql rol/propiedad/estado
+N/A,/api/graphql,PUT,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/graphql,DELETE,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+S34,/api/lab/mailbox,GET,DENEGADO (401/403),DENEGADO (401/403),DENEGADO (401/403),PERMITIDO,ADMIN y laboratorio habilitado,Gateway allowlist + rol; mail rol/propiedad/estado
+N/A,/api/lab/mailbox,POST,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/lab/mailbox,PUT,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/lab/mailbox,DELETE,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+S21,/api/loans,GET,DENEGADO (401/403),PERMITIDO,PERMITIDO,PERMITIDO,Lector propias; personal por alcance,Gateway allowlist + rol; orders rol/propiedad/estado
+N/A,/api/loans,POST,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/loans,PUT,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/loans,DELETE,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+S22,/api/loans/{id},GET,DENEGADO (401/403),PERMITIDO,PERMITIDO,PERMITIDO,Lector propio; personal autorizado,Gateway allowlist + rol; orders rol/propiedad/estado
+N/A,/api/loans/{id},POST,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/loans/{id},PUT,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/loans/{id},DELETE,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+S23,/api/loans/{id}/receipt,GET,DENEGADO (401/403),PERMITIDO,PERMITIDO,DENEGADO (401/403),"Lector propio o bibliotecario, HOME entregado",Gateway allowlist + rol; orders rol/propiedad/estado
+N/A,/api/loans/{id}/receipt,POST,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/loans/{id}/receipt,PUT,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/loans/{id}/receipt,DELETE,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+S28,/api/overdue,GET,DENEGADO (401/403),DENEGADO (401/403),DENEGADO (401/403),PERMITIDO,Rol permitido y reglas del contrato; denegación por defecto,Gateway allowlist + rol; orders rol/propiedad/estado
+N/A,/api/overdue,POST,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/overdue,PUT,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/overdue,DELETE,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+S30,/api/payments/assessments/{id},GET,DENEGADO (401/403),PERMITIDO,PERMITIDO,PERMITIDO,Lector propio; personal autorizado,Gateway allowlist + rol; payments rol/propiedad/estado
+N/A,/api/payments/assessments/{id},POST,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/payments/assessments/{id},PUT,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/payments/assessments/{id},DELETE,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/payments/intents,GET,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+S31,/api/payments/intents,POST,DENEGADO (401/403),PERMITIDO,DENEGADO (401/403),DENEGADO (401/403),Autenticado READER pero negocio rechaza SIEMPRE 422,Gateway allowlist + rol; payments rol/propiedad/estado
+N/A,/api/payments/intents,PUT,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/payments/intents,DELETE,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+S29,/api/payments/policy,GET,PERMITIDO,PERMITIDO,PERMITIDO,PERMITIDO,Rol permitido y reglas del contrato; denegación por defecto,Gateway allowlist + rol; payments rol/propiedad/estado
+N/A,/api/payments/policy,POST,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/payments/policy,PUT,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/payments/policy,DELETE,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+S14,/api/readers,GET,DENEGADO (401/403),DENEGADO (401/403),DENEGADO (401/403),PERMITIDO,Rol permitido y reglas del contrato; denegación por defecto,Gateway allowlist + rol; clients rol/propiedad/estado
+S13,/api/readers,POST,DENEGADO (401/403),DENEGADO (401/403),DENEGADO (401/403),PERMITIDO,Rol permitido y reglas del contrato; denegación por defecto,Gateway allowlist + rol; clients rol/propiedad/estado
+N/A,/api/readers,PUT,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/readers,DELETE,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+S15,/api/readers/{id},GET,DENEGADO (401/403),PERMITIDO,PERMITIDO,PERMITIDO,Lector solo ficha propia; bibliotecario sin contacto; administrativo completo,Gateway allowlist + rol; clients rol/propiedad/estado
+N/A,/api/readers/{id},POST,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+S16,/api/readers/{id},PUT,DENEGADO (401/403),DENEGADO (401/403),DENEGADO (401/403),PERMITIDO,Rol permitido y reglas del contrato; denegación por defecto,Gateway allowlist + rol; clients rol/propiedad/estado
+N/A,/api/readers/{id},DELETE,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/readers/{id}/activation,GET,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+S35,/api/readers/{id}/activation,POST,DENEGADO (401/403),DENEGADO (401/403),DENEGADO (401/403),PERMITIDO,"ADMIN y lector INACTIVE, cuenta provisionada",Gateway allowlist + rol; clients rol/propiedad/estado
+N/A,/api/readers/{id}/activation,PUT,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/readers/{id}/activation,DELETE,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+S18,/api/requests,GET,DENEGADO (401/403),PERMITIDO,PERMITIDO,DENEGADO (401/403),Lector propias; bibliotecario solo cola pendiente,Gateway allowlist + rol; orders rol/propiedad/estado
+S17,/api/requests,POST,DENEGADO (401/403),PERMITIDO,DENEGADO (401/403),DENEGADO (401/403),"Principal = titular; lector activo, sin vencidos/sanción",Gateway allowlist + rol; orders rol/propiedad/estado
+N/A,/api/requests,PUT,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/requests,DELETE,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/requests/{id},GET,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/requests/{id},POST,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/requests/{id},PUT,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+S19,/api/requests/{id},DELETE,DENEGADO (401/403),PERMITIDO,PERMITIDO,DENEGADO (401/403),"Titular o bibliotecario, pendiente",Gateway allowlist + rol; orders rol/propiedad/estado
+N/A,/api/requests/{id}/issue,GET,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+S20,/api/requests/{id}/issue,POST,DENEGADO (401/403),DENEGADO (401/403),PERMITIDO,DENEGADO (401/403),"Bibliotecario, RUN/huella válidos, pendiente vigente",Gateway allowlist + rol; orders rol/propiedad/estado
+N/A,/api/requests/{id}/issue,PUT,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/requests/{id}/issue,DELETE,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+S26,/api/reservations,GET,DENEGADO (401/403),PERMITIDO,PERMITIDO,DENEGADO (401/403),Lector propias; bibliotecario por lector,Gateway allowlist + rol; orders rol/propiedad/estado
+S25,/api/reservations,POST,DENEGADO (401/403),PERMITIDO,DENEGADO (401/403),DENEGADO (401/403),"Titular elegible, copia/fecha sin conflicto",Gateway allowlist + rol; orders rol/propiedad/estado
+N/A,/api/reservations,PUT,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/reservations,DELETE,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/reservations/{id},GET,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/reservations/{id},POST,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/reservations/{id},PUT,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+S27,/api/reservations/{id},DELETE,DENEGADO (401/403),PERMITIDO,PERMITIDO,DENEGADO (401/403),"Titular o bibliotecario, activa",Gateway allowlist + rol; orders rol/propiedad/estado
+N/A,/api/returns,GET,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+S24,/api/returns,POST,DENEGADO (401/403),DENEGADO (401/403),PERMITIDO,DENEGADO (401/403),"Bibliotecario, copia en préstamo ACTIVE",Gateway allowlist + rol; orders rol/propiedad/estado
+N/A,/api/returns,PUT,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405
+N/A,/api/returns,DELETE,N/A (405),N/A (405),N/A (405),N/A (405),Operación no publicada; no hay CRUD ficticio,Gateway: 405

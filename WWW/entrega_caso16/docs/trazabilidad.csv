@@ -1,0 +1,29 @@
+﻿Requisito/CU,Descripción,Pantalla,Servicio,Prueba,Resultado,Evidencia (relativa a evidencias/)
+RF01/CU01,Autenticación de funcionarios y sesiones,P02,"S01,S02,S04","T02,T03,T17",PASS,pruebas_backend.json;P02_acceso.png
+RF02/CU02,"Colección, documentos y ejemplares",P04,S05-S12,"T04,T05",PASS,pruebas_backend.json;P04_coleccion.png
+RF03/CU03,Catálogo anónimo en kiosco,P01,"S05,S06","T01,UI01",PASS,interfaz.json;P01_catalogo_desktop.png
+RF04/CU04,Lectores autenticados solicitan,"P01,P02","S01,S17","T02,T05,UI03",PASS,pruebas_backend.json;interfaz.json
+RF05/CU05,Ficha/RUN/documentos/foto/huella,P05,S13-S16,"T03,T18",PARCIAL: datos y verificación TEST; SDK físico pendiente,pruebas_backend.json;P05_fichas.png
+RF06/CU06,Activación mediante API de correo,"P02,P05,P10","S03,S13,S34,S35","T03,T16,T18,UI10",PARCIAL: API TEST ejecutada; Internet pendiente,pruebas_backend.json;interfaz.json
+RF07/CU07,Buscar y contar disponibles/en sala,P01,"S05,S06","T01,T10",PASS,pruebas_backend.json;P01_catalogo_desktop.png
+RF08/CU08,Solicitud HOME/ROOM de copias,"P01,P03",S17-S19,"T05,T07,T10",PASS,pruebas_backend.json;interfaz.json
+RF09/CU09,Reserva específica copia/fecha,"P01,P03",S25-S27,"T06,UI07",PASS,pruebas_backend.json;interfaz.json
+RF10/CU10,Preparación anticipada de solicitudes,P06,"S15,S18","T05,T07,UI04",PASS,P06_preparacion.png;interfaz.json
+RF11/CU11,Entrega con RUN/huella y plazos,P06,"S20,S22","T07,T10,T_UNIT_02,T_UNIT_05",PARCIAL: RUN y muestra TEST; SDK físico pendiente,pruebas_backend.json;interfaz.json
+RF12/CU12,Comprobante HOME por documento,P09,S23,"T07,UI04",PASS,comprobante_ejemplo.pdf;P09_comprobante.png
+RF13/CU13,Morosos de sala para exigir devolución,P08,"S15,S28","T10,T11,UI11",PASS,pruebas_backend.json;P08_morosidad.png
+RF14/CU14,Morosos HOME y email automático,"P08,P10","S28,S34","T12,T16",PARCIAL: outbox/API TEST; Internet pendiente,pruebas_backend.json
+RF15/CU15,Devolución por código y demora 30 min,P07,S24,"T11,T14,T_UNIT_01,UI09",PASS,pruebas_backend.json;P07_devolucion.png
+RF16/CU16,"Sanción temporal, sin multas","P01,P03,P07","S17,S24,S25,S29-S31","T09,T11,T12,T_UNIT_03,UI06",PASS: fórmula propuesta requiere aprobación de negocio,pruebas_backend.json;interfaz.json
+RNF-ANTIRROBO,No salida salvo HOME confirmado,P07,S33,"T07,T10,UI08",PARCIAL: decisión software; RFID físico pendiente,pruebas_backend.json;interfaz.json
+RNF-WEB-POO,Web/Java orientado a objetos/capas,P01-P10,S01-S35,"JUnit,UI01-UI13",PASS,pruebas_backend.json;interfaz.json
+RNF-ORACLE-SP,Oracle y procesamiento por procedimientos,P01-P10,Todos persistentes,ORA01-ORA12,"PENDIENTE: preparado, no ejecutado",../docs/validacion_oracle.md
+RNF-WS,Integración por Web Services HTTPS,"P02,P03,P06,P10","S03,S20,S32,S34","T07,T08,T13-T16",PASS local; proveedor real pendiente,pruebas_backend.json
+RNF-SEGURIDAD,"Validación, hash, sesiones, roles, titularidad",P01-P10,S01-S35,"T01-T03,T08-T09,T15,T17-T18",PASS,pruebas_backend.json;junit-limpio.xml
+RNF-RESPONSIVE,"Escritorio/tablet/móvil, controles familiares",P01-P10,Frontend,"UI01-UI13,UI12 390px",PASS técnico; estudio de tareas pendiente,interfaz.json;P01_catalogo_movil.png
+RNF-AYUDA,Ayuda y manual estructurado,Ayuda web,Frontend estático,Inspección ayuda/Manual,ENTREGADO,../docs/manual_usuario.pdf
+RNF-APRENDIZAJE,Aprendizaje menor de cuatro horas,P01-P10,Interfaz,Estudio con usuarios,PENDIENTE: no medido con personas,../docs/manual_usuario.pdf
+RNF-ERROR-HUMANO,Errores de usuario menores al 1%,P01-P10,Interfaz,Estudio con usuarios,PENDIENTE: no equivale a cero errores HTTP,../docs/informe.pdf
+M08-GRAPHQL,Agregación privada real >=2 fuentes,P03,S32,"T08,UI02,UI05",PASS: cuatro fuentes,pruebas_backend.json;P03_cuenta_GraphQL.png
+M09-SPIKE,Decisión analítica/gRPC con evidencia,"P01,P03","S05,S32",6 escenarios de carga,MEDIDO H2; no gRPC implementado ni comparación equivalente,carga.json
+M10-RED-DOCKER,Backend y BD sin puertos publicados,Despliegue,Compose,ORA10,PENDIENTE: configuración no ejecutada,../compose.yaml;../compose.oracle.yaml

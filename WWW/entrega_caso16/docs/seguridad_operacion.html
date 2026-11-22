@@ -1,0 +1,193 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><title>Caso 16 · seguridad_operacion</title><style>
+@page {size:A4;margin:18mm 16mm 19mm}
+body{font-family:Arial,sans-serif;color:#203247;font-size:10pt;line-height:1.45}
+h1{color:#133b54;font-size:23pt;line-height:1.15;break-before:page;margin:0 0 16px}
+h1:first-of-type{break-before:auto}h2{font-size:15pt;color:#126268;margin-top:22px}
+h3{font-size:12pt;color:#126268}h1,h2,h3{break-after:avoid}
+p,li{orphans:3;widows:3}a{color:#086e78;text-decoration:none}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:8pt;table-layout:fixed}
+th{background:#e4f1f2;text-align:left;color:#133b54}
+th,td{padding:6px;border:1px solid #b7cbd1;vertical-align:top;overflow-wrap:anywhere}
+thead{display:table-header-group}tr{break-inside:avoid}
+pre{background:#f0f4f6;border:1px solid #ccd8df;padding:9px;white-space:pre-wrap;
+overflow-wrap:anywhere;font:8pt/1.4 Consolas,monospace;break-inside:auto}
+code{font-family:Consolas,monospace;font-size:.9em;overflow-wrap:anywhere}
+img{display:block;max-width:100%;max-height:225mm;object-fit:contain;margin:14px auto}
+blockquote{border-left:4px solid #12858b;padding-left:12px;color:#435567}
+hr{border:0;border-top:1px solid #c4d4da}
+</style><body><h1>Anexo C — Seguridad, secretos y operación</h1>
+<h2>Activos y fronteras</h2>
+<p>La clave del usuario prueba su identidad ante Auth. La sesión opaca prueba una sesión vigente ante el gateway. La clave dirigida <code>K_A_B</code> prueba que la llamada fue emitida por A hacia B. Ninguna reemplaza las otras. Una firma técnica válida no concede automáticamente el rol o el recurso solicitado.</p>
+<p>La red privada impide exposición de puertos en Compose; HTTPS protege transporte; HMAC autentica llamadas y liga cuerpo/principal; cada backend impone caller+rol+propiedad+estado. Son controles complementarios. El servidor de secretos es una implementación académica propia, <strong>no HashiCorp Vault</strong> ni un KMS certificado. Su raíz se protege por permisos y montaje exclusivo. Un administrador del host conserva poder sobre procesos y memoria: no se afirma aislamiento ante root.</p>
+<h2>Inventario simbólico y ciclo de vida</h2>
+<p>Nunca sustituir estos nombres por valores reales en el informe.</p>
+<table>
+<thead>
+<tr>
+<th>Secreto</th>
+<th>Emisor / consumidor</th>
+<th>Finalidad y almacenamiento</th>
+<th>Alcance</th>
+<th>Rotación / revocación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>USER_PASSWORD</td>
+<td>Usuario/administrativo → Auth</td>
+<td>Solo TLS; PBKDF2-HMAC-SHA256 600000, sal aleatoria16bytes; no se descifra</td>
+<td>Una cuenta</td>
+<td>Reset administrativo futuro: no implementado como endpoint; alta de personal inicial controlada</td>
+</tr>
+<tr>
+<td>SESSION_TOKEN</td>
+<td>Auth → navegador</td>
+<td>32bytes aleatorios, base64url43; solo memoria JS; SHA256 en Auth</td>
+<td>Un usuario/rol,20min</td>
+<td>Logout revoca; expiración server-side; no refresh token</td>
+</tr>
+<tr>
+<td>ACTIVATION_TOKEN</td>
+<td>Auth → proveedor TEST → lector</td>
+<td>SHA256 para validar; copia AES-GCM mientras está pendiente; enlace un uso24h</td>
+<td>Activar una cuenta</td>
+<td>Reenvío ADMIN invalida enlace anterior; activación consume; tests T03/T18</td>
+</tr>
+<tr>
+<td>BOOTSTRAP_SVC</td>
+<td>setup → un proceso</td>
+<td><code>svc/bootstrap.json</code>,0600, montaje propio; SHA256 en ACL del manager</td>
+<td>GET solo propio paquete</td>
+<td>Revocar hash en manager y reiniciarlo; reemplazar token del consumidor y reiniciarlo</td>
+</tr>
+<tr>
+<td>K_SOURCE_TARGET</td>
+<td>setup → SOURCE y TARGET</td>
+<td>Paquetes AES-GCM bajo manager; caché5s en cada proceso</td>
+<td>Una arista dirigida; firma verbo/URI/cuerpo/principal/tiempo/nonce</td>
+<td>Rotación offline coordinada de ambos paquetes; reiniciar consumidores; retirar clave anterior sin período dual en esta versión</td>
+</tr>
+<tr>
+<td>DATA_KEY_SVC</td>
+<td>setup → dueño del dato</td>
+<td>AES256GCM para perfil/correo/tokens en reposo; clave fuera de la base</td>
+<td>Un servicio</td>
+<td><strong>No reemplazar sin migrar</strong>: requiere reencrypt de datos; runbook futuro con versionado/KMS</td>
+</tr>
+<tr>
+<td>BIOMETRIC_KEY_CLIENTS</td>
+<td>setup → Clients</td>
+<td>HMAC de muestra determinista TEST, dentro de perfil AES-GCM</td>
+<td>Solo prueba de huella de ese servicio</td>
+<td>Reinscripción controlada/versión del adaptador; no es algoritmo biométrico real</td>
+</tr>
+<tr>
+<td>DB_PASSWORD_SVC</td>
+<td>setup / Oracle → dueño</td>
+<td>Paquete privado; 7 credenciales, sin compartir esquemas</td>
+<td>Solo su esquema, CREATE SESSION/TABLE/PROCEDURE sin grants cruzados</td>
+<td>ALTER USER por operador+actualizar paquete+reiniciar dueño; validar sin perder datos</td>
+</tr>
+<tr>
+<td>TLS_KEY_SVC / TLS_PASSWORD</td>
+<td>CA local / setup → propio proceso</td>
+<td>PKCS12 privado0600 + truststore CA; validez365d</td>
+<td>Certificado SAN del servicio,localhost,loopback</td>
+<td>Reemitir antes de vencimiento; cambiar PKCS12+password y reiniciar; en real usar CA municipal</td>
+</tr>
+<tr>
+<td>MANAGER_MASTER_KEY</td>
+<td>setup → secrets exclusivamente</td>
+<td>Bootstrap raíz0600; cifra paquetes privados; no lo monta gateway</td>
+<td>Desencriptar bundles del manager</td>
+<td>Migración offline reencrypt de todos los bundles; respaldo separado cifrado</td>
+</tr>
+<tr>
+<td>ORACLE_SYS_PASSWORD</td>
+<td>Imagen Oracle → operador de BD</td>
+<td><code>ORACLE_RANDOM_PASSWORD=true</code>: la imagen genera la clave y puede mostrarla en logs privados de inicialización; nunca se entrega a una aplicación</td>
+<td>Administración de BD; bootstrap local por autenticación del SO</td>
+<td>Custodiar y cambiar por operador; no publicar logs ni <code>01-bec.sql</code>, que contiene las claves de los siete esquemas</td>
+</tr>
+</tbody>
+</table>
+<p>Las aristas existentes se definen en <code>scripts/setup.py:EDGES</code>; el resto no recibe llave, por tanto falla cerrado. El gateway no tiene llaves para firmar como Orders ni el token raíz del manager. Se generan algunos campos genéricos no usados en los bundles de gateway/GraphQL; no conceden bases reales ni permisos Oracle a esos procesos.</p>
+<p><strong>Rotación disponible:</strong> <code>scripts/rotate.py</code> permite renovar una arista HMAC o un bootstrap en runtime detenido, sin imprimir secretos ni tocar claves de datos. Cuatro pruebas auxiliares (<code>python3 scripts/test_tools.py</code>) verifican ambos extremos, ACL, permisos y rechazo de procesos activos/aristas no autorizadas, con claves ficticias. No se ha ensayado una rotación en Oracle. El procedimiento de <code>DATA_KEY</code>/raíz/certificados es requisito operacional pendiente, no automatización falsamente implementada.</p>
+<h2>Datos y retención efectiva</h2>
+<table>
+<thead>
+<tr>
+<th>Clase</th>
+<th>Ejemplos</th>
+<th>Protección efectiva</th>
+<th>Retención implementada / pendiente</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pública</td>
+<td>título,autor,categoría,soporte,disponibles,en sala</td>
+<td>DTO explícito; no dueño; TLS</td>
+<td>Catálogo hasta archivo lógico</td>
+</tr>
+<tr>
+<td>Personal restringida</td>
+<td>RUN,dirección,email,teléfono,foto</td>
+<td>Perfil AES256-GCM; DTO según rol; búsqueda RUN/email por HMAC; no logs</td>
+<td>No purga de fichas implementada; política municipal y consentimiento pendientes</td>
+</tr>
+<tr>
+<td>Biométrica de prueba</td>
+<td>muestra determinista</td>
+<td>No se guarda muestra cruda: HMAC separado y perfil cifrado; solo comparación test</td>
+<td>Hasta baja/reinscripción controlada futura; nunca usar huellas reales en este prototipo</td>
+</tr>
+<tr>
+<td>Contextual privada</td>
+<td>préstamos,reservas,sanciones,ownerId,preferencias inferibles</td>
+<td>Propiedad+rol en backend, TLS; BD/archivo privado</td>
+<td>Historial persistente sin borrado automático; retención institucional pendiente</td>
+</tr>
+<tr>
+<td>Credencial</td>
+<td>password,token,claves técnicas</td>
+<td>Hash adaptativo o SHA256 según entropía; secretos separados; TLS</td>
+<td>Sesiones se purgan &gt;1día tras vencimiento; enlaces24h, reemplazables</td>
+</tr>
+<tr>
+<td>Correo TEST</td>
+<td>enlace/destinatario/comprobante</td>
+<td>Evento/correo AES-GCM; bandeja soloADMIN/lab</td>
+<td>Mail elimina mensajes &gt;7d; Notifications borra cipher al marcar DELIVERED</td>
+</tr>
+<tr>
+<td>Registros técnicos</td>
+<td>servicio,verbo,estado,duración,correlationId</td>
+<td>No cuerpos, query, emails,claves ni RUN; acceso al runtime</td>
+<td>No logrotate automático; propuesta30d con herramienta de plataforma</td>
+</tr>
+</tbody>
+</table>
+<p>No se afirma cifrado de disco total: las bases H2 y el historial contextual no usan TDE propio. Antes de datos reales, cifrar volúmenes/backups y validar TDE de Oracle según licencia/entorno. El AES de perfiles sí está implementado y probado. La extracción de datos por root o una copia completa de runtime con su master key sigue siendo un riesgo.</p>
+<h2>Cliente y sesiones</h2>
+<ul>
+<li><strong>Sí</strong> maneja la contraseña introducida hasta el POST de login/inscripción, el token de sesión en memoria y, al abrir el enlace, el token de activación. <strong>No</strong> recibe secretos de base, Vault/manager, claves HMAC ni llaves AES.</li>
+<li>No localStorage, sessionStorage, cookies persistentes ni token en URL de sesión. El enlace de activación se retira inmediatamente con <code>history.replaceState</code>; <code>Referrer-Policy:no-referrer</code>.</li>
+<li>Idle del quiosco5min: limpia memoria/interfaz y solicita logout; máxima sesión server20min aun si el JS se manipula. No se renueva automáticamente.</li>
+<li>XSS: escape de texto, CSP self sin scripts inline, sin dependencias de CDN. CORS no se abre a dominios arbitrarios. Sin cookies de autenticación, no se depende de un token CSRF basado en sesión de cookie.</li>
+<li>Dispositivos y proveedor: únicamente adaptadores TEST. <code>--no-lab</code> oculta bandeja, <strong>no</strong> convierte mail en entrega real.</li>
+</ul>
+<h2>Riesgos y aceptación antes de producción</h2>
+<ol>
+<li>Oracle/PLSQL/TCPS, redes Compose y restauración Oracle no ejecutados en este equipo.</li>
+<li>Sin proveedor de correo externo ni lector biométrico/RFID; contratos test no son acreditación física.</li>
+<li>Sin reset de contraseñas ni gestión dinámica de personal/roles; cuentas iniciales solo setup seguro.</li>
+<li>Sin eliminación/anonimización institucional ni migración rotativa de llaves de datos; no cargar datos reales.</li>
+<li>Rate limit y cache de nonces son por proceso; para réplicas, usar almacén distribuido y coordinación. El alcance medido es una instancia de cada servicio.</li>
+<li>La firma HMAC autentica servicio pero no mTLS; TLS verifica servidor. Evolución a mTLS/OIDC según requerimientos municipales.</li>
+<li>Escaneos de agregados limitados a20000 registros y trabajadores simples no son solución de alta escala; indexar/paginar en BD y medir antes de escalar.</li>
+<li>Los logs de respuesta llevan correlación; algunos trabajos de reconciliación generan un nuevo ID y no conservan una traza distribuida causal completa. El ID de solicitud/préstamo/evento persistido permite investigar la saga.</li>
+</ol>
+<h2>Respaldo y restauración local</h2>
+<p>Detener con <code>python3 scripts/run.py stop</code>. Hacer copia cifrada de TODO el runtime (las 7 bases, secretos, CA/truststores y perfil), separando custodia de la clave de respaldo. Restaurar en una carpeta aislada con permisos0700/0600, ajustar rutas absolutas H2/webRoot si cambió la ruta, iniciar y ejecutar smoke/E2E. No respaldar solo <code>.mv.db</code>: sin <code>DATA_KEY</code> no se recupera el perfil cifrado. No entregar ese respaldo al docente ni incluirlo en ZIP.</p>
+<p>Para Oracle: RMAN/export por esquema y secretos bajo custodia separada; ensayar recuperación y SP sobre una instancia de prueba. Es un procedimiento propuesto, no una recuperación medida. <code>deploy.py down</code> conserva el volumen; no usar <code>down -v</code> si se quieren preservar los datos.</p></body></html>

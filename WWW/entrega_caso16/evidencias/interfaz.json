@@ -1,0 +1,65 @@
+{
+  "recorded_at_utc": "2026-11-19T03:36:22.556750+00:00",
+  "artifact_sha256": "a3a5ad695a0c594a3ca3ba52d82ac52a2d2813cb788a89ebb323069e465dbd6e",
+  "engine": "Chromium / Playwright",
+  "profile": "h2",
+  "browser_tls": "ignora solo CA local de laboratorio",
+  "checks": [
+    {
+      "id": "UI01_catalogo_anonimo",
+      "result": "PASS"
+    },
+    {
+      "id": "UI02_login_y_resumen_GraphQL",
+      "result": "PASS"
+    },
+    {
+      "id": "UI03_solicitud_de_ejemplar",
+      "result": "PASS"
+    },
+    {
+      "id": "UI04_verificacion_y_entrega",
+      "result": "PASS"
+    },
+    {
+      "id": "UI05_cuenta_con_inventario_y_pago_exento",
+      "result": "PASS"
+    },
+    {
+      "id": "UI06_cobro_manipulado_rechazado",
+      "result": "PASS"
+    },
+    {
+      "id": "UI07_reserva_y_cancelacion",
+      "result": "PASS"
+    },
+    {
+      "id": "UI08_antirrobo_software_HOME",
+      "result": "PASS"
+    },
+    {
+      "id": "UI09_devolucion_con_buffer",
+      "result": "PASS"
+    },
+    {
+      "id": "UI10_bandeja_proveedor_prueba",
+      "result": "PASS"
+    },
+    {
+      "id": "UI11_consulta_administrativa",
+      "result": "PASS"
+    },
+    {
+      "id": "UI12_responsive_390px",
+      "result": "PASS"
+    },
+    {
+      "id": "UI13_sin_errores_JavaScript",
+      "result": "PASS"
+    }
+  ],
+  "javascript_errors": [],
+  "real_mail_delivery": false,
+  "physical_biometrics": false,
+  "physical_rfid": false
+}

@@ -1,0 +1,434 @@
+status: exited
+stdout file: /figaro/tool-output/bash/1/stdout (55367 bytes)
+stderr file: /figaro/tool-output/bash/1/stderr (0 bytes)
+exit code: 0
+
+OUTPUT TRUNCATED: the head-and-tail previews below are INCOMPLETE; the middle is omitted. Complete output is saved at the stdout/stderr paths above. If your task depends on omitted content, you MUST use `read` on the relevant file and follow its continuation offsets through the required content before generating or changing code. Do not guess or infer omitted content from the preview. Reading with bash again can truncate again.
+
+--- stdout (head + tail; full output in file above) ---
+===== .figma/design-context/add-step2/design_context.tsx
+2:const imgChevronDown = `${assetPathPrefix}/66697.svg`;
+3:const imgBook = `${assetPathPrefix}/ca582.svg`;
+4:const imgImage = `${assetPathPrefix}/76af2.png`;
+5:const imgLogoBec1 = `${assetPathPrefix}/782e0.png`;
+6:const imgGitPullRequest = `${assetPathPrefix}/a2ab7.svg`;
+7:const imgMenu = `${assetPathPrefix}/c735e.svg`;
+8:const imgRectangle3 = `${assetPathPrefix}/b08be.svg`;
+9:const imgStar = `${assetPathPrefix}/4ff76.svg`;
+13:    <div className={className || "relative size-[16px]"} data-node-id="55:2775" data-name="Chevron down">
+21:    <div className={className || "relative size-[29px]"} data-node-id="112:960" data-name="Book">
+27:export default function AdicionLibroStep2() {
+29:    <div className="relative size-full" data-node-id="112:1731" data-name="Adicion-libro-step2">
+30:      <div className="absolute bg-white h-[900px] left-0 overflow-clip top-0 w-[1440px]" data-node-id="112:1732" data-name="Bibliotecario">
+34:        <a className="absolute block cursor-pointer left-[42px] size-[29px] top-[206px]" data-node-id="112:1736" data-name="Git pull-request">
+37:        <div className="absolute left-[41px] size-[29px] top-[94px]" data-node-id="112:1737" data-name="Menu">
+40:        <a className="absolute bg-white content-stretch cursor-pointer flex flex-col h-[814px] items-start left-[114px] min-w-[240px] p-[64px] top-[72px] w-[1326px]" data-node-id="112:1750" data-name="Page Product">
+41:          <div className="content-stretch flex gap-[64px] items-start relative shrink-0 w-full" data-node-id="I112:1750;2236:15757" data-name="Section">
+42:            <div className="flex-[1_0_0] min-w-px relative self-stretch" data-node-id="I112:1750;3044:2453" data-name="Image">
+45:            <div className="content-stretch flex flex-[1_0_0] flex-col gap-[24px] items-start justify-center min-w-px relative" data-node-id="I112:1750;2236:15763" data-name="Column">
+46:              <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0 w-full" data-node-id="I112:1750;2236:15763;112:1739" data-name="Body">
+47:                <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0 w-full" data-node-id="I112:1750;2236:15763;112:1740" data-name="Title">
+48:                  <div className="content-stretch flex items-start relative shrink-0 w-full" data-node-id="I112:1750;2236:15763;112:1741" data-name="Text Heading">
+50:                      Steel Ball Run 01
+53:                  <div className="content-stretch flex flex-col h-[68px] items-start justify-center relative shrink-0 w-full" data-node-id="I112:1750;2236:15763;112:1742" data-name="Price">
+55:                      <div className="bg-[#cff7d3] content-stretch flex gap-[8px] items-center justify-center p-[8px] relative rounded-[8px] shrink-0" data-node-id="I112:1750;2236:15763;112:1828" data-name="Tag">
+60:                      <div className="bg-[#cff7d3] content-stretch flex gap-[8px] items-center justify-center p-[8px] relative rounded-[8px] shrink-0" data-node-id="I112:1750;2236:15763;112:1743" data-name="Tag">
+65:                      <div className="bg-[#cff7d3] content-stretch flex gap-[8px] items-center justify-center p-[8px] relative rounded-[8px] shrink-0" data-node-id="I112:1750;2236:15763;112:1833" data-name="Tag">
+73:                <div className="content-stretch flex items-start relative shrink-0 w-full" data-node-id="I112:1750;2236:15763;112:1744" data-name="Text">
+76:                    <span className="font-['Inter:Italic'] italic leading-[1.4] text-[16px]">Steel Ball Run</span>
+81:              <div className="content-stretch flex gap-[24px] items-center relative shrink-0 w-full" data-node-id="I112:1750;2236:15763;112:1745" data-name="Fields">
+82:                <div className="content-stretch flex flex-[1_0_0] flex-col gap-[8px] items-start min-w-px relative" data-node-id="I112:1750;2236:15763;112:1746" data-name="Select Field">
+86:                  <div className="bg-white border border-[#d9d9d9] border-solid content-stretch flex gap-[8px] h-[40px] items-center min-w-[120px] pl-[16px] pr-[12px] py-[12px] relative rounded-[8px] shrink-0 w-full" data-node-id="I112:1750;2236:15763;112:1746;565:15192" data-name="Select">
+93:                <div className="content-stretch flex flex-[1_0_0] flex-col gap-[8px] items-start min-w-px relative" data-node-id="I112:1750;2236:15763;112:1747" data-name="Select Field">
+97:                  <div className="bg-white border border-[#d9d9d9] border-solid content-stretch flex gap-[8px] h-[40px] items-center min-w-[120px] pl-[16px] pr-[12px] py-[12px] relative rounded-[8px] shrink-0 w-full" data-node-id="I112:1750;2236:15763;112:1747;565:15192" data-name="Select">
+105:              <div className="bg-[#2c2c2c] border border-[#2c2c2c] border-solid content-stretch flex gap-[8px] items-center justify-center overflow-clip p-[12px] relative rounded-[8px] shrink-0 w-full" data-node-id="I112:1750;2236:15763;112:1748" data-name="Button">
+110:              <div className="content-stretch flex flex-col gap-[16px] items-start max-w-[640px] relative shrink-0 w-full" data-node-id="I112:1750;2236:15763;112:1749" data-name="Accordion">
+111:                <div className="content-stretch flex flex-col gap-[16px] h-[264px] items-start relative shrink-0 w-full" data-node-id="I112:1750;2236:15763;112:1749;6031:7224" data-name="Items" />
+116:        <div className="absolute h-[72px] left-0 top-0 w-[1440px]" data-node-id="112:1751" data-name="Header">
+117:          <div className="absolute h-[72px] left-0 top-0 w-[1440px]" data-node-id="112:1752" data-name="sub-header">
+121:            <div className="absolute h-[50px] left-[41px] top-[11px] w-[29px]" data-node-id="112:1754" data-name="LogoBEC 1">
+126:            <a className="absolute content-stretch cursor-pointer flex gap-[12px] items-center left-[1266px] top-[20px] w-[156px]" data-node-id="112:1755" data-name="Header Auth">
+127:              <div className="bg-[#1e1e1e] border border-[#d9d9d9] border-solid content-stretch flex flex-[1_0_0] gap-[8px] items-center justify-center min-w-px overflow-clip p-[8px] relative rounded-[8px]" data-node-id="I112:1755;18:9047" data-name="Button">
+128:                <div className="relative shrink-0 size-[16px]" data-node-id="I112:1755;18:9047;34:12128" data-name="Star">
+136:            <div className="absolute content-stretch flex items-start left-[184px] top-[21px]" data-node-id="112:1756" data-name="Text Heading">
+===== .figma/design-context/add/design_context.tsx
+2:const imgChevronDown = `${assetPathPrefix}/66697.svg`;
+3:const imgAndrsrxnChevronDown = `${assetPathPrefix}/35bd8.svg`;
+4:const imgBook = `${assetPathPrefix}/ca582.svg`;
+5:const imgImage = `${assetPathPrefix}/152eb.png`;
+6:const imgLogoBec1 = `${assetPathPrefix}/782e0.png`;
+7:const imgImage1 = `${assetPathPrefix}/76af2.png`;
+8:const imgGitPullRequest = `${assetPathPrefix}/a2ab7.svg`;
+9:const imgMenu = `${assetPathPrefix}/c735e.svg`;
+10:const imgRectangle3 = `${assetPathPrefix}/b08be.svg`;
+11:const imgStar = `${assetPathPrefix}/4ff76.svg`;
+15:    <div className={className || "relative size-[16px]"} data-node-id="55:2775" data-name="Chevron down">
+23:    <div className={className || "relative size-[16px]"} data-node-id="81:3640" data-name="andrsrxn:chevron-down">
+37:      <button className="absolute bg-white block border border-[#d9d9d9] border-solid cursor-pointer h-[44px] left-0 overflow-clip rounded-[8px] top-0 w-[567px]" data-node-id="134:1099" data-name="Abrir formatos">
+56:        Añadir documento
+61:      <div className="content-stretch flex gap-[16px] items-start relative shrink-0 w-[567px] z-[4]" data-node-id="134:1185" data-name="Título y autor">
+62:        <div className="content-stretch flex flex-col gap-[8px] items-start relative shrink-0 w-[275.5px]" data-node-id="134:1186" data-name="Título">
+66:          <div className="bg-white border border-[#d9d9d9] border-solid h-[44px] overflow-clip relative rounded-[8px] shrink-0 w-[275.5px]" data-node-id="134:1188" data-name="Campo · Título">
+72:        <div className="content-stretch flex flex-col gap-[8px] items-start relative shrink-0 w-[275.5px]" data-node-id="134:1190" data-name="Autor">
+76:          <div className="bg-white border border-[#d9d9d9] border-solid h-[44px] overflow-clip relative rounded-[8px] shrink-0 w-[275.5px]" data-node-id="134:1192" data-name="Campo · Autor">
+83:      <div className="content-stretch flex flex-col gap-[8px] items-start relative shrink-0 w-[567px] z-[3]" data-node-id="134:1194" data-name="Tipo de documento">
+87:        <div className="content-stretch flex gap-[16px] items-start relative shrink-0 w-[567px]" data-node-id="134:1196" data-name="Opciones de documento">
+88:          <div className="bg-[#2c2c2c] h-[44px] overflow-clip relative rounded-[8px] shrink-0 w-[275.5px]" data-node-id="134:1197" data-name="Libro">
+93:          <button className="bg-white block border border-[#d9d9d9] border-solid cursor-pointer h-[44px] overflow-clip relative rounded-[8px] shrink-0 w-[275.5px]" data-node-id="134:1199" data-name="Multimedia">
+100:      <div className="content-stretch flex flex-col gap-[8px] items-start relative shrink-0 w-[567px] z-[2]" data-node-id="134:1201" data-name="Subcategoría">
+104:        <div className="bg-white border border-[#d9d9d9] border-solid h-[44px] overflow-clip relative rounded-[8px] shrink-0 w-[567px]" data-node-id="134:1203" data-name="Campo · Subcategoría">
+110:      <div className="content-stretch flex flex-col gap-[8px] items-start relative shrink-0 w-[567px] z-[1]" data-node-id="134:1205" data-name="Descripción">
+114:        <div className="bg-white border border-[#d9d9d9] border-solid h-[64px] overflow-clip relative rounded-[8px] shrink-0 w-[567px]" data-node-id="134:1207" data-name="Campo · Descripción">
+126:    <div className={className || "relative size-[29px]"} data-node-id="112:960" data-name="Book">
+132:export default function AdicionLibro() {
+134:    <div className="relative size-full" data-node-id="112:1271" data-name="Adicion-libro">
+135:      <div className="absolute bg-white h-[900px] left-0 overflow-clip top-0 w-[1440px]" data-node-id="112:1272" data-name="Bibliotecario">
+139:        <a className="absolute block cursor-pointer left-[42px] size-[29px] top-[206px]" data-node-id="112:1276" data-name="Git pull-request">
+142:        <div className="absolute left-[41px] size-[29px] top-[94px]" data-node-id="112:1277" data-name="Menu">
+145:        <div className="absolute bg-white content-stretch flex flex-col h-[814px] items-start left-[114px] min-w-[240px] p-[64px] top-[72px] w-[1326px]" data-node-id="112:1588" data-name="Page Product">
+146:          <div className="content-stretch flex gap-[64px] items-start relative shrink-0 w-full" data-node-id="I112:1588;2236:15757" data-name="Section">
+147:            <div className="flex-[1_0_0] min-w-px relative self-stretch" data-node-id="I112:1588;3044:2453" data-name="Image">
+153:            <div className="content-stretch flex flex-[1_0_0] flex-col gap-[16px] isolate items-start justify-center min-w-px relative" data-node-id="I112:1588;2236:15763" data-name="Column">
+155:              <div className="content-stretch flex gap-[24px] items-center relative shrink-0 w-full z-[3]" data-node-id="I112:1588;2236:15763;112:1705" data-name="Fields">
+156:                <div className="content-stretch flex flex-[1_0_0] flex-col gap-[8px] items-start min-w-px relative" data-node-id="I112:1588;2236:15763;112:1706" data-name="Select Field">
+160:                  <div className="bg-white border border-[#d9d9d9] border-solid content-stretch flex gap-[8px] h-[40px] items-center min-w-[120px] pl-[16px] pr-[12px] py-[12px] relative rounded-[8px] shrink-0 w-full" data-node-id="I112:1588;2236:15763;112:1706;565:15192" data-name="Select">
+167:                <div className="content-stretch flex flex-[1_0_0] flex-col gap-[8px] items-start min-w-px relative" data-node-id="I112:1588;2236:15763;112:1707" data-name="Select Field">
+171:                  <div className="bg-white border border-[#d9d9d9] border-solid content-stretch flex gap-[8px] h-[40px] items-center min-w-[120px] pl-[16px] pr-[12px] py-[12px] relative rounded-[8px] shrink-0 w-full" data-node-id="I112:1588;2236:15763;112:1707;565:15192" data-name="Select">
+179:              <a className="bg-[#2c2c2c] border border-[#2c2c2c] border-solid content-stretch cursor-pointer flex gap-[8px] items-center justify-center overflow-clip p-[12px] relative rounded-[8px] shrink-0 w-full z-[2]" data-node-id="I112:1588;2236:15763;112:1708" data-name="Button">
+187:        <div className="absolute h-[72px] left-0 top-0 w-[1440px]" data-node-id="112:1278" data-name="Header">
+188:          <div className="absolute h-[72px] left-0 top-0 w-[1440px]" data-node-id="112:1279" data-name="sub-header">
+192:            <div className="absolute h-[50px] left-[41px] top-[11px] w-[29px]" data-node-id="112:1281" data-name="LogoBEC 1">
+197:            <div className="absolute content-stretch flex gap-[12px] items-center left-[1266px] top-[20px] w-[156px]" data-node-id="112:1282" data-name="Header Auth">
+198:              <div className="bg-[#1e1e1e] border border-[#d9d9d9] border-solid content-stretch flex flex-[1_0_0] gap-[8px] items-center justify-center min-w-px overflow-clip p-[8px] relative rounded-[8px]" data-node-id="I112:1282;18:9047" data-name="Button">
+199:                <div className="relative shrink-0 size-[16px]" data-node-id="I112:1282;18:9047;34:12128" data-name="Star">
+207:            <div className="absolute content-stretch flex items-start left-[184px] top-[21px]" data-node-id="112:1283" data-name="Text Heading">
+215:      <div className="absolute h-[707px] left-[178px] top-[123px] w-[567px]" data-node-id="131:698" data-name="Image">
+218:      <div className="absolute bg-[#e3e3e3] border border-[#767676] border-solid content-stretch flex gap-[8px] items-center justify-center left-[178px] overflow-clip p-[8px] rounded-[8px] top-[82px] w-[100px]" data-node-id="9769:953" data-name="Volver a Colecciones">
+===== .figma/design-context/collections/design_context.tsx
+2:const imgSearch = `${assetPathPrefix}/a6fae.svg`;
+3:const imgPlus = `${assetPathPrefix}/84c1a.svg`;
+4:const imgBook = `${assetPathPrefix}/ca582.svg`;
+5:const imgLogoBec1 = `${assetPathPrefix}/782e0.png`;
+6:const imgGitPullRequest = `${assetPathPrefix}/a2ab7.svg`;
+7:const imgMenu = `${assetPathPrefix}/c735e.svg`;
+8:const imgRectangle3 = `${assetPathPrefix}/b08be.svg`;
+9:const imgStar = `${assetPathPrefix}/4ff76.svg`;
+10:const imgLine2 = `${assetPathPrefix}/6ac6c.svg`;
+14:    <div className={className || "relative size-[16px]"} data-node-id="55:1534" data-name="Search">
+40:    <div className={className || "content-stretch flex items-start relative"} data-node-id="107:926" data-name="Button Danger">
+41:      <a className="bg-[#b2b2b2] border border-[#b3b3b3] border-solid content-stretch cursor-pointer flex gap-[8px] h-[32px] items-center justify-center overflow-clip p-[12px] relative rounded-[8px] shrink-0 w-[131px]" data-node-id="87:640" data-name="Button Danger">
+42:        <div className="relative shrink-0 size-[16px]" data-node-id="I87:640;185:866" data-name="Plus">
+55:    <div className={className || "relative size-[29px]"} data-node-id="112:960" data-name="Book">
+61:export default function Bibliotecario() {
+63:    <div className="relative size-full" data-node-id="94:757" data-name="Bibliotecario">
+64:      <div className="absolute bg-white h-[900px] left-0 overflow-clip top-0 w-[1440px]" data-node-id="87:341" data-name="Bibliotecario">
+68:        <a className="absolute block cursor-pointer left-[42px] size-[29px] top-[206px]" data-node-id="93:744" data-name="Git pull-request">
+71:        <div className="absolute left-[41px] size-[29px] top-[94px]" data-node-id="93:748" data-name="Menu">
+74:        <div className="absolute h-[72px] left-0 top-0 w-[1440px]" data-node-id="87:348" data-name="Header">
+75:          <div className="absolute h-[72px] left-0 top-0 w-[1440px]" data-node-id="87:349" data-name="sub-header">
+79:            <div className="absolute h-[50px] left-[41px] top-[11px] w-[29px]" data-node-id="87:351" data-name="LogoBEC 1">
+84:            <a className="absolute content-stretch cursor-pointer flex gap-[12px] items-center left-[1266px] top-[20px] w-[156px]" data-node-id="87:352" data-name="Header Auth">
+85:              <div className="bg-[#1e1e1e] border border-[#d9d9d9] border-solid content-stretch flex flex-[1_0_0] gap-[8px] items-center justify-center min-w-px overflow-clip p-[8px] relative rounded-[8px]" data-node-id="I87:352;18:9047" data-name="Button">
+86:                <div className="relative shrink-0 size-[16px]" data-node-id="I87:352;18:9047;34:12128" data-name="Star">
+94:            <div className="absolute content-stretch flex items-start left-[184px] top-[21px]" data-node-id="90:502" data-name="Text Heading">
+96:                Colecciones
+104:      <div className="absolute contents inset-[16.11%_2.22%_3.11%_12.99%]" data-node-id="90:529" data-name="Order List">
+105:        <div className="absolute bg-white border-[#b9b9b9] border-[0.3px] border-solid inset-[16.11%_2.22%_3.11%_12.99%] rounded-[14px]" data-node-id="90:530" data-name="Bg" />
+106:        <div className="absolute contents inset-[24.22%_7.78%_39.44%_12.99%]" data-node-id="90:531" data-name="1">
+107:          <div className="absolute inset-[24.22%_11.67%_72.78%_81.88%]" data-node-id="90:532" data-name="Label / Completed">
+108:            <div className="absolute contents inset-0" data-node-id="I90:532;0:40548" data-name="Label / Completed">
+109:              <div className="absolute bg-[#00b69b] inset-0 opacity-20 rounded-[4.5px]" data-node-id="I90:532;0:40549" data-name="Rectangle" />
+124:            Phantom Blood 01
+142:        <div className="absolute contents inset-[33.11%_7.78%_5.67%_12.99%]" data-node-id="90:539" data-name="2">
+143:          <div className="absolute inset-[91.33%_11.67%_5.67%_81.88%]" data-node-id="90:540" data-name="Label / Processing">
+144:            <div className="absolute contents inset-0" data-node-id="I90:540;0:40552" data-name="Label / Processing">
+145:              <div className="absolute bg-[#6226ef] inset-0 opacity-20 rounded-[4.5px]" data-node-id="I90:540;0:40553" data-name="Rectangle" />
+178:        <div className="absolute contents inset-[41.11%_7.78%_13.67%_12.99%]" data-node-id="90:547" data-name="3">
+179:          <div className="absolute inset-[83.33%_11.67%_13.67%_81.88%]" data-node-id="90:548" data-name="Label / Rejected">
+180:            <div className="absolute contents inset-0" data-node-id="I90:548;0:40556" data-name="Label / Rejected">
+181:              <div className="absolute bg-[#ef3826] inset-0 opacity-20 rounded-[4.5px]" data-node-id="I90:548;0:40557" data-name="Rectangle" />
+211:        <div className="absolute contents inset-[49.56%_7.78%_44.67%_12.99%]" data-node-id="90:555" data-name="4">
+236:        <div className="absolute contents inset-[58%_7.78%_36.22%_12.99%]" data-node-id="90:563" data-name="5">
+237:          <div className="absolute inset-[58%_11.67%_39%_81.88%]" data-node-id="90:564" data-name="Label / Processing" />
+259:        <div className="absolute contents inset-[66.44%_7.78%_27.78%_12.99%]" data-node-id="90:571" data-name="6">
+260:          <div className="absolute inset-[66.44%_11.67%_30.56%_81.88%]" data-node-id="90:572" data-name="Label / Completed" />
+285:        <div className="absolute contents inset-[75.33%_7.78%_19.33%_12.99%]" data-node-id="90:579" data-name="7">
+295:            Phantom Blood 02
+310:        <div className="absolute contents inset-[33.11%_7.78%_10.89%_12.99%]" data-node-id="90:587" data-name="8">
+311:          <div className="absolute inset-[74.89%_11.67%_22.11%_81.88%]" data-node-id="90:588" data-name="Label / On Hold" />
+312:          <div className="absolute inset-[74.89%_11.6%_22.11%_81.94%]" data-node-id="112:1218" data-name="Label / Rejected">
+313:            <div className="absolute contents inset-0" data-node-id="I112:1218;0:40556" data-name="Label / Rejected">
+314:              <div className="absolute bg-[#ef3826] inset-0 opacity-20 rounded-[4.5px]" data-node-id="I112:1218;0:40557" data-name="Rectangle" />
+343:          <div className="absolute inset-[33.11%_11.67%_63.89%_81.88%]" data-node-id="93:658" data-name="Label / Completed">
+344:            <div className="absolute contents inset-0" data-node-id="I93:658;0:40548" data-name="Label / Completed">
+345:              <div className="absolute bg-[#00b69b] inset-0 opacity-20 rounded-[4.5px]" data-node-id="I93:658;0:40549" data-name="Rectangle" />
+351:          <div className="absolute inset-[66.44%_11.67%_30.56%_81.88%]" data-node-id="93:678" data-name="Label / Completed">
+352:            <div className="absolute contents inset-0" data-node-id="I93:678;0:40548" data-name="Label / Completed">
+353:              <div className="absolute bg-[#00b69b] inset-0 opacity-20 rounded-[4.5px]" data-node-id="I93:678;0:40549" data-name="Rectangle" />
+359:          <div className="absolute inset-[41.11%_11.67%_55.89%_81.88%]" data-node-id="93:663" data-name="Label / Completed">
+360:            <div className="absolute contents inset-0" data-node-id="I93:663;0:40548" data-name="Label / Completed">
+361:              <div className="absolute bg-[#00b69b] inset-0 opacity-20 rounded-[4.5px]" data-node-id="I93:663;0:40549" data-name="Rectangle" />
+367:          <div className="absolute inset-[50.11%_11.67%_46.89%_81.88%]" data-node-id="93:668" data-name="Label / Completed">
+368:            <div className="absolute contents inset-0" data-node-id="I93:668;0:40548" data-name="Label / Completed">
+369:              <div className="absolute bg-[#00b69b] inset-0 opacity-20 rounded-[4.5px]" data-node-id="I93:668;0:40549" data-name="Rectangle" />
+375:          <div className="absolute inset-[58.44%_11.67%_38.56%_81.88%]" data-node-id="93:673" data-name="Label / Completed">
+376:            <div className="absolute contents inset-0" data-node-id="I93:673;0:40548" data-name="Label / Completed">
+377:              <div className="absolute bg-[#00b69b] inset-0 opacity-20 rounded-[4.5px]" data-node-id="I93:673;0:40549" data-name="Rectangle" />
+384:        <div className="-translate-y-1/2 [word-break:break-word] absolute contents font-['Nunito_Sans:SemiBold'] font-semibold leading-[normal] left-[15.21%] right-[22.71%] text-[#202224] text-[14px] top-[calc(50%+389.5px)] whitespace-nowrap" data-node-id="90:595" data-name="8">
+401:        <div className="absolute contents inset-[16.11%_2.22%_78.44%_12.99%]" data-node-id="90:602" data-name="ID- Status">
+402:          <div className="absolute bg-[#fcfdfd] border-[#d5d5d5] border-[0.6px] border-solid inset-[16.11%_2.22%_78.44%_12.99%] rounded-tl-[14px] rounded-tr-[14px]" data-node-id="90:603" data-name="Bg" />
+426:      <div className="absolute bg-white h-[727px] left-[1328px] top-[145px] w-[80px]" data-node-id="9765:613" data-name="Columna · Editar">
+427:        <div className="absolute bg-[#fcfdfd] h-[49px] left-0 top-0 w-[80px]" data-node-id="9765:686" data-name="Rectangle" />
+431:        <a className="absolute bg-[#2c2c2c] border border-[#2c2c2c] border-solid content-stretch cursor-pointer flex gap-[8px] h-[32px] items-center justify-center left-[8px] overflow-clip p-[12px] rounded-[8px] top-[70px] w-[64px]" data-node-id="9765:615" data-name="Editar documento · fila 222">
+436:        <a className="absolute bg-[#2c2c2c] border border-[#2c2c2c] border-solid content-stretch cursor-pointer flex gap-[8px] h-[32px] items-center justify-center left-[8px] overflow-clip p-[12px] rounded-[8px] top-[150px] w-[64px]" data-node-id="9765:622" data-name="Editar documento · fila 302">
+441:        <a className="absolute bg-[#2c2c2c] border border-[#2c2c2c] border-solid content-stretch cursor-pointer flex gap-[8px] h-[32px] items-center justify-center left-[8px] overflow-clip p-[12px] rounded-[8px] top-[222px] w-[64px]" data-node-id="9765:629" data-name="Editar documento · fila 374">
+446:        <a className="absolute bg-[#2c2c2c] border border-[#2c2c2c] border-solid content-stretch cursor-pointer flex gap-[8px] h-[32px] items-center justify-center left-[8px] overflow-clip p-[12px] rounded-[8px] top-[298px] w-[64px]" data-node-id="9765:636" data-name="Editar documento · fila 450">
+451:        <a className="absolute bg-[#2c2c2c] border border-[#2c2c2c] border-solid content-stretch cursor-pointer flex gap-[8px] h-[32px] items-center justify-center left-[8px] overflow-clip p-[12px] rounded-[8px] top-[374px] w-[64px]" data-node-id="9765:643" data-name="Editar documento · fila 526">
+456:        <a className="absolute bg-[#2c2c2c] border border-[#2c2c2c] border-solid content-stretch cursor-pointer flex gap-[8px] h-[32px] items-center justify-center left-[8px] overflow-clip p-[12px] rounded-[8px] top-[450px] w-[64px]" data-node-id="9765:650" data-name="Editar documento · fila 602">
+===== .figma/design-context/edit/design_context.tsx
+2:const imgChevronDown = `${assetPathPrefix}/66697.svg`;
+3:const imgBook = `${assetPathPrefix}/ca582.svg`;
+4:const imgImage = `${assetPathPrefix}/152eb.png`;
+5:const imgLogoBec1 = `${assetPathPrefix}/782e0.png`;
+6:const imgImage1 = `${assetPathPrefix}/76af2.png`;
+7:const imgGitPullRequest = `${assetPathPrefix}/a2ab7.svg`;
+8:const imgMenu = `${assetPathPrefix}/c735e.svg`;
+9:const imgRectangle3 = `${assetPathPrefix}/b08be.svg`;
+10:const imgStar = `${assetPathPrefix}/4ff76.svg`;
+14:    <div className={class
+
+[truncated: omitted lines 190-214 (4237 bytes, bytes 25566-29802)]
+
+
+110:                  <div className="bg-white border border-[#d9d9d9] border-solid h-[64px] overflow-clip relative rounded-[8px] shrink-0 w-[567px]" data-node-id="I9765:531;2236:15763;9765:540;134:1207" data-name="Campo · Descripción">
+117:              <div className="content-stretch flex gap-[24px] items-center relative shrink-0 w-full z-[3]" data-node-id="I9765:531;2236:15763;9765:541" data-name="Fields">
+118:                <div className="content-stretch flex flex-[1_0_0] flex-col gap-[8px] items-start min-w-px relative" data-node-id="I9765:531;2236:15763;9765:542" data-name="Select Field">
+122:                  <div className="bg-white border border-[#d9d9d9] border-solid content-stretch flex gap-[8px] h-[40px] items-center min-w-[120px] pl-[16px] pr-[12px] py-[12px] relative rounded-[8px] shrink-0 w-full" data-node-id="I9765:531;2236:15763;9765:542;565:15192" data-name="Select">
+129:                <div className="content-stretch flex flex-[1_0_0] flex-col gap-[8px] items-start min-w-px relative" data-node-id="I9765:531;2236:15763;9765:543" data-name="Select Field">
+133:                  <div className="bg-white border border-[#d9d9d9] border-solid content-stretch flex gap-[8px] h-[40px] items-center min-w-[120px] pl-[16px] pr-[12px] py-[12px] relative rounded-[8px] shrink-0 w-full" data-node-id="I9765:531;2236:15763;9765:543;565:15192" data-name="Select">
+141:              <a className="bg-[#2c2c2c] border border-[#2c2c2c] border-solid content-stretch cursor-pointer flex gap-[8px] items-center justify-center overflow-clip p-[12px] relative rounded-[8px] shrink-0 w-full z-[2]" data-node-id="I9765:531;2236:15763;9765:544" data-name="Editar · guardar cambios">
+149:        <div className="absolute h-[72px] left-0 top-0 w-[1440px]" data-node-id="9765:532" data-name="Header">
+150:          <div className="absolute h-[72px] left-0 top-0 w-[1440px]" data-node-id="9765:533" data-name="sub-header">
+154:            <div className="absolute h-[50px] left-[41px] top-[11px] w-[29px]" data-node-id="9765:535" data-name="LogoBEC 1">
+159:            <div className="absolute content-stretch flex gap-[12px] items-center left-[1266px] top-[20px] w-[156px]" data-node-id="9765:536" data-name="Header Auth">
+160:              <div className="bg-[#1e1e1e] border border-[#d9d9d9] border-solid content-stretch flex flex-[1_0_0] gap-[8px] items-center justify-center min-w-px overflow-clip p-[8px] relative rounded-[8px]" data-node-id="I9765:536;18:9047" data-name="Button">
+161:                <div className="relative shrink-0 size-[16px]" data-node-id="I9765:536;18:9047;34:12128" data-name="Star">
+169:            <div className="absolute content-stretch flex items-start left-[184px] top-[21px]" data-node-id="9765:537" data-name="Text Heading">
+171:                Editar documento
+177:      <div className="absolute h-[707px] left-[178px] top-[123px] w-[567px]" data-node-id="9765:538" data-name="Image">
+180:      <a className="absolute bg-[#b81f1f] border border-[#b81f1f] border-solid content-stretch cursor-pointer flex gap-[8px] items-center justify-center left-[809px] overflow-clip p-[12px] rounded-[8px] top-[739px] w-[567px]" data-node-id="9765:607" data-name="Eliminar de colección">
+185:      <div className="absolute bg-[#e3e3e3] border border-[#767676] border-solid content-stretch flex gap-[8px] items-center justify-center left-[178px] overflow-clip p-[8px] rounded-[8px] top-[82px] w-[100px]" data-node-id="9769:966" data-name="Volver a Colecciones">
+===== .figma/design-context/home/design_context.tsx
+2:const imgSearch = `${assetPathPrefix}/a6fae.svg`;
+3:const imgCheck = `${assetPathPrefix}/c2711.svg`;
+4:const imgX = `${assetPathPrefix}/de407.svg`;
+5:const imgImage = `${assetPathPrefix}/13b97.png`;
+6:const imgImage1 = `${assetPathPrefix}/31a2d.png`;
+7:const imgImage2 = `${assetPathPrefix}/ec346.png`;
+8:const imgImage3 = `${assetPathPrefix}/be1c6.png`;
+9:const imgImage4 = `${assetPathPrefix}/66241.png`;
+10:const imgImage5 = `${assetPathPrefix}/6faa0.png`;
+11:const imgLogoBec1 = `${assetPathPrefix}/782e0.png`;
+12:const imgRectangle3 = `${assetPathPrefix}/b08be.svg`;
+13:const imgStar = `${assetPathPrefix}/4ff76.svg`;
+17:    <div className={className || "relative size-[16px]"} data-node-id="55:1534" data-name="Search">
+48:    <div className={className || "content-stretch flex items-start relative"} data-node-id="55:1384" data-name="Text">
+69:        <div className="[word-break:break-word] content-stretch flex font-['Inter:Regular'] font-normal items-start justify-between leading-[1.4] not-italic relative shrink-0 text-[#1e1e1e] w-full" data-node-id="55:1661" data-name="Label">
+73:          <div className="content-stretch flex items-center relative shrink-0 text-[14px] text-right whitespace-nowrap" data-node-id="55:1663" data-name="Slider Output">
+83:      <div className="content-stretch flex items-center relative shrink-0 w-full" data-node-id="55:1666" data-name="Slider">
+84:        <div className="bg-[#e6e6e6] content-stretch flex flex-[1_0_0] h-[8px] items-center min-w-px relative rounded-[9999px]" data-node-id="55:1667" data-name="Block">
+85:          <div className="bg-[#2c2c2c] relative rounded-[9999px] shrink-0 size-[16px]" data-node-id="55:1668" data-name="Knob Start" />
+86:          <div className="flex-[1_0_0] h-[6px] min-w-px relative" data-node-id="55:1669" data-name="Slider" />
+87:          <div className="bg-[#2c2c2c] relative rounded-[9999px] shrink-0 size-[16px]" data-node-id="55:1670" data-name="Knob End" />
+111:      <div className="content-stretch flex gap-[12px] items-center min-w-[120px] relative shrink-0" data-node-id="55:1614" data-name="Checkbox and Label">
+112:        <div className="bg-[#2c2c2c] content-stretch flex items-center justify-center overflow-clip relative rounded-[4px] shrink-0 size-[16px]" data-node-id="55:1615" data-name="Checkbox">
+113:          <div className="relative shrink-0 size-[16px]" data-node-id="55:1616" data-name="Check">
+122:        <div className="content-stretch flex gap-[12px] items-center min-w-[120px] relative shrink-0" data-node-id="55:1618" data-name="Description Row">
+123:          <div className="relative shrink-0 size-[16px]" data-node-id="55:1619" data-name="Space" />
+135:    <div className={className || "content-stretch flex flex-col gap-[12px] items-start relative w-[240px]"} data-node-id="55:1494" data-name="Checkbox Group">
+159:        <div className="relative shrink-0 size-[16px]" data-node-id="55:1611" data-name="X">
+167:export default function Home() {
+169:    <div className="bg-white relative size-full" data-node-id="1:17" data-name="Home">
+170:      <div className="absolute content-stretch flex flex-col gap-[24px] items-start left-[332px] top-[90px] w-[1072px]" data-node-id="55:3211" data-name="Cards">
+171:        <div className="bg-white border border-[#d9d9d9] border-solid content-start flex flex-wrap gap-[24px] items-start min-w-[240px] p-[24px] relative rounded-[8px] shrink-0 w-full" data-node-id="55:3212" data-name="Card">
+172:          <div className="min-w-[160px] relative shrink-0 size-[160px]" data-node-id="I55:3212;638:11631" data-name="Image">
+175:          <div className="content-stretch flex flex-[1_0_0] flex-col gap-[16px] items-start min-w-[160px] relative" data-node-id="I55:3212;2142:11561" data-name="Body2">
+176:            <div className="[word-break:break-word] content-stretch flex flex-col gap-[8px] items-start not-italic relative shrink-0 w-full" data-node-id="I55:3212;2142:11561;73:3374" data-name="Text">
+178:                Phantom Blood
+184:            <div className="content-stretch flex gap-[16px] items-center relative shrink-0 w-full" data-node-id="I55:3212;2142:11561;73:3377" data-name="Button Group">
+185:              <div className="bg-[#e3e3e3] border border-[#767676] border-solid content-stretch flex gap-[8px] items-center justify-center overflow-clip p-[12px] relative rounded-[8px] shrink-0" data-node-id="I55:3212;2142:11561;73:3377;108:12612" data-name="Button">
+193:        <div className="bg-white border border-[#d9d9d9] border-solid content-start flex flex-wrap gap-[24px] items-start min-w-[240px] p-[24px] relative rounded-[8px] shrink-0 w-full" data-node-id="55:3213" data-name="Card">
+194:          <div className="min-w-[160px] relative shrink-0 size-[160px]" data-node-id="I55:3213;638:11631" data-name="Image">
+197:          <div className="content-stretch flex flex-[1_0_0] flex-col gap-[16px] items-start min-w-[160px] relative" data-node-id="I55:3213;2142:11561" data-name="Body2">
+198:            <div className="[word-break:break-word] content-stretch flex flex-col gap-[8px] items-start not-italic relative shrink-0 w-full" data-node-id="I55:3213;2142:11561;73:3379" data-name="Text">
+206:            <div className="content-stretch flex gap-[16px] items-center relative shrink-0 w-full" data-node-id="I55:3213;2142:11561;73:3382" data-name="Button Group">
+207:              <div className="bg-[#e3e3e3] border border-[#767676] border-solid content-stretch flex gap-[8px] items-center justify-center overflow-clip p-[12px] relative rounded-[8px] shrink-0" data-node-id="I55:3213;2142:11561;73:3382;108:12612" data-name="Button">
+215:        <div className="bg-white border border-[#d9d9d9] border-solid content-start flex flex-wrap gap-[24px] items-start min-w-[240px] p-[24px] relative rounded-[8px] shrink-0 w-full" data-node-id="55:3214" data-name="Card">
+216:          <div className="min-w-[160px] relative shrink-0 size-[160px]" data-node-id="I55:3214;638:11631" data-name="Image">
+219:          <div className="content-stretch flex flex-[1_0_0] flex-col gap-[16px] items-start min-w-[160px] relative" data-node-id="I55:3214;2142:11561" data-name="Body2">
+220:            <div className="[word-break:break-word] content-stretch flex flex-col gap-[8px] items-start not-italic relative shrink-0 w-full" data-node-id="I55:3214;2142:11561;73:3384" data-name="Text">
+228:            <div className="content-stretch flex gap-[16px] items-center relative shrink-0 w-full" data-node-id="I55:3214;2142:11561;73:3387" data-name="Button Group">
+229:              <div className="bg-[#e3e3e3] border border-[#767676] border-solid content-stretch flex gap-[8px] items-center justify-center overflow-clip p-[12px] relative rounded-[8px] shrink-0" data-node-id="I55:3214;2142:11561;73:3387;108:12612" data-name="Button">
+237:        <div className="bg-white border border-[#d9d9d9] border-solid content-start flex flex-wrap gap-[24px] items-start min-w-[240px] p-[24px] relative rounded-[8px] shrink-0 w-full" data-node-id="55:3250" data-name="Card">
+238:          <div className="min-w-[160px] relative shrink-0 size-[160px]" data-node-id="I55:3250;638:11631" data-name="Image">
+241:          <div className="content-stretch flex flex-[1_0_0] flex-col gap-[16px] items-start min-w-[160px] relative" data-node-id="I55:3250;2142:11561" data-name="Body2">
+242:            <div className="[word-break:break-word] content-stretch flex flex-col gap-[8px] items-start not-italic relative shrink-0 w-full" data-node-id="I55:3250;2142:11561;73:3389" data-name="Text">
+250:            <div className="content-stretch flex gap-[16px] items-center relative shrink-0 w-full" data-node-id="I55:3250;2142:11561;73:3392" data-name="Button Group">
+251:              <div className="bg-[#e3e3e3] border border-[#767676] border-solid content-stretch flex gap-[8px] items-center justify-center overflow-clip p-[12px] relative rounded-[8px] shrink-0" data-node-id="I55:3250;2142:11561;73:3392;108:12612" data-name="Button">
+259:        <div className="bg-white border border-[#d9d9d9] border-solid content-start flex flex-wrap gap-[24px] items-start min-w-[240px] p-[24px] relative rounded-[8px] shrink-0 w-full" data-node-id="55:3251" data-name="Card">
+260:          <div className="min-w-[160px] relative shrink-0 size-[160px]" data-node-id="I55:3251;638:11631" data-name="Image">
+263:          <div className="content-stretch flex flex-[1_0_0] flex-col gap-[16px] items-start min-w-[160px] relative" data-node-id="I55:3251;2142:11561" data-name="Body2">
+264:            <div className="[word-break:break-word] content-stretch flex flex-col gap-[8px] items-start not-italic relative shrink-0 w-full" data-node-id="I55:3251;2142:11561;74:3401" data-name="Text">
+272:            <div className="content-stretch flex gap-[16px] items-center relative shrink-0 w-full" data-node-id="I55:3251;2142:11561;74:3404" data-name="Button Group">
+273:              <div className="bg-[#e3e3e3] border border-[#767676] border-solid content-stretch flex gap-[8px] items-center justify-center overflow-clip p-[12px] relative rounded-[8px] shrink-0" data-node-id="I55:3251;2142:11561;74:3404;108:12612" data-name="Button">
+281:        <div className="bg-white border border-[#d9d9d9] border-solid content-start flex flex-wrap gap-[24px] items-start min-w-[240px] p-[24px] relative rounded-[8px] shrink-0 w-full" data-node-id="55:3252" data-name="Card">
+282:          <div className="min-w-[160px] relative shrink-0 size-[160px]" data-node-id="I55:3252;638:11631" data-name="Image">
+285:          <div className="content-stretch flex flex-[1_0_0] flex-col gap-[16px] items-start min-w-[160px] relative" data-node-id="I55:3252;2142:11561" data-name="Body2">
+286:            <div className="[word-break:break-word] content-stretch flex flex-col gap-[8px] items-start not-italic relative shrink-0 w-full" data-node-id="I55:3252;2142:11561;74:3406" data-name="Text">
+295:            <div className="content-stretch flex gap-[16px] items-center relative shrink-0 w-full" data-node-id="I55:3252;2142:11561;74:3409" data-name="Button Group">
+296:              <div className="bg-[#e3e3e3] border border-[#767676] border-solid content-stretch flex gap-[8px] items-center justify-center overflow-clip p-[12px] relative rounded-[8px] shrink-0" data-node-id="I55:3252;2142:11561;74:3409;108:12612" data-name="Button">
+305:      <div className="absolute h-[72px] left-0 top-0 w-[1440px]" data-node-id="81:3712" data-name="Header">
+306:        <div className="absolute h-[72px] left-0 top-0 w-[1440px]" data-node-id="69:3363" data-name="sub-header">
+310:          <button className="absolute block cursor-pointer h-[50px] left-[19px] top-[11px] w-[83px]" data-node-id="81:3710" data-name="LogoBEC 1">
+313:          <a className="absolute content-stretch cursor-pointer flex gap-[12px] items-center left-[1275px] top-[20px] w-[133px]" data-node-id="55:2799" data-name="Header Auth">
+314:            <div className="bg-[#1e1e1e] border border-[#d9d9d9] border-solid content-stretch flex flex-[1_0_0] gap-[8px] items-center justify-center min-w-px overflow-clip p-[8px] relative rounded-[8px]" data-node-id="I55:2799;18:9047" data-name="Button">
+315:              <div className="relative shrink-0 size-[16px]" data-node-id="I55:2799;18:9047;34:12128" data-name="Star">
+325:      <div className="absolute h-[719px] left-[9px] top-[134px] w-[298px]" data-node-id="69:3364" data-name="Sidebar Filters">
+326:        <div className="absolute bg-white content-stretch flex gap-[64px] h-[719px] items-start left-0 p-[32px] top-0 w-[298px]" data-node-id="55:2595" data-name="Sidebar Filters">
+327:          <div className="bg-white border border-[#d9d9d9] border-solid content-stretch flex flex-col items-start overflow-clip p-[16px] relative rounded-[8px] shrink-0 w-[240px]" data-node-id="I55:2595;189:29064" data-name="Filter Menu">
+328:            <div className="content-stretch flex flex-col gap-[24px] items-start relative shrink-0 w-full" data-node-id="I55:2595;6062:14705" data-name="Slot">
+329:              <div className="content-stretch flex flex-col gap-[12px] items-start relative shrink-0 w-full" data-node-id="I55:2595;189:29086" data-name="Section">
+331:                <div className="content-start flex flex-wrap gap-[4px] items-start relative rounded-[4px] shrink-0 w-full" data-node-id="I55:2595;189:29088" data-name="Keyword List">
+===== .figma/design-context/requests/design_context.tsx
+2:const imgSearch = `${assetPathPrefix}/a6fae.svg`;
+3:const imgLogoBec1 = `${assetPathPrefix}/782e0.png`;
+4:const imgBook = `${assetPathPrefix}/9b3c2.svg`;
+5:const imgGitPullRequest = `${assetPathPrefix}/e7f78.svg`;
+6:const imgMenu = `${assetPathPrefix}/c735e.svg`;
+7:const imgRectangle3 = `${assetPathPrefix}/b08be.svg`;
+8:const imgStar = `${assetPathPrefix}/4ff76.svg`;
+9:const imgLine2 = `${assetPathPrefix}/bd029.svg`;
+13:    <div className={className || "relative size-[16px]"} data-node-id="55:1534" data-name="Search">
+38:  return <div className={className || "h-[32px] relative w-[131px]"} data-node-id="112:962" data-name="Button Danger" />;
+41:export default function Solicitudes() {
+43:    <div className="relative size-full" data-node-id="105:759" data-name="Solicitudes">
+44:      <div className="absolute bg-white h-[900px] left-0 overflow-clip top-0 w-[1440px]" data-node-id="105:760" data-name="Bibliotecario">
+47:        <a className="absolute block cursor-pointer left-[41px] size-[29px] top-[150px]" data-node-id="105:763" data-name="Book">
+50:        <div className="absolute left-[42px] size-[29px] top-[206px]" data-node-id="105:764" data-name="Git pull-request">
+53:        <div className="absolute left-[41px] size-[29px] top-[94px]" data-node-id="105:765" data-name="Menu">
+56:        <div className="absolute h-[72px] left-0 top-0 w-[1440px]" data-node-id="105:766" data-name="Header">
+57:          <div className="absolute h-[72px] left-0 top-0 w-[1440px]" data-node-id="105:767" data-name="sub-header">
+61:            <div className="absolute h-[50px] left-[41px] top-[11px] w-[29px]" data-node-id="105:769" data-name="LogoBEC 1">
+66:            <div className="absolute content-stretch flex gap-[12px] items-center left-[1266px] top-[20px] w-[156px]" data-node-id="105:770" data-name="Header Auth">
+67:              <div className="bg-[#1e1e1e] border border-[#d9d9d9] border-solid content-stretch flex flex-[1_0_0] gap-[8px] items-center justify-center min-w-px overflow-clip p-[8px] relative rounded-[8px]" data-node-id="I105:770;18:9047" data-name="Button">
+68:                <div className="relative shrink-0 size-[16px]" data-node-id="I105:770;18:9047;34:12128" data-name="Star">
+76:            <div className="absolute content-stretch flex items-start left-[184px] top-[21px]" data-node-id="105:771" data-name="Text Heading">
+78:                Solicitudes
+84:        <div className="absolute contents inset-[16.22%_3.26%_3%_12.78%]" data-node-id="112:964" data-name="Order List">
+85:          <div className="absolute bg-white border-[#b9b9b9] border-[0.3px] border-solid inset-[16.22%_3.26%_3%_12.78%] rounded-[14px]" data-node-id="112:965" data-name="Bg" />
+86:          <div className="absolute inset-[41.67%_5.52%_55.33%_87.64%]" data-node-id="112:1256" data-name="Label / Completed">
+87:            <div className="absolute contents inset-0" data-node-id="I112:1256;0:40548" data-name="Label / Completed">
+88:              <div className="absolute bg-[#00b69b] inset-0 opacity-20 rounded-[4.5px]" data-node-id="I112:1256;0:40549" data-name="Rectangle" />
+94:          <div className="absolute inset-[50.22%_5.52%_46.78%_87.64%]" data-node-id="112:1251" data-name="Label / Completed">
+95:            <div className="absolute contents inset-0" data-node-id="I112:1251;0:40548" data-name="Label / Completed">
+96:              <div className="absolute bg-[#00b69b] inset-0 opacity-20 rounded-[4.5px]" data-node-id="I112:1251;0:40549" data-name="Rectangle" />
+102:          <div className="absolute contents inset-[24.33%_3.26%_39.33%_12.78%]" data-node-id="112:966" data-name="1">
+103:            <div className="absolute inset-[24.33%_5.54%_72.67%_87.61%]" data-node-id="112:967" data-name="Label / Completed" />
+113:              Phantom Blood 01
+134:          <div className="absolute contents inset-[32.78%_3.26%_5.11%_12.78%]" data-node-id="112:976" data-name="2">
+135:            <div className="absolute inset-[91.89%_5.52%_5.11%_87.64%]" data-node-id="112:977" data-name="Label / Processing">
+136:              <div className="absolute contents inset-0" data-node-id="I112:977;0:40552" data-name="Label / Processing">
+137:                <div className="absolute bg-[#6226ef] inset-0 opacity-20 rounded-[4.5px]" data-node-id="I112:977;0:40553" data-name="Rectangle" />
+170:          <div className="absolute contents inset-[41.67%_3.26%_13.56%_12.78%]" data-node-id="112:986" data-name="3">
+171:            <div className="absolute inset-[83.44%_5.54%_13.56%_87.61%]" data-node-id="112:987" data-name="Label / Rejected">
+172:              <div className="absolute contents inset-0" data-node-id="I112:987;0:40556" data-name="Label / Rejected">
+173:                <div className="absolute bg-[#ef3826] inset-0 opacity-20 rounded-[4.5px]" data-node-id="I112:987;0:40557" data-name="Rectangle" />
+200:          <div className="absolute contents inset-[50.11%_3.26%_44.56%_12.78%]" data-node-id="112:995" data-name="4">
+222:          <div className="absolute contents inset-[57.67%_3.26%_36.11%_12.78%]" data-node-id="112:1003" data-name="5">
+223:            <div className="absolute inset-[58.11%_7.38%_38.89%_85.77%]" data-node-id="112:1004" data-name="Label / Processing" />
+241:            <div className="absolute inset-[57.67%_5.52%_39.33%_87.64%]" data-node-id="112:1246" data-name="Label / Completed">
+242:              <div className="absolute contents inset-0" data-node-id="I112:1246;0:40548" data-name="Label / Completed">
+243:                <div className="absolute bg-[#00b69b] inset-0 opacity-20 rounded-[4.5px]" data-node-id="I112:1246;0:40549" data-name="Rectangle" />
+250:          <div className="absolute contents inset-[66.56%_3.26%_27.67%_12.78%]" data-node-id="112:1011" data-name="6">
+251:            <div className="absolute inset-[66.56%_7.38%_30.44%_85.77%]" data-node-id="112:1012" data-name="Label / Completed" />
+273:          <div className="absolute contents inset-[75.44%_3.26%_19.22%_12.78%]" data-node-id="112:1020" data-name="7">
+283:              Phantom Blood 02
+295:          <div className="absolute contents inset-[32.78%_3.26%_10.78%_12.78%]" data-node-id="112:1028" data-name="8">
+296:            <div className="absolute bottom-[22%] left-[87.61%] right-[5.54%] top-3/4" data-node-id="112:1029" data-name="Label / On Hold">
+297:              <div className="absolute contents inset-0" data-node-id="I112:1029;0:40560" data-name="Label / On Hold">
+298:                <div className="absolute bg-[#ffa756] inset-0 opacity-20 rounded-[4.5px]" data-node-id="I112:1029;0:40561" data-name="Rectangle" />
+324:            <div className="absolute inset-[66.33%_5.52%_30.67%_87.64%]" data-node-id="112:1038" data-name="Label / Completed">
+325:              <div className="absolute contents inset-0" data-node-id="I112:1038;0:40548" data-name="Label / Completed">
+326:                <div className="absolute bg-[#00b69b] inset-0 opacity-20 rounded-[4.5px]" data-node-id="I112:1038;0:40549" data-name="Rectangle" />
+351:          <div className="-translate-y-1/2 [word-break:break-word] absolute contents font-['Nunito_Sans:SemiBold'] font-semibold leading-[normal] left-[15.13%] right-[40.35%] text-[#202224] text-[14px] top-[calc(50%+390.5px)]" data-node-id="112:1042" data-name="8">
+365:          <div className="absolute contents inset-[16.22%_3.26%_78.33%_12.78%]" data-node-id="112:1048" data-name="ID- Status">
+366:            <div className="absolute bg-[#fcfdfd] border-[#d5d5d5] border-[0.6px] border-solid inset-[16.22%_3.26%_78.33%_12.78%] rounded-tl-[14px] rounded-tr-[14px]" data-node-id="112:1049" data-name="Bg" />
+389:          <div className="absolute inset-[24.33%_5.52%_72.67%_87.64%]" data-node-id="112:1266" data-name="Label / Completed">
+390:            <div className="absolute contents inset-0" data-node-id="I112:1266;0:40548" data-name="Label / Completed">
+391:              <div className="absolute bg-[#00b69b] inset-0 opacity-20 rounded-[4.5px]" data-node-id="I112:1266;0:40549" data-name="Rectangle" />
+398:        <div className="absolute inset-[32.33%_5.52%_64.67%_87.64%]" data-node-id="112:1261" data-name="Label / Completed">
+399:          <div className="absolute contents inset-0" data-node-id="I112:1261;0:40548" data-name="Label / Completed">
+400:            <div className="absolute bg-[#00b69b] inset-0 opacity-20 rounded-[4.5px]" data-node-id="I112:1261;0:40549" data-name="Rectangle" />
+
+Asset inventory:
+0b430.svg 315 bytes
+0d7bb.svg 331 bytes
+13b97.png 48471 bytes
+152eb.png 2113 bytes
+31a2d.png 46183 bytes
+35bd8.svg 431 bytes
+38ca8.svg 509 bytes
+473a5.svg 325 bytes
+4a316.svg 329 bytes
+4ff76.svg 441 bytes
+5431b.svg 325 bytes
+56d78.svg 315 bytes
+57ff6.svg 446 bytes
+5d93c.svg 315 bytes
+60122.svg 315 bytes
+66241.png 323014 bytes
+66697.svg 320 bytes
+6ac6c.svg 297 bytes
+6faa0.png 98073 bytes
+73c11.svg 315 bytes
+76af2.png 68294 bytes
+782e0.png 67950 bytes
+792d9.svg 329 bytes
+7c64a.svg 441 bytes
+84bdb.svg 315 bytes
+84c1a.svg 332 bytes
+91186.svg 431 bytes
+9b3c2.svg 651 bytes
+9b7fc.svg 1593 bytes
+a2ab7.svg 809 bytes
+a53db.svg 320 bytes
+a6fae.svg 489 bytes
+ab5c1.svg 931 bytes
+b08be.svg 239 bytes
+b2e49.svg 660 bytes
+b3234.svg 314 bytes
+bd029.svg 297 bytes
+be1c6.png 295797 bytes
+bfc1b.svg 441 bytes
+c2711.svg 329 bytes
+c735e.svg 351 bytes
+ca3a2.svg 331 bytes
+ca582.svg 651 bytes
+d076f.svg 441 bytes
+d1367.svg 441 bytes
+d4e5f.svg 324 bytes
+d629b.svg 543 bytes
+dcce0.svg 489 bytes
+de407.svg 315 bytes
+e10a8.svg 446 bytes
+e7f78.svg 809 bytes
+ec346.png 51077 bytes
+ee2ca.svg 193 bytes
+ee2caf.svg 324 bytes
+f8f38.svg 931 bytes
+fa1e3.svg 320 bytes
+
+--- stderr ---
+
+
+Use `read` on the stdout/stderr paths above for the full output.

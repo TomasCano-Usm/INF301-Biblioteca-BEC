@@ -1,0 +1,97 @@
+{
+  "recorded_at_utc": "2026-11-19T03:52:41.008549+00:00",
+  "artifact_sha256": "a3a5ad695a0c594a3ca3ba52d82ac52a2d2813cb788a89ebb323069e465dbd6e",
+  "scope": "Coherencia estática de la entrega; no sustituye pruebas funcionales.",
+  "checks": [
+    {
+      "check": "versión de evidencia",
+      "result": "PASS",
+      "detail": "Backend, interfaz y carga corresponden al JAR distribuido."
+    },
+    {
+      "check": "resultado backend",
+      "result": "PASS",
+      "detail": "23 pruebas pasaron; Oracle no se ejecutó."
+    },
+    {
+      "check": "resultado interfaz",
+      "result": "PASS",
+      "detail": "13 comprobaciones y cero errores JavaScript."
+    },
+    {
+      "check": "resultado carga",
+      "result": "PASS",
+      "detail": "Seis escenarios H2/HTTPS con solicitudes reales; no comparación gRPC."
+    },
+    {
+      "check": "JUnit saneado",
+      "result": "PASS",
+      "detail": "Se conservaron casos/resultados, no stdout ni propiedades del entorno privado."
+    },
+    {
+      "check": "catálogo público",
+      "result": "PASS",
+      "detail": "35 identificadores de operaciones únicos."
+    },
+    {
+      "check": "esquemas y ejemplos",
+      "result": "PASS",
+      "detail": "Ejemplos de entrada/salida de 35 contratos conformes a sus esquemas; no certifica toda la especificación OpenAPI."
+    },
+    {
+      "check": "matriz de acceso",
+      "result": "PASS",
+      "detail": "29 rutas × GET/POST/PUT/DELETE; distingue permiso, denegación y verbo no aplicable."
+    },
+    {
+      "check": "trazabilidad RF/CU",
+      "result": "PASS",
+      "detail": "16 RF/CU y 12 condiciones adicionales; pendientes preservados."
+    },
+    {
+      "check": "referencias de evidencia",
+      "result": "PASS",
+      "detail": "Todas las rutas de evidencia de la matriz existen."
+    },
+    {
+      "check": "diez módulos PDF",
+      "result": "PASS",
+      "detail": "Los diez módulos aparecen en el PDF; anexos PDF legibles por el parser."
+    },
+    {
+      "check": "sin marcadores pendientes de generación",
+      "result": "PASS",
+      "detail": "Solo permanecen los campos de portada expresamente destinados a los integrantes."
+    },
+    {
+      "check": "Word editable",
+      "result": "PASS",
+      "detail": "Informe, contratos y manual abren como DOCX."
+    },
+    {
+      "check": "diagramas editables",
+      "result": "PASS",
+      "detail": "Seis fuentes PlantUML acompañadas de PNG/SVG y PDF A3."
+    },
+    {
+      "check": "enlaces locales",
+      "result": "PASS",
+      "detail": "Enlaces Markdown e imágenes resuelven a archivos distribuidos."
+    },
+    {
+      "check": "límites explícitos",
+      "result": "PASS",
+      "detail": "Oracle pendiente; correo Internet, biometría y RFID físicos no declarados ejecutados."
+    }
+  ],
+  "pdf_pages": {
+    "informe": 31,
+    "contratos": 29,
+    "contratos_privados": 4,
+    "seguridad_operacion": 4,
+    "validacion_oracle": 4,
+    "manual_usuario": 3,
+    "diagramas": 6
+  },
+  "oracle_executed": false
+}

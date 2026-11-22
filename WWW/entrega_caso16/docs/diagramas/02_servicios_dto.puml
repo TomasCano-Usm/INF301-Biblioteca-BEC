@@ -1,0 +1,109 @@
+@startuml
+!pragma layout smetana
+title UML de servicios públicos, identidad y DTO — complementa el modelo de dominio
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+class Account <<auth interno>> {
+  id: ReaderId | StaffId
+  role: READER | LIBRARIAN | ADMIN
+  state: INACTIVE | ACTIVE
+  emailHash: HMAC
+  emailCipher: AESGCM
+  passwordHash: PBKDF2
+  activationHash: SHA256
+  activationCipher: AESGCM [0..1]
+  activationExpiresAt: Instant
+  activationVersion: Integer
+}
+class Session <<auth interno>> {
+  id: SHA256(token)
+  ownerId: AccountId
+  role: Role
+  expiresAt: Instant
+  state: ACTIVE | REVOKED
+}
+Account "1" *-- "0..*" Session
+class AuthService {
+  login(email, password): SessionDTO
+  logout(): RevocationDTO
+  activate(token): ActivationDTO
+  me(): PrincipalDTO
+}
+class InventoryService {
+  search(q, page, size): CatalogPageDTO
+  document(id): CatalogDocumentDTO
+  create/update/archive(document)
+  add/move/retire(copy)
+  exitCheck(copyId): ExitDecisionDTO
+}
+class ClientsService {
+  enroll(ReaderEnrollmentDTO): ReaderCreatedDTO
+  search(q, page, size): ReaderPageDTO
+  reader(id): ReaderDTO
+  updateContact(id, ContactDTO): ReaderDTO
+  resendActivation(id): QueuedDTO
+}
+class OrdersService {
+  request(mode, copyIds): RequestDTO
+  requests(): RequestPageDTO
+  cancelRequest(id)
+  issue(id, rut, fingerprint): LoanDTO
+  loans()/loan(id): LoanDTO
+  receipt(id): ReceiptDTO
+  return(copyId): ReturnDTO
+  reserve(copyId, date, mode): ReservationDTO
+  cancelReservation(id)
+  overdue(mode): OverduePageDTO
+}
+class PaymentsService {
+  policy(): FreePolicyDTO
+  assessment(loanId): AssessmentDTO
+  rejectIntent(): Error422
+}
+class CatalogDocumentDTO <<público>> {
+  id, title, author, category: String
+  type, medium, publisher, edition, shelf: String
+  year, homeDays, roomHours: Integer
+  state: ACTIVE
+  available, inRoom, total: Integer
+}
+class PublicCopyDTO <<público contextual>> {
+  id, shelf, state: String
+  dueAt, readyAt: Instant [0..1]
+}
+class ReaderDTO <<autorizado>> {
+  id, state, names, surnames: String
+  photo: Base64
+  rut, address, email, telephone: String [rol]
+  documentsChecked: Boolean [rol]
+}
+class SessionDTO <<solo respuesta de login>> {
+  token: Opaque256bit
+  expiresAt: Instant
+  id: AccountId
+  role: Role
+}
+class ReceiptDTO <<titular o bibliotecario>> {
+  id, loanId, readerId: ID
+  issuedAt: Instant
+  items: LoanItemDTO[1..5]
+  amount: Decimal = 0
+  currency: CLP
+}
+CatalogDocumentDTO "1" *-- "0..*" PublicCopyDTO
+AuthService "1" --> "0..*" Account : administra
+AuthService "1" ..> "0..*" SessionDTO : responde
+InventoryService "1" ..> "0..*" CatalogDocumentDTO : proyecta
+ClientsService "1" ..> "0..*" ReaderDTO : filtra campos por rol
+OrdersService "1" ..> "0..*" ReceiptDTO : solo HOME
+note bottom of ReaderDTO
+Nunca incluye fingerprintHash, cipher,
+passwordHash, activationHash ni tokens.
+Bibliotecario recibe identidad/foto, no contacto.
+end note
+note bottom of SessionDTO
+El token no forma parte de Account ni se persiste
+en texto claro. Solo memoria del navegador.
+No existe contraseña técnica en JavaScript.
+end note
+@enduml

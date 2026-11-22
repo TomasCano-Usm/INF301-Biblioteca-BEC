@@ -1,0 +1,259 @@
+{
+  "recorded_at_utc": "2026-11-21T23:03:51.095691+00:00",
+  "profile": "oracle",
+  "backend_artifact_sha256": "6733620e471c504df3ba877952be38f63aefa27e8914002b9d4dd4e12cb4c9d1",
+  "frontend_source_sha256": "07bf5967195750bdae1e059bc01443b58d88a181c381f6c914012cab21b3ffe4",
+  "browser": "Chromium / Playwright",
+  "tls": "API y proxy verifican la CA; navegador automatizado acepta la CA local de laboratorio.",
+  "checks": [
+    {
+      "name": "R01 Catálogo anónimo con documentos reales del API",
+      "passed": true
+    },
+    {
+      "name": "R02 Gestión protegida sin sesión",
+      "passed": true
+    },
+    {
+      "name": "R03 Credenciales incorrectas rechazadas por el backend",
+      "passed": true
+    },
+    {
+      "name": "R04 Autenticación real de bibliotecario",
+      "passed": true
+    },
+    {
+      "name": "R05 Multimedia muestra audio/video y formato y exige ambos",
+      "passed": true
+    },
+    {
+      "name": "R06 Alta de libro persistente y ventana de éxito tras HTTP 201",
+      "passed": true
+    },
+    {
+      "name": "R07 Editar carga el documento seleccionado y su stock real",
+      "passed": true
+    },
+    {
+      "name": "R08 Libro a audio digital, descripción guardada y confirmación real",
+      "passed": true
+    },
+    {
+      "name": "R09 Recarga conserva datos; la sesión no se guarda en el navegador",
+      "passed": true
+    },
+    {
+      "name": "R10 Alta de video DVD sin stock y confirmación",
+      "passed": true
+    },
+    {
+      "name": "R11 Los seis filtros combinados usan disponibilidad real",
+      "passed": true
+    },
+    {
+      "name": "R12 Filtro sin disponibilidad distingue documento sin ejemplares",
+      "passed": true
+    },
+    {
+      "name": "R13 Filtro por tipo de documento",
+      "passed": true
+    },
+    {
+      "name": "R14 Filtro individual: Título",
+      "passed": true
+    },
+    {
+      "name": "R14 Filtro individual: Autor",
+      "passed": true
+    },
+    {
+      "name": "R14 Filtro individual: Editorial",
+      "passed": true
+    },
+    {
+      "name": "R14 Filtro individual: Subcategoría",
+      "passed": true
+    },
+    {
+      "name": "R15 Cancelar eliminación no envía DELETE ni cambia datos",
+      "passed": true
+    },
+    {
+      "name": "R16 Escape cancela la confirmación",
+      "passed": true
+    },
+    {
+      "name": "R17 Confirmar elimina de colección y muestra éxito después del backend",
+      "passed": true
+    },
+    {
+      "name": "R18 Edición rechazada hace rollback y nunca muestra éxito",
+      "passed": true
+    },
+    {
+      "name": "R19 Eliminación en uso rechazada sin confirmación falsa",
+      "passed": true
+    },
+    {
+      "name": "R20 Formulario y filtros a 390 px sin desbordamiento de página",
+      "passed": true
+    },
+    {
+      "name": "R21 Ningún token persistido en localStorage o sessionStorage",
+      "passed": true
+    },
+    {
+      "name": "R22 Sin errores JavaScript",
+      "passed": true
+    }
+  ],
+  "http": [
+    {
+      "method": "GET",
+      "path": "/catalog",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 401
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/documents",
+      "status": 201
+    },
+    {
+      "method": "GET",
+      "path": "/catalog/d-cec2d2dd-b244-4aa1-9b01-2178d8bcf026",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/documents/d-cec2d2dd-b244-4aa1-9b01-2178d8bcf026",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/catalog/d-cec2d2dd-b244-4aa1-9b01-2178d8bcf026",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/documents",
+      "status": 201
+    },
+    {
+      "method": "GET",
+      "path": "/catalog",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/catalog",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/catalog",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/catalog",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/catalog",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/catalog",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/catalog",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/catalog",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/catalog",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/catalog",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/catalog",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/catalog",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/catalog/d-027f3fb0-d075-431d-98c7-d0aa5bc1063d",
+      "status": 200
+    },
+    {
+      "method": "DELETE",
+      "path": "/documents/d-027f3fb0-d075-431d-98c7-d0aa5bc1063d",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/catalog",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/catalog/d-cec2d2dd-b244-4aa1-9b01-2178d8bcf026",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/documents/d-cec2d2dd-b244-4aa1-9b01-2178d8bcf026",
+      "status": 409
+    },
+    {
+      "method": "DELETE",
+      "path": "/documents/d-cec2d2dd-b244-4aa1-9b01-2178d8bcf026",
+      "status": 409
+    },
+    {
+      "method": "GET",
+      "path": "/catalog/d-cec2d2dd-b244-4aa1-9b01-2178d8bcf026",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/catalog",
+      "status": 200
+    }
+  ],
+  "javascript_errors": [],
+  "passed": true
+}

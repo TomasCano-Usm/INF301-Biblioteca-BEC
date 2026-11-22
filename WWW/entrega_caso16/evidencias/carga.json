@@ -1,0 +1,121 @@
+{
+  "recorded_at_utc": "2026-11-19T03:37:59.234660+00:00",
+  "artifact_sha256": "a3a5ad695a0c594a3ca3ba52d82ac52a2d2813cb788a89ebb323069e465dbd6e",
+  "environment": {
+    "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+    "python": "3.10.12",
+    "logical_cpus": 12,
+    "memory_total_kib": "16329480",
+    "java_processes": 10,
+    "java_heap_each_mib": 160,
+    "profile": "h2",
+    "client": "httpx; conexión HTTPS reutilizada por trabajador; verificación CA; HTTP/1.1",
+    "cpu_scope": "suma de 10 JVM, 100% = un núcleo; excluye generador Python",
+    "rss_scope": "suma RSS de 10 JVM; memoria compartida puede contarse repetida"
+  },
+  "dataset": 104,
+  "results": [
+    {
+      "protocol": "REST sobre HTTPS",
+      "concurrency": 1,
+      "requested_duration_s": 10,
+      "elapsed_s": 10.119,
+      "requests": 178,
+      "throughput_rps": 17.59,
+      "p50_ms": 55.96,
+      "p95_ms": 64.24,
+      "errors": 0,
+      "status_counts": {
+        "200": 178
+      },
+      "mean_response_bytes": 5480,
+      "services_cpu_percent_one_core": 93.49,
+      "services_peak_rss_mib": 1483.55
+    },
+    {
+      "protocol": "REST sobre HTTPS",
+      "concurrency": 8,
+      "requested_duration_s": 10,
+      "elapsed_s": 10.057,
+      "requests": 1453,
+      "throughput_rps": 144.47,
+      "p50_ms": 53.01,
+      "p95_ms": 64.98,
+      "errors": 0,
+      "status_counts": {
+        "200": 1453
+      },
+      "mean_response_bytes": 5480,
+      "services_cpu_percent_one_core": 279.49,
+      "services_peak_rss_mib": 1566.91
+    },
+    {
+      "protocol": "REST sobre HTTPS",
+      "concurrency": 16,
+      "requested_duration_s": 10,
+      "elapsed_s": 10.074,
+      "requests": 1978,
+      "throughput_rps": 196.35,
+      "p50_ms": 92.08,
+      "p95_ms": 107.5,
+      "errors": 0,
+      "status_counts": {
+        "200": 1978
+      },
+      "mean_response_bytes": 5480,
+      "services_cpu_percent_one_core": 305.44,
+      "services_peak_rss_mib": 1632.39
+    },
+    {
+      "protocol": "GraphQL sobre HTTPS",
+      "concurrency": 1,
+      "requested_duration_s": 10,
+      "elapsed_s": 10.053,
+      "requests": 75,
+      "throughput_rps": 7.46,
+      "p50_ms": 127.86,
+      "p95_ms": 151.36,
+      "errors": 0,
+      "status_counts": {
+        "200": 75
+      },
+      "mean_response_bytes": 1511,
+      "services_cpu_percent_one_core": 101.86,
+      "services_peak_rss_mib": 1662.25
+    },
+    {
+      "protocol": "GraphQL sobre HTTPS",
+      "concurrency": 8,
+      "requested_duration_s": 10,
+      "elapsed_s": 10.449,
+      "requests": 180,
+      "throughput_rps": 17.23,
+      "p50_ms": 447.83,
+      "p95_ms": 515.95,
+      "errors": 0,
+      "status_counts": {
+        "200": 180
+      },
+      "mean_response_bytes": 1511,
+      "services_cpu_percent_one_core": 196.38,
+      "services_peak_rss_mib": 1684.88
+    },
+    {
+      "protocol": "GraphQL sobre HTTPS",
+      "concurrency": 16,
+      "requested_duration_s": 10,
+      "elapsed_s": 10.812,
+      "requests": 200,
+      "throughput_rps": 18.5,
+      "p50_ms": 855.72,
+      "p95_ms": 900.19,
+      "errors": 0,
+      "status_counts": {
+        "200": 200
+      },
+      "mean_response_bytes": 1511,
+      "services_cpu_percent_one_core": 153.35,
+      "services_peak_rss_mib": 1708.69
+    }
+  ]
+}

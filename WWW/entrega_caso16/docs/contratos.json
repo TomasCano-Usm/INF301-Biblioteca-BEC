@@ -1,0 +1,1658 @@
+{
+  "note": "Ejemplos ficticios, no credenciales ni datos de producción.",
+  "schemas": {
+    "LoginInput": {
+      "type": "object",
+      "description": "",
+      "additionalProperties": false,
+      "properties": {
+        "email": {
+          "type": "string",
+          "description": "Correo normalizado a minúsculas; 5–160; formato de correo.",
+          "x-classification": "Personal",
+          "x-required": true,
+          "minLength": 5,
+          "maxLength": 160,
+          "format": "email"
+        },
+        "password": {
+          "type": "string",
+          "description": "1–128 al ingresar; se transmite solo por TLS.",
+          "x-classification": "Credencial",
+          "x-required": true,
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "email",
+        "password"
+      ]
+    },
+    "ActivationInput": {
+      "type": "object",
+      "description": "",
+      "additionalProperties": false,
+      "properties": {
+        "token": {
+          "type": "string",
+          "description": "Token de un uso: longitud 43; vence a las 24 horas; el reenvío revoca el anterior.",
+          "x-classification": "Credencial",
+          "x-required": true,
+          "minLength": 43,
+          "maxLength": 43
+        }
+      },
+      "required": [
+        "token"
+      ]
+    },
+    "EmptyInput": {
+      "type": "object",
+      "description": "",
+      "additionalProperties": false,
+      "properties": {}
+    },
+    "DocumentInput": {
+      "type": "object",
+      "description": "",
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "2–200 caracteres.",
+          "x-classification": "Público",
+          "x-required": true,
+          "minLength": 2,
+          "maxLength": 200
+        },
+        "author": {
+          "type": "string",
+          "description": "2–140.",
+          "x-classification": "Público",
+          "x-required": true,
+          "minLength": 2,
+          "maxLength": 140
+        },
+        "type": {
+          "type": "string",
+          "description": "Tipo documental.",
+          "x-classification": "Público",
+          "x-required": true,
+          "enum": [
+            "BOOK",
+            "TECHNICAL",
+            "AUDIO",
+            "VIDEO"
+          ]
+        },
+        "medium": {
+          "type": "string",
+          "description": "BOOK/TECHNICAL solo PAPER; AUDIO/VIDEO nunca PAPER. DIGITAL es soporte, no streaming.",
+          "x-classification": "Público",
+          "x-required": true,
+          "enum": [
+            "PAPER",
+            "CASSETTE",
+            "CD",
+            "DVD",
+            "BLURAY",
+            "DIGITAL"
+          ]
+        },
+        "publisher": {
+          "type": "string",
+          "description": "2–120.",
+          "x-classification": "Público",
+          "x-required": true,
+          "minLength": 2,
+          "maxLength": 120
+        },
+        "edition": {
+          "type": "string",
+          "description": "1–40.",
+          "x-classification": "Público",
+          "x-required": true,
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "year": {
+          "type": "integer",
+          "description": "1450 hasta el año del servidor.",
+          "x-classification": "Público",
+          "x-required": true,
+          "minimum": 1450
+        },
+        "shelf": {
+          "type": "string",
+          "description": "1–40; ubicación general.",
+          "x-classification": "Público",
+          "x-required": true,
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "category": {
+          "type": "string",
+          "description": "2–80.",
+          "x-classification": "Público",
+          "x-required": true,
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "homeDays": {
+          "type": "integer",
+          "description": "Plazo de domicilio, 1–30 días.",
+          "x-classification": "Público",
+          "x-required": true,
+          "minimum": 1,
+          "maximum": 30
+        },
+        "roomHours": {
+          "type": "integer",
+          "description": "Plazo sala, 1–8 h; siempre termina el mismo día.",
+          "x-classification": "Público",
+          "x-required": true,
+          "minimum": 1,
+          "maximum": 8
+        },
+        "description": {
+          "type": "string",
+          "description": "Opcional, máximo 2000; permite saltos de línea. PUT sin este campo conserva el valor anterior.",
+          "x-classification": "Público",
+          "x-required": false,
+          "maxLength": 2000
+        },
+        "stock": {
+          "type": "integer",
+          "description": "Opcional: 0–200 ejemplares activos; ajuste atómico con el documento. Reducir no retira prestados/retenidos/reservados/en reposición. Omitirlo conserva stock existente.",
+          "x-classification": "Público",
+          "x-required": false,
+          "minimum": 0,
+          "maximum": 200
+        }
+      },
+      "required": [
+        "title",
+        "author",
+        "type",
+        "medium",
+        "publisher",
+        "edition",
+        "year",
+        "shelf",
+        "category",
+        "homeDays",
+        "roomHours"
+      ]
+    },
+    "CopyInput": {
+      "type": "object",
+      "description": "",
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Único; 3–40; A–Z, 0–9 y guión.",
+          "x-classification": "Público",
+          "x-required": true,
+          "pattern": "^[A-Z0-9-]{3,40}$"
+        },
+        "shelf": {
+          "type": "string",
+          "description": "1–40.",
+          "x-classification": "Público",
+          "x-required": true,
+          "minLength": 1,
+          "maxLength": 40
+        }
+      },
+      "required": [
+        "code",
+        "shelf"
+      ]
+    },
+    "ShelfInput": {
+      "type": "object",
+      "description": "",
+      "additionalProperties": false,
+      "properties": {
+        "shelf": {
+          "type": "string",
+          "description": "1–40 caracteres.",
+          "x-classification": "Público",
+          "x-required": true,
+          "minLength": 1,
+          "maxLength": 40
+        }
+      },
+      "required": [
+        "shelf"
+      ]
+    },
+    "ReaderInput": {
+      "type": "object",
+      "description": "",
+      "additionalProperties": false,
+      "properties": {
+        "rut": {
+          "type": "string",
+          "description": "RUN con módulo 11 válido; único, con o sin puntos; 7–8 dígitos y DV.",
+          "x-classification": "Personal restringido",
+          "x-required": true,
+          "minLength": 9,
+          "maxLength": 12
+        },
+        "names": {
+          "type": "string",
+          "description": "2–80.",
+          "x-classification": "Personal",
+          "x-required": true,
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "surnames": {
+          "type": "string",
+          "description": "2–100.",
+          "x-classification": "Personal",
+          "x-required": true,
+          "minLength": 2,
+          "maxLength": 100
+        },
+        "address": {
+          "type": "string",
+          "description": "5–200.",
+          "x-classification": "Personal restringido",
+          "x-required": true,
+          "minLength": 5,
+          "maxLength": 200
+        },
+        "email": {
+          "type": "string",
+          "description": "Único, formato correo 5–160.",
+          "x-classification": "Personal restringido",
+          "x-required": true,
+          "format": "email",
+          "maxLength": 160
+        },
+        "telephone": {
+          "type": "string",
+          "description": "8–20 caracteres; no se presupone verificación telefónica.",
+          "x-classification": "Personal restringido",
+          "x-required": true,
+          "minLength": 8,
+          "maxLength": 20
+        },
+        "photo": {
+          "type": "string",
+          "description": "PNG/JPEG base64; máximo 128000 bytes decodificados, imagen ≤1024×1024; texto 40–180000.",
+          "x-classification": "Personal restringido",
+          "x-required": true,
+          "minLength": 40,
+          "maxLength": 180000
+        },
+        "fingerprint": {
+          "type": "string",
+          "description": "Muestra BASE64 determinista TEST; 32–2048 caracteres, ≥24 bytes; no SDK de reconocimiento físico.",
+          "x-classification": "Personal biométrico restringido",
+          "x-required": true,
+          "minLength": 32,
+          "maxLength": 2048
+        },
+        "password": {
+          "type": "string",
+          "description": "12–128 al inscribir; nunca se devuelve ni se registra en logs.",
+          "x-classification": "Credencial",
+          "x-required": true,
+          "minLength": 12,
+          "maxLength": 128
+        },
+        "documentsChecked": {
+          "type": "boolean",
+          "description": "Debe ser true; comprobación a cargo del administrativo.",
+          "x-classification": "Personal restringido",
+          "x-required": true,
+          "enum": [
+            true
+          ]
+        }
+      },
+      "required": [
+        "rut",
+        "names",
+        "surnames",
+        "address",
+        "email",
+        "telephone",
+        "photo",
+        "fingerprint",
+        "password",
+        "documentsChecked"
+      ]
+    },
+    "ContactInput": {
+      "type": "object",
+      "description": "",
+      "additionalProperties": false,
+      "properties": {
+        "address": {
+          "type": "string",
+          "description": "5–200.",
+          "x-classification": "Personal restringido",
+          "x-required": true,
+          "minLength": 5,
+          "maxLength": 200
+        },
+        "telephone": {
+          "type": "string",
+          "description": "8–20.",
+          "x-classification": "Personal restringido",
+          "x-required": true,
+          "minLength": 8,
+          "maxLength": 20
+        },
+        "photo": {
+          "type": "string",
+          "description": "Mismas reglas PNG/JPEG de inscripción.",
+          "x-classification": "Personal restringido",
+          "x-required": true,
+          "minLength": 40,
+          "maxLength": 180000
+        }
+      },
+      "required": [
+        "address",
+        "telephone",
+        "photo"
+      ]
+    },
+    "RequestInput": {
+      "type": "object",
+      "description": "",
+      "additionalProperties": false,
+      "properties": {
+        "copyIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "Identificador existente, 1–80; sin repetidos.",
+            "x-classification": "Público",
+            "x-required": true,
+            "pattern": "^[A-Za-z0-9_-]{1,80}$"
+          },
+          "minItems": 1,
+          "maxItems": 5,
+          "uniqueItems": true
+        },
+        "mode": {
+          "type": "string",
+          "description": "Modalidad seleccionada.",
+          "x-classification": "Público",
+          "x-required": true,
+          "enum": [
+            "HOME",
+            "ROOM"
+          ]
+        }
+      },
+      "required": [
+        "copyIds",
+        "mode"
+      ]
+    },
+    "IssueInput": {
+      "type": "object",
+      "description": "",
+      "additionalProperties": false,
+      "properties": {
+        "rut": {
+          "type": "string",
+          "description": "RUN válido del lector de la solicitud, módulo 11.",
+          "x-classification": "Personal restringido",
+          "x-required": true
+        },
+        "fingerprint": {
+          "type": "string",
+          "description": "Muestra TEST 32–2048 que debe coincidir; nunca se acepta verified:true del frontend.",
+          "x-classification": "Personal biométrico restringido",
+          "x-required": true,
+          "minLength": 32,
+          "maxLength": 2048
+        }
+      },
+      "required": [
+        "rut",
+        "fingerprint"
+      ]
+    },
+    "ReturnInput": {
+      "type": "object",
+      "description": "",
+      "additionalProperties": false,
+      "properties": {
+        "copyId": {
+          "type": "string",
+          "description": "Código de ejemplar con ítem ACTIVE; 3–40.",
+          "x-classification": "Contextual",
+          "x-required": true,
+          "minLength": 3,
+          "maxLength": 40
+        }
+      },
+      "required": [
+        "copyId"
+      ]
+    },
+    "ReservationInput": {
+      "type": "object",
+      "description": "",
+      "additionalProperties": false,
+      "properties": {
+        "copyId": {
+          "type": "string",
+          "description": "Código 3–40.",
+          "x-classification": "Contextual",
+          "x-required": true,
+          "minLength": 3,
+          "maxLength": 40
+        },
+        "date": {
+          "type": "string",
+          "description": "ISO AAAA-MM-DD; hoy (Santiago) a hoy+90 días.",
+          "x-classification": "Contextual",
+          "x-required": true,
+          "format": "date"
+        },
+        "mode": {
+          "type": "string",
+          "description": "Modalidad.",
+          "x-classification": "Público",
+          "x-required": true,
+          "enum": [
+            "HOME",
+            "ROOM"
+          ]
+        }
+      },
+      "required": [
+        "copyId",
+        "date",
+        "mode"
+      ]
+    },
+    "GraphQLInput": {
+      "type": "object",
+      "description": "",
+      "additionalProperties": false,
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "SDL de consulta, 5–8192; profundidad≤6, costo≤100; sin introspección.",
+          "x-classification": "Contextual",
+          "x-required": true,
+          "minLength": 5,
+          "maxLength": 8192
+        },
+        "variables": {
+          "type": "object",
+          "description": "Opcional; JSON serializado ≤4096 caracteres; first 1–20, page 0–1000.",
+          "x-classification": "Contextual",
+          "x-required": false
+        },
+        "operationName": {
+          "type": "string",
+          "description": "Opcional 1–80.",
+          "x-classification": "Contextual",
+          "x-required": false,
+          "minLength": 1,
+          "maxLength": 80
+        }
+      },
+      "required": [
+        "query"
+      ]
+    },
+    "TamperedIntent": {
+      "type": "object",
+      "description": "Cualquier intención monetaria se rechaza 422. No hay campos capaces de crear un pago ni levantar sanciones.",
+      "additionalProperties": true
+    }
+  },
+  "operations": [
+    {
+      "id": "S01",
+      "method": "POST",
+      "external": "/api/auth/login",
+      "target": "auth",
+      "internal": "/login",
+      "roles": "PUBLIC",
+      "screen": "P02",
+      "purpose": "Iniciar sesión",
+      "bodySchema": "LoginInput",
+      "requestExample": {
+        "email": "lectora@bec.example.invalid",
+        "password": "Ficticia_NoEsUnaClaveReal_2026"
+      },
+      "responseExample": {
+        "token": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "expiresAt": "2026-11-20T15:20:00Z",
+        "id": "r-ejemplo",
+        "role": "READER"
+      },
+      "success": 200,
+      "businessRule": "Solo cuentas ACTIVE. Respuesta genérica no distingue correo inexistente/inactivo.",
+      "specificErrors": "400 VALIDATION; 401 INVALID_CREDENTIALS; 429 RATE_LIMIT",
+      "query": []
+    },
+    {
+      "id": "S02",
+      "method": "POST",
+      "external": "/api/auth/logout",
+      "target": "auth",
+      "internal": "/logout",
+      "roles": "READER,LIBRARIAN,ADMIN",
+      "screen": "P02",
+      "purpose": "Revocar sesión",
+      "bodySchema": "EmptyInput",
+      "requestExample": {},
+      "responseExample": {
+        "revoked": true
+      },
+      "success": 200,
+      "businessRule": "El gateway usa el Bearer actual: ignora cualquier token del cuerpo. Revocación inmediata en Auth.",
+      "specificErrors": "400 validación",
+      "query": []
+    },
+    {
+      "id": "S03",
+      "method": "POST",
+      "external": "/api/auth/activate",
+      "target": "auth",
+      "internal": "/activate",
+      "roles": "PUBLIC",
+      "screen": "P02",
+      "purpose": "Validar correo de lector",
+      "bodySchema": "ActivationInput",
+      "requestExample": {
+        "token": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      },
+      "responseExample": {
+        "activated": true
+      },
+      "success": 200,
+      "businessRule": "Un solo uso, 24 horas; actualiza perfil y cuenta mediante contrato privado.",
+      "specificErrors": "400 INVALID_ACTIVATION; 409 TOKEN_USED; 410 ACTIVATION_EXPIRED",
+      "query": []
+    },
+    {
+      "id": "S04",
+      "method": "GET",
+      "external": "/api/auth/me",
+      "target": "auth",
+      "internal": "/me",
+      "roles": "READER,LIBRARIAN,ADMIN",
+      "screen": "P02",
+      "purpose": "Identidad de sesión",
+      "bodySchema": null,
+      "requestExample": null,
+      "responseExample": {
+        "id": "r-ejemplo",
+        "role": "READER"
+      },
+      "success": 200,
+      "businessRule": "",
+      "specificErrors": "400 validación",
+      "query": []
+    },
+    {
+      "id": "S05",
+      "method": "GET",
+      "external": "/api/catalog",
+      "target": "inventory",
+      "internal": "/documents",
+      "roles": "PUBLIC",
+      "screen": "P01",
+      "purpose": "Buscar catálogo anónimo",
+      "bodySchema": null,
+      "requestExample": null,
+      "responseExample": {
+        "items": [
+          {
+            "id": "d-ejemplo",
+            "title": "Relatos del barrio (ficticio)",
+            "author": "Autora Ficticia",
+            "type": "BOOK",
+            "medium": "PAPER",
+            "publisher": "Editorial Ejemplo",
+            "edition": "1",
+            "year": 2026,
+            "shelf": "A-01",
+            "category": "Literatura",
+            "homeDays": 7,
+            "roomHours": 2,
+            "description": "Descripción ficticia de la colección.",
+            "state": "ACTIVE",
+            "available": 1,
+            "inRoom": 0,
+            "total": 1,
+            "copies": [
+              {
+                "id": "BEC-0001-1",
+                "state": "AVAILABLE",
+                "shelf": "A-01",
+                "dueAt": null,
+                "readyAt": null
+              }
+            ]
+          }
+        ],
+        "total": 1,
+        "page": 0,
+        "size": 10
+      },
+      "success": 200,
+      "businessRule": "Anónimo: filtros combinables por título/autor/tipo/editorial/disponibilidad/subcategoría; se aplican antes de paginar. MULTIMEDIA agrupa AUDIO y VIDEO. AVAILABLE significa available>0; UNAVAILABLE available=0; IN_ROOM inRoom>0. Texto de filtros sin distinguir mayúsculas/tildes. q conserva búsqueda general previa. Cuenta AVAILABLE y ROOM sin revelar prestatarios.",
+      "specificErrors": "400 validación",
+      "query": [
+        "q",
+        "page",
+        "size",
+        "title",
+        "author",
+        "type",
+        "publisher",
+        "availability",
+        "subcategory"
+      ]
+    },
+    {
+      "id": "S06",
+      "method": "GET",
+      "external": "/api/catalog/{id}",
+      "target": "inventory",
+      "internal": "/documents/{id}",
+      "roles": "PUBLIC",
+      "screen": "P01",
+      "purpose": "Detalle y disponibilidad",
+      "bodySchema": null,
+      "requestExample": null,
+      "responseExample": {
+        "id": "d-ejemplo",
+        "title": "Relatos del barrio (ficticio)",
+        "author": "Autora Ficticia",
+        "type": "BOOK",
+        "medium": "PAPER",
+        "publisher": "Editorial Ejemplo",
+        "edition": "1",
+        "year": 2026,
+        "shelf": "A-01",
+        "category": "Literatura",
+        "homeDays": 7,
+        "roomHours": 2,
+        "description": "Descripción ficticia de la colección.",
+        "state": "ACTIVE",
+        "available": 1,
+        "inRoom": 0,
+        "total": 1,
+        "copies": [
+          {
+            "id": "BEC-0001-1",
+            "state": "AVAILABLE",
+            "shelf": "A-01",
+            "dueAt": null,
+            "readyAt": null
+          }
+        ]
+      },
+      "success": 200,
+      "businessRule": "",
+      "specificErrors": "404 NOT_FOUND (incluido archivado)",
+      "query": []
+    },
+    {
+      "id": "S07",
+      "method": "POST",
+      "external": "/api/documents",
+      "target": "inventory",
+      "internal": "/documents",
+      "roles": "LIBRARIAN",
+      "screen": "P04",
+      "purpose": "Registrar documento",
+      "bodySchema": "DocumentInput",
+      "requestExample": {
+        "title": "Relatos del barrio (ficticio)",
+        "author": "Autora Ficticia",
+        "type": "BOOK",
+        "medium": "PAPER",
+        "publisher": "Editorial Ejemplo",
+        "edition": "1",
+        "year": 2026,
+        "shelf": "A-01",
+        "category": "Literatura",
+        "homeDays": 7,
+        "roomHours": 2,
+        "description": "Descripción ficticia de la colección."
+      },
+      "responseExample": {
+        "id": "d-ejemplo",
+        "title": "Relatos del barrio (ficticio)",
+        "author": "Autora Ficticia",
+        "type": "BOOK",
+        "medium": "PAPER",
+        "publisher": "Editorial Ejemplo",
+        "edition": "1",
+        "year": 2026,
+        "shelf": "A-01",
+        "category": "Literatura",
+        "homeDays": 7,
+        "roomHours": 2,
+        "description": "Descripción ficticia de la colección.",
+        "state": "ACTIVE",
+        "available": 0,
+        "inRoom": 0,
+        "total": 0,
+        "copies": []
+      },
+      "success": 201,
+      "businessRule": "Alta de documento. stock opcional crea de 0 a 200 ejemplares reales en la misma transacción; si se omite, se añaden después por S10.",
+      "specificErrors": "400 validación",
+      "query": []
+    },
+    {
+      "id": "S08",
+      "method": "PUT",
+      "external": "/api/documents/{id}",
+      "target": "inventory",
+      "internal": "/documents/{id}",
+      "roles": "LIBRARIAN",
+      "screen": "P04",
+      "purpose": "Actualizar documento",
+      "bodySchema": "DocumentInput",
+      "requestExample": {
+        "title": "Relatos del barrio (ficticio)",
+        "author": "Autora Ficticia",
+        "type": "BOOK",
+        "medium": "PAPER",
+        "publisher": "Editorial Ejemplo",
+        "edition": "1",
+        "year": 2026,
+        "shelf": "A-01",
+        "category": "Literatura",
+        "homeDays": 7,
+        "roomHours": 2,
+        "description": "Descripción ficticia de la colección."
+      },
+      "responseExample": {
+        "id": "d-ejemplo",
+        "title": "Relatos del barrio (ficticio)",
+        "author": "Autora Ficticia",
+        "type": "BOOK",
+        "medium": "PAPER",
+        "publisher": "Editorial Ejemplo",
+        "edition": "1",
+        "year": 2026,
+        "shelf": "A-01",
+        "category": "Literatura",
+        "homeDays": 7,
+        "roomHours": 2,
+        "description": "Descripción ficticia de la colección.",
+        "state": "ACTIVE",
+        "available": 1,
+        "inRoom": 0,
+        "total": 1,
+        "copies": [
+          {
+            "id": "BEC-0001-1",
+            "state": "AVAILABLE",
+            "shelf": "A-01",
+            "dueAt": null,
+            "readyAt": null
+          }
+        ]
+      },
+      "success": 200,
+      "businessRule": "PUT conserva id; solo documento ACTIVE. description/stock opcionales conservan su valor si se omiten; si stock cambia, documento+ejemplares se guardan en una sola transacción.",
+      "specificErrors": "400 VALIDATION; 404 NOT_FOUND; 409 ARCHIVED / STOCK_IN_USE",
+      "query": []
+    },
+    {
+      "id": "S09",
+      "method": "DELETE",
+      "external": "/api/documents/{id}",
+      "target": "inventory",
+      "internal": "/documents/{id}",
+      "roles": "LIBRARIAN",
+      "screen": "P04",
+      "purpose": "Archivar documento",
+      "bodySchema": null,
+      "requestExample": null,
+      "responseExample": {
+        "id": "d-ejemplo",
+        "state": "ARCHIVED"
+      },
+      "success": 200,
+      "businessRule": "Baja lógica; retira ejemplares. No se elimina historia.",
+      "specificErrors": "404 NOT_FOUND; 409 DOCUMENT_IN_USE / DOCUMENT_RESERVED",
+      "query": []
+    },
+    {
+      "id": "S10",
+      "method": "POST",
+      "external": "/api/documents/{id}/copies",
+      "target": "inventory",
+      "internal": "/documents/{id}/copies",
+      "roles": "LIBRARIAN",
+      "screen": "P04",
+      "purpose": "Incorporar ejemplar",
+      "bodySchema": "CopyInput",
+      "requestExample": {
+        "code": "BEC-0001-1",
+        "shelf": "A-01"
+      },
+      "responseExample": {
+        "id": "BEC-0001-1",
+        "documentId": "d-ejemplo",
+        "shelf": "A-01",
+        "state": "AVAILABLE"
+      },
+      "success": 201,
+      "businessRule": "",
+      "specificErrors": "400 VALIDATION; 404 NOT_FOUND; 409 COPY_EXISTS / ARCHIVED",
+      "query": []
+    },
+    {
+      "id": "S11",
+      "method": "PUT",
+      "external": "/api/copies/{id}",
+      "target": "inventory",
+      "internal": "/copies/{id}",
+      "roles": "LIBRARIAN",
+      "screen": "P04",
+      "purpose": "Actualizar ubicación",
+      "bodySchema": "ShelfInput",
+      "requestExample": {
+        "shelf": "A-02"
+      },
+      "responseExample": {
+        "id": "BEC-0001-1",
+        "documentId": "d-ejemplo",
+        "shelf": "A-02",
+        "state": "AVAILABLE"
+      },
+      "success": 200,
+      "businessRule": "",
+      "specificErrors": "404 NOT_FOUND; 409 RETIRED",
+      "query": []
+    },
+    {
+      "id": "S12",
+      "method": "DELETE",
+      "external": "/api/copies/{id}",
+      "target": "inventory",
+      "internal": "/copies/{id}",
+      "roles": "LIBRARIAN",
+      "screen": "P04",
+      "purpose": "Retirar ejemplar disponible",
+      "bodySchema": null,
+      "requestExample": null,
+      "responseExample": {
+        "id": "BEC-0001-1",
+        "state": "RETIRED"
+      },
+      "success": 200,
+      "businessRule": "Baja lógica; solo AVAILABLE o ya RETIRED, sin reserva activa.",
+      "specificErrors": "404 NOT_FOUND; 409 COPY_IN_USE / COPY_RESERVED",
+      "query": []
+    },
+    {
+      "id": "S13",
+      "method": "POST",
+      "external": "/api/readers",
+      "target": "clients",
+      "internal": "/readers",
+      "roles": "ADMIN",
+      "screen": "P05",
+      "purpose": "Inscribir lector y enviar activación",
+      "bodySchema": "ReaderInput",
+      "requestExample": {
+        "names": "Lectora",
+        "surnames": "Ficticia Ejemplo",
+        "photo": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/l9sAAAAASUVORK5CYII=",
+        "rut": "12345678-5",
+        "address": "Calle Ficticia 123",
+        "email": "lectora@bec.example.invalid",
+        "telephone": "+56900000000",
+        "documentsChecked": true,
+        "fingerprint": "bXVlc3RyYS1maWN0aWNpYS1uby1lc3VuYS1odWVsbGEtcmVhbA==",
+        "password": "Ficticia_NoEsUnaClaveReal_2026"
+      },
+      "responseExample": {
+        "id": "r-ejemplo",
+        "state": "INACTIVE",
+        "message": "Ficha registrada; debe validar el correo antes de ingresar."
+      },
+      "success": 201,
+      "businessRule": "ADMIN comprueba documentos; RUN/correo únicos; cuenta pendiente durable y activación vía outbox.",
+      "specificErrors": "400 INVALID_RUT / DOCUMENTS_REQUIRED / PHOTO_FORMAT / BIOMETRIC_FORMAT; 409 RUT_EXISTS / EMAIL_EXISTS",
+      "query": []
+    },
+    {
+      "id": "S14",
+      "method": "GET",
+      "external": "/api/readers",
+      "target": "clients",
+      "internal": "/readers",
+      "roles": "ADMIN",
+      "screen": "P05",
+      "purpose": "Buscar fichas",
+      "bodySchema": null,
+      "requestExample": null,
+      "responseExample": {
+        "items": [
+          {
+            "id": "r-ejemplo",
+            "state": "ACTIVE",
+            "names": "Lectora",
+            "surnames": "Ficticia Ejemplo",
+            "photo": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/l9sAAAAASUVORK5CYII=",
+            "rut": "12345678-5",
+            "address": "Calle Ficticia 123",
+            "email": "lectora@bec.example.invalid",
+            "telephone": "+56900000000",
+            "documentsChecked": true
+          }
+        ],
+        "total": 1,
+        "page": 0,
+        "size": 10
+      },
+      "success": 200,
+      "businessRule": "Solo ADMIN; busca nombre/apellidos/RUN (catálogo no expone estos datos).",
+      "specificErrors": "400 validación",
+      "query": [
+        "q",
+        "page",
+        "size"
+      ]
+    },
+    {
+      "id": "S15",
+      "method": "GET",
+      "external": "/api/readers/{id}",
+      "target": "clients",
+      "internal": "/readers/{id}",
+      "roles": "READER,LIBRARIAN,ADMIN",
+      "screen": "P05",
+      "purpose": "Consultar ficha según rol",
+      "bodySchema": null,
+      "requestExample": null,
+      "responseExample": {
+        "id": "r-ejemplo",
+        "state": "ACTIVE",
+        "names": "Lectora",
+        "surnames": "Ficticia Ejemplo",
+        "photo": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/l9sAAAAASUVORK5CYII=",
+        "rut": "12345678-5",
+        "address": "Calle Ficticia 123",
+        "email": "lectora@bec.example.invalid",
+        "telephone": "+56900000000",
+        "documentsChecked": true
+      },
+      "success": 200,
+      "businessRule": "READER solo su id; LIBRARIAN recibe únicamente id/estado/nombres/apellidos/foto; ADMIN ficha completa.",
+      "specificErrors": "403 FORBIDDEN (titular distinto); 404 NOT_FOUND",
+      "query": []
+    },
+    {
+      "id": "S16",
+      "method": "PUT",
+      "external": "/api/readers/{id}",
+      "target": "clients",
+      "internal": "/readers/{id}",
+      "roles": "ADMIN",
+      "screen": "P05",
+      "purpose": "Actualizar contacto y fotografía",
+      "bodySchema": "ContactInput",
+      "requestExample": {
+        "address": "Calle Ficticia 123",
+        "telephone": "+56900000000",
+        "photo": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/l9sAAAAASUVORK5CYII="
+      },
+      "responseExample": {
+        "id": "r-ejemplo",
+        "state": "ACTIVE",
+        "names": "Lectora",
+        "surnames": "Ficticia Ejemplo",
+        "photo": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/l9sAAAAASUVORK5CYII=",
+        "rut": "12345678-5",
+        "address": "Calle Ficticia 123",
+        "email": "lectora@bec.example.invalid",
+        "telephone": "+56900000000",
+        "documentsChecked": true
+      },
+      "success": 200,
+      "businessRule": "Solo ADMIN. No cambia RUN, email, clave ni huella; esos campos adicionales se rechazan.",
+      "specificErrors": "400 UNKNOWN_FIELD / VALIDATION / PHOTO_FORMAT; 404 NOT_FOUND",
+      "query": []
+    },
+    {
+      "id": "S17",
+      "method": "POST",
+      "external": "/api/requests",
+      "target": "orders",
+      "internal": "/requests",
+      "roles": "READER",
+      "screen": "P01",
+      "purpose": "Solicitar préstamo",
+      "bodySchema": "RequestInput",
+      "requestExample": {
+        "copyIds": [
+          "BEC-0001-1"
+        ],
+        "mode": "HOME"
+      },
+      "responseExample": {
+        "id": "q-ejemplo",
+        "ownerId": "r-ejemplo",
+        "state": "PENDING",
+        "mode": "HOME",
+        "copyIds": [
+          "BEC-0001-1"
+        ],
+        "createdAt": "2026-11-20T15:00:00Z",
+        "expiresAt": "2026-11-20T15:20:00Z",
+        "items": [
+          {
+            "copyId": "BEC-0001-1",
+            "documentId": "d-ejemplo",
+            "title": "Relatos del barrio (ficticio)",
+            "homeDays": 7,
+            "roomHours": 2,
+            "shelf": "A-01"
+          }
+        ]
+      },
+      "success": 201,
+      "businessRule": "Idempotency-Key obligatorio; lector activo, sin sanción ni préstamos vencidos. Retiene TODOS los ejemplares 20 minutos o ninguno.",
+      "specificErrors": "400 IDEMPOTENCY_REQUIRED; 403 READER_INACTIVE; 409 COPY_UNAVAILABLE / RESERVATION_CONFLICT / READER_SANCTIONED / READER_OVERDUE / IDEMPOTENCY_CONFLICT",
+      "query": []
+    },
+    {
+      "id": "S18",
+      "method": "GET",
+      "external": "/api/requests",
+      "target": "orders",
+      "internal": "/requests",
+      "roles": "READER,LIBRARIAN",
+      "screen": "P03,P06",
+      "purpose": "Solicitudes propias o cola",
+      "bodySchema": null,
+      "requestExample": null,
+      "responseExample": {
+        "items": [
+          {
+            "id": "q-ejemplo",
+            "ownerId": "r-ejemplo",
+            "state": "PENDING",
+            "mode": "HOME",
+            "copyIds": [
+              "BEC-0001-1"
+            ],
+            "createdAt": "2026-11-20T15:00:00Z",
+            "expiresAt": "2026-11-20T15:20:00Z",
+            "items": [
+              {
+                "copyId": "BEC-0001-1",
+                "documentId": "d-ejemplo",
+                "title": "Relatos del barrio (ficticio)",
+                "homeDays": 7,
+                "roomHours": 2,
+                "shelf": "A-01"
+              }
+            ]
+          }
+        ],
+        "total": 1
+      },
+      "success": 200,
+      "businessRule": "READER: solo propias. LIBRARIAN: cola ALLOCATING/PENDING/ISSUING.",
+      "specificErrors": "400 validación",
+      "query": [
+        "page",
+        "size"
+      ]
+    },
+    {
+      "id": "S19",
+      "method": "DELETE",
+      "external": "/api/requests/{id}",
+      "target": "orders",
+      "internal": "/requests/{id}",
+      "roles": "READER,LIBRARIAN",
+      "screen": "P03,P06",
+      "purpose": "Cancelar solicitud pendiente",
+      "bodySchema": null,
+      "requestExample": null,
+      "responseExample": {
+        "id": "q-ejemplo",
+        "state": "CANCELLED"
+      },
+      "success": 200,
+      "businessRule": "Titular o bibliotecario. Solo PENDING/CANCELLING/CANCELLED; libera retención con reintentos.",
+      "specificErrors": "403 FORBIDDEN; 404 NOT_FOUND; 409 INVALID_STATE",
+      "query": []
+    },
+    {
+      "id": "S20",
+      "method": "POST",
+      "external": "/api/requests/{id}/issue",
+      "target": "orders",
+      "internal": "/requests/{id}/issue",
+      "roles": "LIBRARIAN",
+      "screen": "P06",
+      "purpose": "Verificar RUN/huella y entregar",
+      "bodySchema": "IssueInput",
+      "requestExample": {
+        "rut": "12345678-5",
+        "fingerprint": "bXVlc3RyYS1maWN0aWNpYS1uby1lc3VuYS1odWVsbGEtcmVhbA=="
+      },
+      "responseExample": {
+        "id": "l-ejemplo",
+        "requestId": "q-ejemplo",
+        "ownerId": "r-ejemplo",
+        "mode": "HOME",
+        "state": "ACTIVE",
+        "preparedAt": "2026-11-20T15:00:00Z",
+        "issuedAt": "2026-11-20T15:00:00Z",
+        "items": [
+          {
+            "copyId": "BEC-0001-1",
+            "documentId": "d-ejemplo",
+            "title": "Relatos del barrio (ficticio)",
+            "homeDays": 7,
+            "roomHours": 2,
+            "shelf": "A-01",
+            "dueAt": "2026-11-27T15:00:00Z",
+            "state": "ACTIVE"
+          }
+        ],
+        "dueAt": "2026-11-27T15:00:00Z"
+      },
+      "success": 200,
+      "businessRule": "PENDING vigente: RUN+huella TEST, activo y elegible. Plazo por ejemplar calculado al confirmar, nunca desde el navegador. ISSUING recuperable e ISSUED idempotente.",
+      "specificErrors": "403 IDENTITY_MISMATCH / READER_INACTIVE; 404 NOT_FOUND; 409 INVALID_STATE / HOLD_EXPIRED / READER_SANCTIONED / RESERVATION_CONFLICT",
+      "query": []
+    },
+    {
+      "id": "S21",
+      "method": "GET",
+      "external": "/api/loans",
+      "target": "orders",
+      "internal": "/loans",
+      "roles": "READER,LIBRARIAN,ADMIN",
+      "screen": "P03,P06",
+      "purpose": "Listar préstamos por alcance",
+      "bodySchema": null,
+      "requestExample": null,
+      "responseExample": {
+        "items": [
+          {
+            "id": "l-ejemplo",
+            "requestId": "q-ejemplo",
+            "ownerId": "r-ejemplo",
+            "mode": "HOME",
+            "state": "ACTIVE",
+            "preparedAt": "2026-11-20T15:00:00Z",
+            "issuedAt": "2026-11-20T15:00:00Z",
+            "items": [
+              {
+                "copyId": "BEC-0001-1",
+                "documentId": "d-ejemplo",
+                "title": "Relatos del barrio (ficticio)",
+                "homeDays": 7,
+                "roomHours": 2,
+                "shelf": "A-01",
+                "dueAt": "2026-11-27T15:00:00Z",
+                "state": "ACTIVE"
+              }
+            ],
+            "dueAt": "2026-11-27T15:00:00Z"
+          }
+        ],
+        "total": 1,
+        "sanctionUntil": null
+      },
+      "success": 200,
+      "businessRule": "READER propio siempre; LIBRARIAN/ADMIN pueden filtrar lector o consultar lista. No se elimina historial.",
+      "specificErrors": "400 validación",
+      "query": [
+        "readerId",
+        "page",
+        "size"
+      ]
+    },
+    {
+      "id": "S22",
+      "method": "GET",
+      "external": "/api/loans/{id}",
+      "target": "orders",
+      "internal": "/loans/{id}",
+      "roles": "READER,LIBRARIAN,ADMIN",
+      "screen": "P03,P06",
+      "purpose": "Detalle de préstamo",
+      "bodySchema": null,
+      "requestExample": null,
+      "responseExample": {
+        "id": "l-ejemplo",
+        "requestId": "q-ejemplo",
+        "ownerId": "r-ejemplo",
+        "mode": "HOME",
+        "state": "ACTIVE",
+        "preparedAt": "2026-11-20T15:00:00Z",
+        "issuedAt": "2026-11-20T15:00:00Z",
+        "items": [
+          {
+            "copyId": "BEC-0001-1",
+            "documentId": "d-ejemplo",
+            "title": "Relatos del barrio (ficticio)",
+            "homeDays": 7,
+            "roomHours": 2,
+            "shelf": "A-01",
+            "dueAt": "2026-11-27T15:00:00Z",
+            "state": "ACTIVE"
+          }
+        ],
+        "dueAt": "2026-11-27T15:00:00Z"
+      },
+      "success": 200,
+      "businessRule": "Titular READER o personal autorizado; backend comprueba ownerId.",
+      "specificErrors": "403 FORBIDDEN; 404 NOT_FOUND",
+      "query": []
+    },
+    {
+      "id": "S23",
+      "method": "GET",
+      "external": "/api/loans/{id}/receipt",
+      "target": "orders",
+      "internal": "/loans/{id}/receipt",
+      "roles": "READER,LIBRARIAN",
+      "screen": "P09",
+      "purpose": "Comprobante de domicilio",
+      "bodySchema": null,
+      "requestExample": null,
+      "responseExample": {
+        "id": "receipt-l-ejemplo",
+        "loanId": "l-ejemplo",
+        "readerId": "r-ejemplo",
+        "issuedAt": "2026-11-20T15:00:00Z",
+        "items": [
+          {
+            "copyId": "BEC-0001-1",
+            "documentId": "d-ejemplo",
+            "title": "Relatos del barrio (ficticio)",
+            "homeDays": 7,
+            "roomHours": 2,
+            "shelf": "A-01",
+            "dueAt": "2026-11-27T15:00:00Z",
+            "state": "ACTIVE"
+          }
+        ],
+        "amount": 0,
+        "currency": "CLP"
+      },
+      "success": 200,
+      "businessRule": "Solo HOME entregado (no PREPARING); titular o bibliotecario. Ítems con fecha/hora propia; impresión en P09.",
+      "specificErrors": "403 FORBIDDEN; 404 NOT_FOUND; 409 NO_HOME_RECEIPT",
+      "query": []
+    },
+    {
+      "id": "S24",
+      "method": "POST",
+      "external": "/api/returns",
+      "target": "orders",
+      "internal": "/returns",
+      "roles": "LIBRARIAN",
+      "screen": "P07",
+      "purpose": "Devolver por código",
+      "bodySchema": "ReturnInput",
+      "requestExample": {
+        "copyId": "BEC-0001-1"
+      },
+      "responseExample": {
+        "id": "ret-ejemplo",
+        "loanId": "l-ejemplo",
+        "copyId": "BEC-0001-1",
+        "returnedAt": "2026-11-20T15:00:00Z",
+        "state": "RETURNED",
+        "late": false,
+        "sanctionUntil": null,
+        "readyAt": "2026-11-20T15:30:00Z"
+      },
+      "success": 200,
+      "businessRule": "Idempotency-Key obligatorio. Hora servidor; préstamo devuelto inmediatamente, copia RESHELVING hasta returnedAt+30 minutos. Sanción temporal si hay atraso.",
+      "specificErrors": "400 IDEMPOTENCY_REQUIRED; 409 NO_ACTIVE_LOAN / IDEMPOTENCY_CONFLICT",
+      "query": []
+    },
+    {
+      "id": "S25",
+      "method": "POST",
+      "external": "/api/reservations",
+      "target": "orders",
+      "internal": "/reservations",
+      "roles": "READER",
+      "screen": "P01",
+      "purpose": "Reservar ejemplar/fecha",
+      "bodySchema": "ReservationInput",
+      "requestExample": {
+        "copyId": "BEC-0001-1",
+        "date": "2026-12-10",
+        "mode": "ROOM"
+      },
+      "responseExample": {
+        "id": "v-ejemplo",
+        "ownerId": "r-ejemplo",
+        "state": "ACTIVE",
+        "copyId": "BEC-0001-1",
+        "date": "2026-12-10",
+        "mode": "ROOM",
+        "createdAt": "2026-11-20T15:00:00Z"
+      },
+      "success": 201,
+      "businessRule": "Idempotency-Key; lector elegible; slot copia/fecha único. No atraviesa préstamo vigente ni acepta fecha >90 días.",
+      "specificErrors": "400 INVALID_DATE / IDEMPOTENCY_REQUIRED; 409 RESERVATION_CONFLICT / COPY_UNAVAILABLE / READER_SANCTIONED / IDEMPOTENCY_CONFLICT",
+      "query": []
+    },
+    {
+      "id": "S26",
+      "method": "GET",
+      "external": "/api/reservations",
+      "target": "orders",
+      "internal": "/reservations",
+      "roles": "READER,LIBRARIAN",
+      "screen": "P03,P06",
+      "purpose": "Consultar reservas",
+      "bodySchema": null,
+      "requestExample": null,
+      "responseExample": {
+        "items": [
+          {
+            "id": "v-ejemplo",
+            "ownerId": "r-ejemplo",
+            "state": "ACTIVE",
+            "copyId": "BEC-0001-1",
+            "date": "2026-12-10",
+            "mode": "ROOM",
+            "createdAt": "2026-11-20T15:00:00Z"
+          }
+        ],
+        "total": 1
+      },
+      "success": 200,
+      "businessRule": "Titular READER; bibliotecario puede filtrar lector.",
+      "specificErrors": "400 validación",
+      "query": [
+        "readerId",
+        "page",
+        "size"
+      ]
+    },
+    {
+      "id": "S27",
+      "method": "DELETE",
+      "external": "/api/reservations/{id}",
+      "target": "orders",
+      "internal": "/reservations/{id}",
+      "roles": "READER,LIBRARIAN",
+      "screen": "P03,P06",
+      "purpose": "Cancelar reserva futura",
+      "bodySchema": null,
+      "requestExample": null,
+      "responseExample": {
+        "id": "v-ejemplo",
+        "state": "CANCELLED"
+      },
+      "success": 200,
+      "businessRule": "Titular o bibliotecario; ACTIVE/CANCELLING/CANCELLED. No borra historia.",
+      "specificErrors": "403 FORBIDDEN; 404 NOT_FOUND; 409 INVALID_STATE",
+      "query": []
+    },
+    {
+      "id": "S28",
+      "method": "GET",
+      "external": "/api/overdue",
+      "target": "orders",
+      "internal": "/overdue",
+      "roles": "ADMIN",
+      "screen": "P08",
+      "purpose": "Morosidad sala/domicilio",
+      "bodySchema": null,
+      "requestExample": null,
+      "responseExample": {
+        "items": [
+          {
+            "loanId": "l-ejemplo",
+            "readerId": "r-ejemplo",
+            "copyId": "BEC-0001-1",
+            "title": "Relatos del barrio (ficticio)",
+            "dueAt": "2026-11-19T15:00:00Z",
+            "mode": "HOME"
+          }
+        ],
+        "total": 1
+      },
+      "success": 200,
+      "businessRule": "ADMIN; lista operacional de ítems ACTIVE vencidos (HOME por defecto o ROOM). Recordatorio automático solo HOME.",
+      "specificErrors": "400 VALIDATION",
+      "query": [
+        "mode",
+        "page",
+        "size"
+      ]
+    },
+    {
+      "id": "S29",
+      "method": "GET",
+      "external": "/api/payments/policy",
+      "target": "payments",
+      "internal": "/policy",
+      "roles": "PUBLIC",
+      "screen": "P03",
+      "purpose": "Consultar gratuidad",
+      "bodySchema": null,
+      "requestExample": null,
+      "responseExample": {
+        "id": "MUNICIPAL_FREE",
+        "currency": "CLP",
+        "amount": 0,
+        "chargesEnabled": false,
+        "sanction": "TIME_ONLY"
+      },
+      "success": 200,
+      "businessRule": "No hay precio ni multa; no necesita sesión.",
+      "specificErrors": "400 validación",
+      "query": []
+    },
+    {
+      "id": "S30",
+      "method": "GET",
+      "external": "/api/payments/assessments/{id}",
+      "target": "payments",
+      "internal": "/assessments/{id}",
+      "roles": "READER,LIBRARIAN,ADMIN",
+      "screen": "P03",
+      "purpose": "Consultar evaluación de gratuidad",
+      "bodySchema": null,
+      "requestExample": null,
+      "responseExample": {
+        "id": "l-ejemplo",
+        "loanId": "l-ejemplo",
+        "ownerId": "r-ejemplo",
+        "amount": 0,
+        "currency": "CLP",
+        "state": "EXEMPT",
+        "policyId": "MUNICIPAL_FREE",
+        "createdAt": "2026-11-20T15:00:00Z"
+      },
+      "success": 200,
+      "businessRule": "id de ruta = loanId; lector titular, bibliotecario o administrativo.",
+      "specificErrors": "403 FORBIDDEN; 404 NOT_FOUND",
+      "query": []
+    },
+    {
+      "id": "S31",
+      "method": "POST",
+      "external": "/api/payments/intents",
+      "target": "payments",
+      "internal": "/intents",
+      "roles": "READER",
+      "screen": "P03",
+      "purpose": "Rechazar cobro ajeno al caso",
+      "bodySchema": "TamperedIntent",
+      "requestExample": {
+        "loanId": "l-ejemplo",
+        "amount": 0,
+        "status": "PAID"
+      },
+      "responseExample": {
+        "error": {
+          "code": "NO_MONETARY_PAYMENTS",
+          "message": "El caso no contempla cobros. Un pago nunca levanta una sanción temporal.",
+          "correlationId": "00000000-0000-4000-8000-000000000001"
+        }
+      },
+      "success": 422,
+      "businessRule": "Ruta explícita para rechazar una intención ajena al caso. NO crea transacción ni toca sanciones.",
+      "specificErrors": "422 NO_MONETARY_PAYMENTS",
+      "query": []
+    },
+    {
+      "id": "S32",
+      "method": "POST",
+      "external": "/api/graphql",
+      "target": "graphql",
+      "internal": "/graphql",
+      "roles": "READER,LIBRARIAN,ADMIN",
+      "screen": "P03",
+      "purpose": "Resumen agregado de cuenta",
+      "bodySchema": "GraphQLInput",
+      "requestExample": {
+        "query": "query Cuenta($first:Int!){account(first:$first){reader{id names state}loans{id mode items{copyId title dueAt document{author available}}assessment{amount currency state}}totalLoans reservations{id date state}}}",
+        "variables": {
+          "first": 10
+        }
+      },
+      "responseExample": {
+        "data": {
+          "account": {
+            "reader": {
+              "id": "r-ejemplo",
+              "names": "Lectora",
+              "state": "ACTIVE"
+            },
+            "loans": [
+              {
+                "id": "l-ejemplo",
+                "mode": "HOME",
+                "items": [
+                  {
+                    "copyId": "BEC-0001-1",
+                    "title": "Relatos del barrio (ficticio)",
+                    "dueAt": "2026-11-27T15:00:00Z",
+                    "document": {
+                      "author": "Autora Ficticia",
+                      "available": 0
+                    }
+                  }
+                ],
+                "assessment": {
+                  "amount": 0,
+                  "currency": "CLP",
+                  "state": "EXEMPT"
+                }
+              }
+            ],
+            "totalLoans": 1,
+            "reservations": []
+          }
+        }
+      },
+      "success": 200,
+      "businessRule": "Cuenta: Clients+Orders+Inventory+Payments. first≤20, page≤1000, profundidad≤6, costo≤100; batch por petición. HTTP200 puede incluir errors parciales; no significa éxito total.",
+      "specificErrors": "400 VALIDATION / VARIABLES_LIMIT; 200 errors[].extensions.code: FIELD_FORBIDDEN / FORBIDDEN / DEPENDENCY_UNAVAILABLE / ValidationError",
+      "query": []
+    },
+    {
+      "id": "S33",
+      "method": "GET",
+      "external": "/api/exit-check/{id}",
+      "target": "inventory",
+      "internal": "/exit-check/{id}",
+      "roles": "LIBRARIAN",
+      "screen": "P07",
+      "purpose": "Simular control de salida",
+      "bodySchema": null,
+      "requestExample": null,
+      "responseExample": {
+        "copyId": "BEC-0001-1",
+        "allowExit": true,
+        "adapter": "SOFTWARE_TEST_NO_PHYSICAL_RFID"
+      },
+      "success": 200,
+      "businessRule": "LIBRARIAN; solo copia HOME con loanId confirmado permite salida. Es prueba software, NO barrera física.",
+      "specificErrors": "404 NOT_FOUND",
+      "query": []
+    },
+    {
+      "id": "S34",
+      "method": "GET",
+      "external": "/api/lab/mailbox",
+      "target": "mail",
+      "internal": "/mailbox",
+      "roles": "ADMIN",
+      "screen": "P10",
+      "purpose": "Bandeja del proveedor de prueba",
+      "bodySchema": null,
+      "requestExample": null,
+      "responseExample": {
+        "items": [
+          {
+            "id": "activation-r-ejemplo-v1",
+            "to": "lectora@bec.example.invalid",
+            "subject": "Active su cuenta BEC",
+            "text": "ENLACE FICTICIO: https://localhost:8443/?activation=TOKEN_FICTICIO_NO_VALIDO",
+            "createdAt": "2026-11-20T15:00:00Z"
+          }
+        ],
+        "total": 1,
+        "adapter": "TEST_NO_INTERNET_DELIVERY"
+      },
+      "success": 200,
+      "businessRule": "ADMIN y labMode=true; texto de proveedor TEST. No demuestra entrega a Internet.",
+      "specificErrors": "404 NOT_FOUND (laboratorio deshabilitado)",
+      "query": [
+        "page",
+        "size"
+      ]
+    },
+    {
+      "id": "S35",
+      "method": "POST",
+      "external": "/api/readers/{id}/activation",
+      "target": "clients",
+      "internal": "/readers/{id}/activation",
+      "roles": "ADMIN",
+      "screen": "P05",
+      "purpose": "Reenviar activación e invalidar enlace anterior",
+      "bodySchema": "EmptyInput",
+      "requestExample": {},
+      "responseExample": {
+        "queued": true,
+        "expiresInHours": 24,
+        "previousLinkRevoked": true
+      },
+      "success": 200,
+      "businessRule": "ADMIN; solo lector INACTIVE y cuenta provisionada; invalida enlace previo, nueva vigencia 24 h.",
+      "specificErrors": "404 NOT_FOUND; 409 ALREADY_ACTIVE / ACCOUNT_PENDING",
+      "query": []
+    }
+  ]
+}

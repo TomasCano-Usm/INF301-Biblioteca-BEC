@@ -1,0 +1,72 @@
+@startuml
+!pragma layout smetana
+title Componentes y despliegue — mismo JAR, procesos y almacenes independientes
+skinparam shadowing false
+actor "Lector / personal" as user
+node "Navegador\nP01–P10" as browser
+node "Red de borde" {
+  component "gateway\nHTTPS :8443\nÚNICO puerto publicado" as gw
+}
+node "Red privada internal:true — HTTPS" {
+  component "secrets :9100\npaquetes por identidad" as secrets
+  component "auth :9101" as auth
+  component "clients :9102" as clients
+  component "inventory :9103" as inventory
+  component "orders :9104" as orders
+  component "payments :9105\nEXEMPT / 0 CLP" as payments
+  component "notifications :9106" as notifications
+  component "graphql :9107" as graphql
+  component "mail :9108\nPROVEEDOR TEST" as mail
+}
+node "Red de datos privada (perfil Oracle)" {
+  database "Oracle FREEPDB1\nTCPS :2484\nsin puertos publicados\n7 esquemas / 7 usuarios distintos" as oracle
+}
+user --> browser
+browser --> gw : HTTPS / JSON / GraphQL
+gw --> auth : login / introspección
+gw --> clients
+gw --> inventory
+gw --> orders
+gw --> payments
+gw --> graphql
+gw --> mail : solo ADMIN + laboratorio
+clients --> auth : alta + unicidad / reenvío
+auth --> clients : activar
+auth --> notifications : activación
+orders --> clients : elegibilidad / identidad
+orders --> inventory : asignar / confirmar / devolver
+orders --> payments : evaluación gratuita
+orders --> notifications : outbox
+graphql --> clients : ficha filtrada
+graphql --> orders : préstamos / reservas
+graphql --> inventory : batch documentos
+graphql --> payments : batch evaluaciones
+notifications --> clients : contacto mínimo
+notifications --> mail : API TLS / deduplicación
+gw ..> secrets : bootstrap exclusivo
+auth ..> secrets
+clients ..> secrets
+inventory ..> secrets
+orders ..> secrets
+payments ..> secrets
+graphql ..> secrets
+notifications ..> secrets
+mail ..> secrets
+auth --> oracle : solo BEC_AUTH
+clients --> oracle : solo BEC_CLIENTS
+inventory --> oracle : solo BEC_INVENTORY
+orders --> oracle : solo BEC_ORDERS
+payments --> oracle : solo BEC_PAYMENTS
+notifications --> oracle : solo BEC_NOTIFICATIONS
+mail --> oracle : solo BEC_MAIL
+note bottom of oracle
+Oracle/TCPS/PLSQL/Compose: preparados, NO ejecutados aquí.
+Pruebas medidas: 10 JVM + 7 bases H2 EN ARCHIVO,
+cada una bajo su directorio privado; no es Oracle.
+end note
+note bottom of gw
+En ejecución local: todos ligados a loopback.
+En contenedores: solo gateway está en red de borde.
+/health revela vida, no autoriza ni prueba toda dependencia.
+end note
+@enduml

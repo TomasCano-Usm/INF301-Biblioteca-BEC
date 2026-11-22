@@ -1,0 +1,51 @@
+services:
+  oracle:
+    image: bec-oracle-java:1.0
+    build:
+      context: .
+      dockerfile: deploy/oracle/Dockerfile
+    environment:
+      ORACLE_RANDOM_PASSWORD: "true"
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+      - ${BEC_RUNTIME}/setup/01-bec.sql:/run/bec-bootstrap/01-bec.sql:ro
+      - ./deploy/oracle/tls.sh:/container-entrypoint-initdb.d/00-tls.sh:ro
+      - ./deploy/oracle/tls.sh:/container-entrypoint-startdb.d/00-tls.sh:ro
+      - ./deploy/oracle/provision.sh:/container-entrypoint-initdb.d/01-bec.sh:ro
+      - ./deploy/oracle/provision.sh:/container-entrypoint-startdb.d/01-bec.sh:ro
+      - ./deploy/oracle/healthcheck.sh:/opt/bec-healthcheck.sh:ro
+      - ./db/oracle:/opt/bec:ro
+      - ${BEC_RUNTIME}/oracle:/run/bec-oracle:ro
+    networks: [data]
+    shm_size: 1g
+    mem_limit: 3g
+    healthcheck:
+      test: ["CMD", "bash", "/opt/bec-healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 60
+  auth:
+    networks: [private, data]
+    depends_on: {secrets: {condition: service_started}, oracle: {condition: service_healthy}}
+  clients:
+    networks: [private, data]
+    depends_on: {secrets: {condition: service_started}, oracle: {condition: service_healthy}}
+  inventory:
+    networks: [private, data]
+    depends_on: {secrets: {condition: service_started}, oracle: {condition: service_healthy}}
+  orders:
+    networks: [private, data]
+    depends_on: {secrets: {condition: service_started}, oracle: {condition: service_healthy}}
+  payments:
+    networks: [private, data]
+    depends_on: {secrets: {condition: service_started}, oracle: {condition: service_healthy}}
+  notifications:
+    networks: [private, data]
+    depends_on: {secrets: {condition: service_started}, oracle: {condition: service_healthy}}
+  mail:
+    networks: [private, data]
+    depends_on: {secrets: {condition: service_started}, oracle: {condition: service_healthy}}
+networks:
+  data: {internal: true}
+volumes:
+  oracle-data: {}

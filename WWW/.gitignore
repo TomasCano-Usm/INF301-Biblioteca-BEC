@@ -1,0 +1,28 @@
+# Instalaciones y caché local de pnpm: se regeneran en cada equipo.
+**/node_modules/
+**/node_modules.*/
+**/.pnpm-store/
+**/dist/
+**/build/
+**/target/
+**/.cache/
+**/.vite/
+**/*.tsbuildinfo
+
+# Entornos, credenciales, certificados privados, BD y registros.
+**/.runtime/
+**/.runtime-*/
+**/.env
+**/.env.*
+!**/.env.example
+**/.venv/
+**/__pycache__/
+**/*.pyc
+**/*.log
+**/*.mv.db
+**/*.trace.db
+**/*.key
+**/*.p12
+**/*.pem
+**/*.token
+**/.DS_Store

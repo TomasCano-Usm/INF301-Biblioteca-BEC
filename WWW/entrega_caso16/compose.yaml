@@ -1,0 +1,70 @@
+name: bec-caso16
+x-app: &app
+  image: bec-caso16:1.0
+  build:
+    context: .
+    dockerfile: deploy/Dockerfile
+  user: "${BEC_UID:?Use scripts/deploy.py}:${BEC_GID:?Use scripts/deploy.py}"
+  init: true
+  read_only: true
+  tmpfs: ["/tmp:rw,noexec,nosuid,size=32m"]
+  cap_drop: [ALL]
+  security_opt: ["no-new-privileges:true"]
+  restart: unless-stopped
+  networks: [private]
+  mem_limit: 256m
+services:
+  secrets:
+    <<: *app
+    command: ["secrets", "/runtime"]
+    volumes: ["${BEC_RUNTIME}/secrets:/runtime/secrets:ro"]
+  auth:
+    <<: *app
+    command: ["auth", "/runtime"]
+    depends_on: [secrets]
+    volumes: ["${BEC_RUNTIME}/auth:/runtime/auth:ro", "${BEC_RUNTIME}/auth/data:/runtime/auth/data:rw"]
+  clients:
+    <<: *app
+    command: ["clients", "/runtime"]
+    depends_on: [secrets]
+    volumes: ["${BEC_RUNTIME}/clients:/runtime/clients:ro", "${BEC_RUNTIME}/clients/data:/runtime/clients/data:rw"]
+  inventory:
+    <<: *app
+    command: ["inventory", "/runtime"]
+    depends_on: [secrets]
+    volumes: ["${BEC_RUNTIME}/inventory:/runtime/inventory:ro", "${BEC_RUNTIME}/inventory/data:/runtime/inventory/data:rw"]
+  orders:
+    <<: *app
+    command: ["orders", "/runtime"]
+    depends_on: [secrets]
+    volumes: ["${BEC_RUNTIME}/orders:/runtime/orders:ro", "${BEC_RUNTIME}/orders/data:/runtime/orders/data:rw"]
+  payments:
+    <<: *app
+    command: ["payments", "/runtime"]
+    depends_on: [secrets]
+    volumes: ["${BEC_RUNTIME}/payments:/runtime/payments:ro", "${BEC_RUNTIME}/payments/data:/runtime/payments/data:rw"]
+  notifications:
+    <<: *app
+    command: ["notifications", "/runtime"]
+    depends_on: [secrets]
+    volumes: ["${BEC_RUNTIME}/notifications:/runtime/notifications:ro", "${BEC_RUNTIME}/notifications/data:/runtime/notifications/data:rw"]
+  mail:
+    <<: *app
+    command: ["mail", "/runtime"]
+    depends_on: [secrets]
+    volumes: ["${BEC_RUNTIME}/mail:/runtime/mail:ro", "${BEC_RUNTIME}/mail/data:/runtime/mail/data:rw"]
+  graphql:
+    <<: *app
+    command: ["graphql", "/runtime"]
+    depends_on: [secrets]
+    volumes: ["${BEC_RUNTIME}/graphql:/runtime/graphql:ro"]
+  gateway:
+    <<: *app
+    command: ["gateway", "/runtime"]
+    depends_on: [secrets, auth, clients, inventory, orders, payments, graphql, mail]
+    ports: ["127.0.0.1:8443:8443"]
+    networks: [edge, private]
+    volumes: ["${BEC_RUNTIME}/gateway:/runtime/gateway:ro"]
+networks:
+  edge: {}
+  private: {internal: true}

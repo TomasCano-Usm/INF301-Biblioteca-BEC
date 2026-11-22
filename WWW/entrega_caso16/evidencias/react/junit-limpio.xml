@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites>
+  <testsuite name="cl.bec.PoliciesTest" tests="5" failures="0" errors="0" skipped="0" time="2.942">
+    <testcase name="T_UNIT_03_sancionFronteraYTope" classname="cl.bec.PoliciesTest" time="0.148" />
+    <testcase name="T_UNIT_02_salaMismoDiaYPlazosDistintos" classname="cl.bec.PoliciesTest" time="1.489" />
+    <testcase name="T_UNIT_01_bufferExacto" classname="cl.bec.PoliciesTest" time="0.005" />
+    <testcase name="T_UNIT_05_salaUltimoMinutoNoVenceAntesDeEntrega" classname="cl.bec.PoliciesTest" time="0.003" />
+    <testcase name="T_UNIT_04_clavesYSobres" classname="cl.bec.PoliciesTest" time="1.181" />
+  </testsuite>
+  <testsuite name="cl.bec.SystemTest" tests="21" failures="0" errors="0" skipped="0" time="52.075">
+    <testcase name="T01_catalogoAnonimoYAllowlist" classname="cl.bec.SystemTest" time="0.441" />
+    <testcase name="T02_sesionRolYBackendDirecto" classname="cl.bec.SystemTest" time="0.363" />
+    <testcase name="T03_activacionUnicaLogoutYValidacion" classname="cl.bec.SystemTest" time="2.143" />
+    <testcase name="T04_CRUDColeccionSinBorradoHistorico" classname="cl.bec.SystemTest" time="1.108" />
+    <testcase name="T05_carreraAtomicaIdempotenciaYTitularidad" classname="cl.bec.SystemTest" time="1.136" />
+    <testcase name="T06_reservaFechaConflictoYCancelacion" classname="cl.bec.SystemTest" time="0.887" />
+    <testcase name="T07_entregaIdentidadComprobanteYSalida" classname="cl.bec.SystemTest" time="1.675" />
+    <testcase name="T08_GraphQLAgregadoCamposLimitesYPropiedad" classname="cl.bec.SystemTest" time="3.025" />
+    <testcase name="T09_pagoManipuladoYFirmaAntireplay" classname="cl.bec.SystemTest" time="0.43" />
+    <testcase name="T10_salaNoSaleYVenceMismoDia" classname="cl.bec.SystemTest" time="1.951" />
+    <testcase name="T11_devolucionSancionYBufferExacto" classname="cl.bec.SystemTest" time="1.891" />
+    <testcase name="T12_recordatorioDiarioSancionExpira" classname="cl.bec.SystemTest" time="3.266" />
+    <testcase name="T13_sagaEntregaRecuperaCaidaPagos" classname="cl.bec.SystemTest" time="1.23" />
+    <testcase name="T14_fallaInventarioSolicitudYDevolucionRecuperables" classname="cl.bec.SystemTest" time="1.465" />
+    <testcase name="T15_caidaSecretosCierraYAlcanceDenegado" classname="cl.bec.SystemTest" time="0.206" />
+    <testcase name="T16_correoReintentoYPersistenciaTrasReinicio" classname="cl.bec.SystemTest" time="1.6" />
+    <testcase name="T17_vencimientoSesionYRetencion" classname="cl.bec.SystemTest" time="1.29" />
+    <testcase name="T18_activacionVencidaReenvioYCorreoUnico" classname="cl.bec.SystemTest" time="6.152" />
+    <testcase name="T19_multimediaDigitalDescripcionYAltaAtomica" classname="cl.bec.SystemTest" time="1.691" />
+    <testcase name="T20_filtrosCombinadosAntesDePaginar" classname="cl.bec.SystemTest" time="0.722" />
+    <testcase name="T21_stockNoRetiraPrestadosYRollbackDeEdicion" classname="cl.bec.SystemTest" time="2.018" />
+  </testsuite>
+</testsuites>

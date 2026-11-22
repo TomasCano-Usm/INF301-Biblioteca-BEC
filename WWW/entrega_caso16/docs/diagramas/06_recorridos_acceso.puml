@@ -1,0 +1,32 @@
+@startuml
+title Recorridos permitidos y denegados — autorización no equivale a autenticación
+skinparam shadowing false
+actor Cliente as C
+participant Gateway as G
+participant Auth as A
+participant Orders as O
+participant Inventory as I
+== Catálogo permitido sin sesión ==
+C -> G : GET /api/catalog
+G -> I : GET /documents\nprincipal ANONYMOUS firmado
+I -> I : caller gateway permitido + DTO público
+I --> C : 200 títulos y existencias, sin dueños
+== Sesión ausente ==
+C -> G : GET /api/loans (sin Bearer)
+G --> C : 401, no se llama a Orders
+== Rol insuficiente ==
+C -> G : POST /api/documents (Bearer READER)
+G -> A : introspección
+A --> G : READER
+G --> C : 403, ruta exige LIBRARIAN
+== Recurso ajeno con rol correcto ==
+C -> G : GET /api/loans/{otro} (Bearer READER)
+G -> A : introspección
+A --> G : READER A
+G -> O : llamada HTTPS firmada, principal A
+O -> O : compara ownerId del préstamo con A
+O --> C : 403, aun con gateway autenticado
+== Acceso directo privado ==
+C -> I : GET /documents sin identidad técnica
+I --> C : 403, aunque sea lectura pública en el borde
+@enduml

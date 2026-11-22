@@ -1,0 +1,1497 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><title>Caso 16 · informe</title><style>
+@page {size:A4;margin:18mm 16mm 19mm}
+body{font-family:Arial,sans-serif;color:#203247;font-size:10pt;line-height:1.45}
+h1{color:#133b54;font-size:23pt;line-height:1.15;break-before:page;margin:0 0 16px}
+h1:first-of-type{break-before:auto}h2{font-size:15pt;color:#126268;margin-top:22px}
+h3{font-size:12pt;color:#126268}h1,h2,h3{break-after:avoid}
+p,li{orphans:3;widows:3}a{color:#086e78;text-decoration:none}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:8pt;table-layout:fixed}
+th{background:#e4f1f2;text-align:left;color:#133b54}
+th,td{padding:6px;border:1px solid #b7cbd1;vertical-align:top;overflow-wrap:anywhere}
+thead{display:table-header-group}tr{break-inside:avoid}
+pre{background:#f0f4f6;border:1px solid #ccd8df;padding:9px;white-space:pre-wrap;
+overflow-wrap:anywhere;font:8pt/1.4 Consolas,monospace;break-inside:auto}
+code{font-family:Consolas,monospace;font-size:.9em;overflow-wrap:anywhere}
+img{display:block;max-width:100%;max-height:225mm;object-fit:contain;margin:14px auto}
+blockquote{border-left:4px solid #12858b;padding-left:12px;color:#435567}
+hr{border:0;border-top:1px solid #c4d4da}
+</style><body><h1>Sistema de Préstamo · Biblioteca Municipal BEC</h1>
+<h2>Informe de desarrollo backend — Caso 16</h2>
+<p><strong>Asignatura:</strong> [completar]<br />
+<strong>Docente:</strong> [completar]<br />
+<strong>Integrantes y sección:</strong> [completar; no fueron proporcionados]<br />
+<strong>Versión:</strong> 1.0.0 · <strong>Fecha de generación:</strong> 19-11-2026 (UTC)</p>
+<p><strong>Base documental:</strong> <code>Tarea_parte_Backend.pdf</code>, <code>Caso16.docx</code> y <code>material_clases/</code>. Se respeta el caso de Biblioteca Municipal de Estación Central. El documento se llama Caso16, aunque un párrafo interno menciona “Caso 11”; se conserva Caso 16 como identificador de la entrega.</p>
+<h2>Resumen y estado verificable</h2>
+<p>Se implementó una aplicación web nueva, no una ampliación de un frontend recibido. Java 21 orientado a objetos, capas de interfaz/negocio/repositorio, REST, gateway HTTPS, identidad técnica entre servicios, BFF GraphQL privado y persistencia separada. Inventario, pedidos/préstamos, clientes y pagos son procesos independientes, no módulos presentados como microservicios.</p>
+<table>
+<thead>
+<tr>
+<th>Entregable o condición</th>
+<th>Estado y evidencia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Backend y seguridad</td>
+<td><strong>23 pruebas aprobadas</strong>, cero fallas/errores/omitidas; <code>evidencias/pruebas_backend.json</code> y <code>junit-limpio.xml</code></td>
+</tr>
+<tr>
+<td>Frontend real</td>
+<td><strong>13 comprobaciones aprobadas</strong>, cero errores JavaScript; <code>evidencias/interfaz.json</code>, capturas P01–P10</td>
+</tr>
+<tr>
+<td>Carga</td>
+<td>Seis escenarios REST/GraphQL HTTPS medidos; <code>evidencias/carga.json</code>, módulo 9</td>
+</tr>
+<tr>
+<td>Oracle obligatorio</td>
+<td>Código JDBC, migraciones, procedimientos y despliegue TCPS <strong>preparados, NO EJECUTADOS</strong>; Docker no disponible en este WSL</td>
+</tr>
+<tr>
+<td>Correo y dispositivos</td>
+<td>API de correo TEST y verificación de muestra/antirrobo software; <strong>sin envío Internet, SDK biométrico ni RFID físico</strong></td>
+</tr>
+<tr>
+<td>Usabilidad institucional</td>
+<td>Responsive verificado; aprendizaje &lt;4 h y error humano &lt;1 % <strong>pendientes de estudio con personas</strong></td>
+</tr>
+</tbody>
+</table>
+<p>El cumplimiento es una <strong>demostración académica probada en H2 en archivo</strong>, no una certificación completa del caso en Oracle ni una autorización de producción. Los anexos forman parte de la entrega; no se reemplazan pruebas pendientes por afirmaciones.</p>
+<h3>Índice de lectura y fuentes editables</h3>
+<ol>
+<li>Contratos y acciones del frontend.</li>
+<li>UML de dominio, servicios públicos y DTO.</li>
+<li>Microservicios, propiedad de datos y colaboración.</li>
+<li>Stakeholders y matriz de autorización.</li>
+<li>Segundo UML: gateway, políticas y confianza.</li>
+<li>Publicación, protocolos y credenciales.</li>
+<li>Información sensible y seguridad comprobada.</li>
+<li>Servicios privados y agregación GraphQL.</li>
+<li>Spikes, analítica, gRPC y decisiones.</li>
+<li>Implementación, pruebas y trazabilidad final.</li>
+</ol>
+<p><strong>Anexos:</strong> A <code>contratos.md/.pdf</code>, <code>openapi.json</code>; B <code>contratos_privados.md</code>; C <code>seguridad_operacion.md</code>; D <code>matriz_acceso.csv</code>, <code>rutas_y_credenciales.csv</code>, <code>trazabilidad.csv</code>; E <code>diagramas.pdf</code> y seis fuentes <code>.puml/.svg/.png</code>; F cuatro ADR; G <code>validacion_oracle.md</code>; H <code>manual_usuario.pdf</code> y ayuda web. PDF y DOCX de este informe se generan desde este texto y resultados registrados.</p>
+<h1>Módulo 1 · Acciones y contratos del frontend</h1>
+<h2>1.1 Alcance de negocio y pantallas</h2>
+<p>El catálogo contiene libros, documentos técnicos y soportes multimedia, no streaming de audio/video. El administrativo registra y controla morosidad; el bibliotecario mantiene colección y entrega/recibe; el lector activo solicita y reserva. El catálogo del kiosco no exige sesión. La identificación de una persona no se deduce de un <code>readerId</code> enviado por el navegador.</p>
+<table>
+<thead>
+<tr>
+<th>Pantalla</th>
+<th>Usuario y acciones reales</th>
+<th>Servicios</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P01 Catálogo/kiosco</td>
+<td>Anónimo busca por título, autor o categoría, ve disponibilidad y ejemplares en sala; lector solicita HOME/ROOM y reserva copia/fecha</td>
+<td>S05–S06, S17, S25</td>
+</tr>
+<tr>
+<td>P02 Acceso/activación</td>
+<td>Iniciar/cerrar sesión, activar por enlace y consultar identidad</td>
+<td>S01–S04</td>
+</tr>
+<tr>
+<td>P03 Mi cuenta</td>
+<td>Resumen GraphQL, préstamos/solicitudes/reservas, cancelar pendientes y ver gratuidad; botón TEST de cobro manipulado</td>
+<td>S18–S19, S21–S22, S26–S27, S29–S32</td>
+</tr>
+<tr>
+<td>P04 Colección</td>
+<td>Bibliotecario crea/edita/archiva documentos, incorpora/mueve/retira ejemplares</td>
+<td>S07–S12</td>
+</tr>
+<tr>
+<td>P05 Fichas</td>
+<td>Administrativo inscribe, verifica documentos, busca, actualiza contacto/foto y reenvía activación; ficha por alcance</td>
+<td>S13–S16, S35</td>
+</tr>
+<tr>
+<td>P06 Preparación/entrega</td>
+<td>Bibliotecario ve cola y ubicación, ficha/foto, comprueba RUN y muestra TEST, entrega</td>
+<td>S15, S18–S22, S26</td>
+</tr>
+<tr>
+<td>P07 Devolución/salida</td>
+<td>Bibliotecario devuelve por código y ve disponibilidad futura; control software de salida</td>
+<td>S24, S33</td>
+</tr>
+<tr>
+<td>P08 Morosidad</td>
+<td>Administrativo consulta HOME/ROOM y abre contacto para exigir devolución</td>
+<td>S15, S28</td>
+</tr>
+<tr>
+<td>P09 Comprobante</td>
+<td>Lector titular/bibliotecario ve e imprime HOME, con vencimiento por ítem</td>
+<td>S23</td>
+</tr>
+<tr>
+<td>P10 Correo TEST</td>
+<td>Administrativo inspecciona bandeja del adaptador solo en laboratorio</td>
+<td>S34</td>
+</tr>
+</tbody>
+</table>
+<h2>1.2 Inventario completo de operaciones</h2>
+<p>Los siguientes identificadores se toman de <code>Routes.ALL</code>, la misma allowlist usada por el gateway. El detalle íntegro de <strong>cada operación</strong> —campos/tipos, obligatoriedad, validación, clasificación, entrada y salida JSON ficticias, errores, rol, propiedad, estado y destino— está en el Anexo A. OpenAPI permite importar los contratos en un cliente HTTP.</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Verbo y ruta externa</th>
+<th>Destino</th>
+<th>Rol/pantalla</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S01</td>
+<td>POST <code>/api/auth/login</code></td>
+<td>auth</td>
+<td>PUBLIC · P02</td>
+</tr>
+<tr>
+<td>S02</td>
+<td>POST <code>/api/auth/logout</code></td>
+<td>auth</td>
+<td>READER,LIBRARIAN,ADMIN · P02</td>
+</tr>
+<tr>
+<td>S03</td>
+<td>POST <code>/api/auth/activate</code></td>
+<td>auth</td>
+<td>PUBLIC · P02</td>
+</tr>
+<tr>
+<td>S04</td>
+<td>GET <code>/api/auth/me</code></td>
+<td>auth</td>
+<td>READER,LIBRARIAN,ADMIN · P02</td>
+</tr>
+<tr>
+<td>S05</td>
+<td>GET <code>/api/catalog</code></td>
+<td>inventory</td>
+<td>PUBLIC · P01</td>
+</tr>
+<tr>
+<td>S06</td>
+<td>GET <code>/api/catalog/{id}</code></td>
+<td>inventory</td>
+<td>PUBLIC · P01</td>
+</tr>
+<tr>
+<td>S07</td>
+<td>POST <code>/api/documents</code></td>
+<td>inventory</td>
+<td>LIBRARIAN · P04</td>
+</tr>
+<tr>
+<td>S08</td>
+<td>PUT <code>/api/documents/{id}</code></td>
+<td>inventory</td>
+<td>LIBRARIAN · P04</td>
+</tr>
+<tr>
+<td>S09</td>
+<td>DELETE <code>/api/documents/{id}</code></td>
+<td>inventory</td>
+<td>LIBRARIAN · P04</td>
+</tr>
+<tr>
+<td>S10</td>
+<td>POST <code>/api/documents/{id}/copies</code></td>
+<td>inventory</td>
+<td>LIBRARIAN · P04</td>
+</tr>
+<tr>
+<td>S11</td>
+<td>PUT <code>/api/copies/{id}</code></td>
+<td>inventory</td>
+<td>LIBRARIAN · P04</td>
+</tr>
+<tr>
+<td>S12</td>
+<td>DELETE <code>/api/copies/{id}</code></td>
+<td>inventory</td>
+<td>LIBRARIAN · P04</td>
+</tr>
+<tr>
+<td>S13</td>
+<td>POST <code>/api/readers</code></td>
+<td>clients</td>
+<td>ADMIN · P05</td>
+</tr>
+<tr>
+<td>S14</td>
+<td>GET <code>/api/readers</code></td>
+<td>clients</td>
+<td>ADMIN · P05</td>
+</tr>
+<tr>
+<td>S15</td>
+<td>GET <code>/api/readers/{id}</code></td>
+<td>clients</td>
+<td>READER,LIBRARIAN,ADMIN · P05</td>
+</tr>
+<tr>
+<td>S16</td>
+<td>PUT <code>/api/readers/{id}</code></td>
+<td>clients</td>
+<td>ADMIN · P05</td>
+</tr>
+<tr>
+<td>S17</td>
+<td>POST <code>/api/requests</code></td>
+<td>orders</td>
+<td>READER · P01</td>
+</tr>
+<tr>
+<td>S18</td>
+<td>GET <code>/api/requests</code></td>
+<td>orders</td>
+<td>READER,LIBRARIAN · P03,P06</td>
+</tr>
+<tr>
+<td>S19</td>
+<td>DELETE <code>/api/requests/{id}</code></td>
+<td>orders</td>
+<td>READER,LIBRARIAN · P03,P06</td>
+</tr>
+<tr>
+<td>S20</td>
+<td>POST <code>/api/requests/{id}/issue</code></td>
+<td>orders</td>
+<td>LIBRARIAN · P06</td>
+</tr>
+<tr>
+<td>S21</td>
+<td>GET <code>/api/loans</code></td>
+<td>orders</td>
+<td>READER,LIBRARIAN,ADMIN · P03,P06</td>
+</tr>
+<tr>
+<td>S22</td>
+<td>GET <code>/api/loans/{id}</code></td>
+<td>orders</td>
+<td>READER,LIBRARIAN,ADMIN · P03,P06</td>
+</tr>
+<tr>
+<td>S23</td>
+<td>GET <code>/api/loans/{id}/receipt</code></td>
+<td>orders</td>
+<td>READER,LIBRARIAN · P09</td>
+</tr>
+<tr>
+<td>S24</td>
+<td>POST <code>/api/returns</code></td>
+<td>orders</td>
+<td>LIBRARIAN · P07</td>
+</tr>
+<tr>
+<td>S25</td>
+<td>POST <code>/api/reservations</code></td>
+<td>orders</td>
+<td>READER · P01</td>
+</tr>
+<tr>
+<td>S26</td>
+<td>GET <code>/api/reservations</code></td>
+<td>orders</td>
+<td>READER,LIBRARIAN · P03,P06</td>
+</tr>
+<tr>
+<td>S27</td>
+<td>DELETE <code>/api/reservations/{id}</code></td>
+<td>orders</td>
+<td>READER,LIBRARIAN · P03,P06</td>
+</tr>
+<tr>
+<td>S28</td>
+<td>GET <code>/api/overdue</code></td>
+<td>orders</td>
+<td>ADMIN · P08</td>
+</tr>
+<tr>
+<td>S29</td>
+<td>GET <code>/api/payments/policy</code></td>
+<td>payments</td>
+<td>PUBLIC · P03</td>
+</tr>
+<tr>
+<td>S30</td>
+<td>GET <code>/api/payments/assessments/{id}</code></td>
+<td>payments</td>
+<td>READER,LIBRARIAN,ADMIN · P03</td>
+</tr>
+<tr>
+<td>S31</td>
+<td>POST <code>/api/payments/intents</code></td>
+<td>payments</td>
+<td>READER · P03</td>
+</tr>
+<tr>
+<td>S32</td>
+<td>POST <code>/api/graphql</code></td>
+<td>graphql</td>
+<td>READER,LIBRARIAN,ADMIN · P03</td>
+</tr>
+<tr>
+<td>S33</td>
+<td>GET <code>/api/exit-check/{id}</code></td>
+<td>inventory</td>
+<td>LIBRARIAN · P07</td>
+</tr>
+<tr>
+<td>S34</td>
+<td>GET <code>/api/lab/mailbox</code></td>
+<td>mail</td>
+<td>ADMIN · P10</td>
+</tr>
+<tr>
+<td>S35</td>
+<td>POST <code>/api/readers/{id}/activation</code></td>
+<td>clients</td>
+<td>ADMIN · P05</td>
+</tr>
+</tbody>
+</table>
+<p><strong>CRUD pertinente:</strong> documentos y ejemplares permiten alta, lectura, actualización y baja lógica. Solicitudes/reservas permiten creación, consulta y cancelación condicionada, no edición arbitraria. Préstamos, devoluciones y sanciones no se borran para “hacer CRUD”; son transiciones auditables. La ficha actualiza contacto/foto, no cambia silenciosamente RUN, correo validado o biometría. Pagos mantiene evaluaciones de gratuidad, no un carrito comercial inventado.</p>
+<h2>1.3 Convenciones de contrato</h2>
+<ul>
+<li>JSON UTF-8; <code>Content-Type: application/json</code> cuando hay cuerpo. Campos desconocidos, tipos incorrectos, repetidos en query y valores fuera de rango: 400. Cuerpo máximo 256 KiB (413), URI 2048 (414), formato no JSON (415).</li>
+<li>Identificadores de ruta: <code>[A-Za-z0-9_-]{1,100}</code>; códigos de ejemplar definidos por el contrato de alta. RUN se valida con módulo 11; email normalizado y único; fotos PNG/JPEG con tamaño y dimensiones limitados.</li>
+<li>Fechas de reserva <code>AAAA-MM-DD</code>, instantes UTC ISO-8601; reglas por día usan <code>America/Santiago</code>. El cliente <strong>no fija</strong> vencimiento, sanción, propietario, estado ni monto.</li>
+<li>Listas paginadas: <code>page</code> 0–1000, <code>size</code> 1–20; GraphQL usa <code>first</code> 1–20. Sin sesión: 401; rol/titularidad/identidad técnica insuficiente: 403; no encontrado: 404; conflicto de estado/stock/idempotencia: 409; cobro incompatible: 422; límite: 429; dependencia: 502; secretos/persistencia: 503.</li>
+<li><code>Idempotency-Key</code> 8–80 caracteres <code>[A-Za-z0-9_-]</code>, obligatorio al solicitar, reservar y devolver. Misma clave con otro cuerpo: 409; reintento idéntico recupera el resultado. La entrega se deduplica por solicitud.</li>
+<li>Errores incluyen código estable, mensaje saneado y <code>correlationId</code>; nunca una excepción SQL, contraseña, plantilla o secreto. GraphQL puede responder HTTP 200 con <code>errors</code> y datos parciales: se comprueban ambos.</li>
+</ul>
+<p>Todos los ejemplos son ficticios (<code>*.example.invalid</code>), no credenciales preinstaladas. Contraseñas del laboratorio se generan aleatoriamente fuera de fuentes.</p>
+<h1>Módulo 2 · UML de dominio y servicios públicos</h1>
+<h2>2.1 Modelo y separación de representaciones</h2>
+<p><img alt="UML del dominio" src="diagramas/01_dominio.png" /></p>
+<p>La fuente editable es <code>diagramas/01_dominio.puml</code>; el SVG y el PDF A3 permiten leer todos los atributos y cardinalidades. Es un <strong>modelo de agregados de negocio</strong>, no un diagrama que prometa una tabla relacional por clase.</p>
+<table>
+<thead>
+<tr>
+<th>Asociación y cardinalidad en ambos extremos</th>
+<th>Justificación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Document <code>1</code> — Copy <code>0..*</code>; cada Copy pertenece a <code>1</code> Document</td>
+<td>Una obra puede registrarse antes de incorporar copias; cada copia tiene código y ubicación propios</td>
+</tr>
+<tr>
+<td>Reader <code>1</code> — LoanRequest <code>0..*</code>; solicitud tiene <code>1</code> titular</td>
+<td>Permite historial y control de propiedad sin compartir la ficha completa</td>
+</tr>
+<tr>
+<td>LoanRequest <code>1</code> — Allocation <code>0..1</code>; asignación referencia <code>1</code> solicitud</td>
+<td>Puede existir una intención durable aún sin stock confirmado; inventario es la autoridad de la asignación</td>
+</tr>
+<tr>
+<td>Allocation <code>1</code> — Copy <code>1..5</code>; Copy tiene <code>0..1</code> asignación HELD vigente</td>
+<td>No hay doble asignación simultánea; el histórico no equivale a ocupación actual</td>
+</tr>
+<tr>
+<td>LoanRequest <code>1</code> — Loan <code>0..1</code>; Loan proviene de <code>1</code> solicitud</td>
+<td>La entrega idempotente no crea préstamos duplicados</td>
+</tr>
+<tr>
+<td>Reader <code>1</code> — Loan <code>0..*</code>; Loan tiene <code>1</code> titular</td>
+<td>Titularidad y sanciones pertenecen al lector autenticado</td>
+</tr>
+<tr>
+<td>Loan <code>1</code> contiene LoanItem <code>1..5</code>; cada ítem tiene <code>1</code> préstamo</td>
+<td>Plazo y devolución por documento, no una fecha general incorrecta</td>
+</tr>
+<tr>
+<td>Copy <code>1</code> — LoanItem <code>0..*</code> históricos; ítem identifica <code>1</code> Copy</td>
+<td>Una copia se reutiliza en el tiempo; solo un préstamo/hold vigente</td>
+</tr>
+<tr>
+<td>Reader <code>1</code> — Reservation <code>0..*</code>; reserva tiene <code>1</code> lector y <code>1</code> copia</td>
+<td>Unicidad de copia/día y dueño; no reserva genérica de título</td>
+</tr>
+<tr>
+<td>LoanItem <code>1</code> — ReturnRecord <code>0..1</code>; devolución tiene <code>1</code> ítem</td>
+<td>Reintentos no suman sanciones ni duplican reingreso</td>
+</tr>
+<tr>
+<td>Reader <code>1</code> — Sanction <code>0..1</code> agregado vigente; sanción referencia <code>1</code> lector</td>
+<td>Se mantiene hasta máxima fecha calculada; los hechos originales siguen en devoluciones</td>
+</tr>
+<tr>
+<td>Loan <code>1</code> — FreeAssessment <code>0..1</code>; evaluación pertenece a <code>1</code> Loan</td>
+<td>Puede faltar durante PREPARING; antes de ACTIVE se confirma una exención persistente</td>
+</tr>
+<tr>
+<td>Loan <code>1</code> — OutboxEvent <code>0..*</code>; evento refiere <code>0..1</code> préstamo</td>
+<td>Activación refiere lector, recordatorio/recibo refieren préstamo</td>
+</tr>
+</tbody>
+</table>
+<p>Las referencias entre servicios son IDs o snapshots verificados por API, <strong>no claves foráneas ni JOIN entre esquemas</strong>. Las asociaciones históricas no autorizan acceso a recursos ajenos. Document/Copy y préstamo/ítems tienen estados explícitos; no se calcula stock en JavaScript.</p>
+<h2>2.2 Servicios públicos y DTO</h2>
+<p><img alt="Servicios y DTO públicos" src="diagramas/02_servicios_dto.png" /></p>
+<p><code>diagramas/02_servicios_dto.puml</code> incluye operaciones públicas y atributos/tipos de DTO. Las firmas son contratos de aplicación; la implementación concreta utiliza <code>Map&lt;String,Object&gt;</code> con validación explícita, no se afirman clases DTO Java inexistentes.</p>
+<table>
+<thead>
+<tr>
+<th>Servicio/clase</th>
+<th>Operaciones públicas</th>
+<th>Representación externa frente a datos internos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AuthService</td>
+<td>S01–S04</td>
+<td>Devuelve sesión/rol/expiración; no hash de contraseña ni registro interno de sesión</td>
+</tr>
+<tr>
+<td>InventoryService</td>
+<td>S05–S12, S33</td>
+<td>Catálogo y copias con conteos; omite titular, hold y claves; edición requiere bibliotecario</td>
+</tr>
+<tr>
+<td>ClientsService</td>
+<td>S13–S16, S35</td>
+<td>Admin/titular acceden a ficha; bibliotecario solo identidad/foto; nunca hash de muestra ni contraseña</td>
+</tr>
+<tr>
+<td>OrdersService</td>
+<td>S17–S28</td>
+<td>Solicitud, préstamo, ítems, reserva, recibo y morosidad por alcance; no cabeceras de firma ni claves de dedup</td>
+</tr>
+<tr>
+<td>PaymentsService</td>
+<td>S29–S31</td>
+<td>Política pública y evaluación 0 CLP por titular; el estado PAID enviado no tiene efecto</td>
+</tr>
+<tr>
+<td>GraphQLGateway</td>
+<td>S32</td>
+<td>Proyección agregada de lectura con autorización por campo/recurso</td>
+</tr>
+<tr>
+<td>MailTestProvider</td>
+<td>S34</td>
+<td>Mensajes solo ADMIN/LAB; no bandeja pública ni envío Internet</td>
+</tr>
+</tbody>
+</table>
+<p>La consulta del catálogo no devuelve <code>Account</code>, <code>Session</code>, biometría ni contenido privado del préstamo. Los snapshots de título y plazo conservan el comprobante aunque se edite después el documento.</p>
+<h1>Módulo 3 · Microservicios, propiedad y colaboración</h1>
+<h2>3.1 Componentes y despliegue</h2>
+<p><img alt="Componentes y despliegue" src="diagramas/04_componentes_despliegue.png" /></p>
+<p>Un mismo JAR se ejecuta con diferente nombre/configuración en <strong>diez procesos independientes</strong>: gateway, secrets, auth, clients, inventory, orders, payments, graphql, notifications y mail. El código compartido no crea acceso cruzado a BD. El lanzador local y Docker separan los procesos; las pruebas de integración arrancan diez servidores reales TLS en una JVM de pruebas para poder inyectar reloj y caídas deterministas.</p>
+<table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>Autoridad/datos propios</th>
+<th>Dependencias por contrato</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>auth</td>
+<td>Cuentas, hashes, activación, sesiones revocables</td>
+<td>clients para activar; notifications para outbox</td>
+</tr>
+<tr>
+<td>clients</td>
+<td>Ficha cifrada, índices RUN/email HMAC, muestra TEST protegida</td>
+<td>auth para unicidad/provisión/reenvío</td>
+</tr>
+<tr>
+<td>inventory</td>
+<td>Obras, copias, asignaciones, calendario autoritativo de reserva</td>
+<td>No necesita BD ajena</td>
+</tr>
+<tr>
+<td>orders</td>
+<td>Solicitudes, préstamos/ítems, reservas del lector, devoluciones, sanción, idempotencia, outbox</td>
+<td>clients, inventory, payments, notifications</td>
+</tr>
+<tr>
+<td>payments</td>
+<td>Política de gratuidad y evaluación EXEMPT por préstamo</td>
+<td>No banco/proveedor comercial</td>
+</tr>
+<tr>
+<td>notifications</td>
+<td>Eventos deduplicados, intentos y estado de entrega</td>
+<td>clients para contacto mínimo; mail para envío TEST</td>
+</tr>
+<tr>
+<td>mail</td>
+<td>Mensaje TEST cifrado y deduplicación del proveedor</td>
+<td>Sin SMTP/Internet</td>
+</tr>
+<tr>
+<td>graphql</td>
+<td>Sin BD; proyección por request</td>
+<td>clients + orders + inventory + payments</td>
+</tr>
+<tr>
+<td>gateway</td>
+<td>Sin BD de negocio; catálogo de rutas y límites en memoria</td>
+<td>auth y destino explícito</td>
+</tr>
+<tr>
+<td>secrets</td>
+<td>Bundles cifrados/ACL por consumidor, fuera de BD de negocio</td>
+<td>Archivos privados y su clave raíz de arranque</td>
+</tr>
+</tbody>
+</table>
+<p>Hay <strong>siete repositorios persistentes</strong>. Perfil principal preparado: siete esquemas/credenciales Oracle en un servidor, sin acceso cruzado. Perfil probado: siete archivos H2 separados. Oracle compartido sigue siendo una dependencia física común, no siete servidores independientes.</p>
+<h2>3.2 Identidad y fallas</h2>
+<table>
+<thead>
+<tr>
+<th>Llamada</th>
+<th>Propósito y autorización adicional</th>
+<th>Si falla</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>gateway → auth</td>
+<td>Introspección de sesión en cada operación protegida</td>
+<td>401 si inválida; 502 si auth no responde; no identidad “de respaldo”</td>
+</tr>
+<tr>
+<td>gateway → servicio</td>
+<td>Ruta/verbo permitidos, rol verificado y principal firmado nuevo</td>
+<td>502 saneado; no se redirige a rutas alternativas</td>
+</tr>
+<tr>
+<td>clients → auth</td>
+<td>Comprobar email, provisionar cuenta y reenvío ADMIN</td>
+<td>Precheck fallido impide alta; alta ya persistida reintenta provisión</td>
+</tr>
+<tr>
+<td>auth → clients</td>
+<td>Activar la ficha con token válido de un uso</td>
+<td>No marca cuenta ACTIVE hasta confirmar; reintento de activación es seguro</td>
+</tr>
+<tr>
+<td>orders → clients</td>
+<td>Lector activo y verificación RUN/muestra bajo bibliotecario</td>
+<td>No entrega con identidad no comprobada</td>
+</tr>
+<tr>
+<td>orders → inventory</td>
+<td>Asignar todo o nada, confirmar, reservar, liberar/devolver</td>
+<td>Intención durable ALLOCATING/ISSUING/RETURNING/CANCELLING y reintento; no se inventa stock</td>
+</tr>
+<tr>
+<td>orders → payments</td>
+<td>Crear una evaluación de gratuidad por préstamo</td>
+<td>PREPARING; al recuperar se completa la misma entrega, no otra</td>
+</tr>
+<tr>
+<td>auth/orders → notifications</td>
+<td>Evento durable con ID/digest</td>
+<td>Outbox retiene pendiente; dedup evita doble correo</td>
+</tr>
+<tr>
+<td>notifications → clients/mail</td>
+<td>Contacto mínimo y envío TEST</td>
+<td>Reintentos exponenciales hasta 256 s entre intentos; sin marcar entregado antes de confirmación</td>
+</tr>
+<tr>
+<td>graphql → cuatro fuentes</td>
+<td>Lecturas acotadas con usuario verificado</td>
+<td>Fuente de campo opcional caída: <code>errors</code> + campo null; raíz requerida caída: error sin inventar datos</td>
+</tr>
+<tr>
+<td>cualquier consumidor → secrets</td>
+<td>Solo su bundle mediante token propio</td>
+<td>Caché máxima 5 s; vencida y sin gestor: 503/fail-closed</td>
+</tr>
+</tbody>
+</table>
+<p>Las claves HMAC son por <strong>arista dirigida</strong>, no un secreto global. El receptor vuelve a comprobar caller autorizado, rol, propiedad, estado y cuerpo. Una firma técnicamente válida no autoriza cualquier operación.</p>
+<h2>3.3 Colaboración representativa y consistencia</h2>
+<p><img alt="Secuencia de entrega HOME y recuperación" src="diagramas/05_secuencia_prestamo.png" /></p>
+<ol>
+<li>Lector activo y sin sanción/vencido crea una solicitud con clave de idempotencia; orders persiste intención y inventory asigna 1–5 copias en una transacción local.</li>
+<li>Bibliotecario verifica al titular con RUN y muestra TEST. Orders persiste <code>ISSUING</code>/préstamo <code>PREPARING</code> antes de confirmar stock.</li>
+<li>Inventory confirma HOME/ROOM y calcula vencimientos con el reloj servidor y la política del documento. Payments crea una única evaluación EXEMPT.</li>
+<li>Orders confirma ACTIVE/ISSUED y outbox del recibo HOME en su propia transacción. Notifications envía por la API TEST.</li>
+<li>Una caída tras confirmar inventory deja un estado intermedio recuperable; el worker reintenta con el mismo ID. Cancelar en resultado incierto está prohibido.</li>
+</ol>
+<p>No hay transacción ACID distribuida ni promesa de “exactly once” de red. Hay transacciones locales, estados durables, reintentos y efectos idempotentes. Las pruebas T13/T14/T16 comprueban recuperación y no duplicación.</p>
+<h1>Módulo 4 · Stakeholders y matriz de autorización</h1>
+<h2>4.1 Interesados no equivalen a usuarios</h2>
+<table>
+<thead>
+<tr>
+<th>Stakeholder</th>
+<th>Interés/impacto</th>
+<th>¿Rol operativo?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Lector registrado</td>
+<td>Disponibilidad, privacidad, plazos, recibos y sanciones justas</td>
+<td>READER, únicamente recursos propios</td>
+</tr>
+<tr>
+<td>Visitante de kiosco</td>
+<td>Buscar sin inscripción ni exposición de terceros</td>
+<td>Anónimo, catálogo/política y acceso/activación</td>
+</tr>
+<tr>
+<td>Bibliotecario</td>
+<td>Colección, preparación, identificación, circulación y salida</td>
+<td>LIBRARIAN; no administra fichas completas ni morosidad administrativa</td>
+</tr>
+<tr>
+<td>Administrativo</td>
+<td>Documentación de inscripción, activación/contacto y morosos</td>
+<td>ADMIN; no recibe automáticamente permisos de bibliotecario</td>
+</tr>
+<tr>
+<td>Dirección de biblioteca</td>
+<td>Continuidad, normas de sanción, aprobación de reglas</td>
+<td>Sin cuenta privilegiada inventada; gobernanza</td>
+</tr>
+<tr>
+<td>Municipalidad/financiador</td>
+<td>Uso responsable de recursos, legitimidad del servicio</td>
+<td>Sin acceso operativo ni analítica identificable por defecto</td>
+</tr>
+<tr>
+<td>Lectores menores/representantes y comunidad</td>
+<td>Accesibilidad, equidad, protección de datos</td>
+<td>No nuevo rol técnico sin requisito/procedimiento aprobado</td>
+</tr>
+<tr>
+<td>Operación TI/seguridad</td>
+<td>Certificados, respaldo, secretos, disponibilidad</td>
+<td>Identidad técnica, no rol funcional para consultar lectores</td>
+</tr>
+<tr>
+<td>Proveedor de correo/dispositivos</td>
+<td>Entrega/identificación y contrato mínimo</td>
+<td>Consumidor/proveedor técnico acotado; adaptadores TEST en esta entrega</td>
+</tr>
+</tbody>
+</table>
+<p>El control deriva del caso y del mínimo privilegio, no de que alguien sea un stakeholder poderoso. ADMIN significa administrativo, no superusuario universal.</p>
+<h2>4.2 Matriz completa</h2>
+<p><code>matriz_acceso.csv</code> contiene <strong>116 filas</strong>: cada una de las 29 rutas publicadas cruzada con GET, POST, PUT y DELETE. Distingue <strong>PERMITIDO</strong>, <strong>DENEGADO</strong> y <strong>N/A (405, operación inexistente)</strong> para anónimo, lector, bibliotecario y administrativo, e incluye propietario, estado y punto de control. No se deduce permiso por ausencia de una fila.</p>
+<ul>
+<li>PUBLIC: S01, S03, S05, S06, S29; presentar un bearer inválido tampoco concede acceso.</li>
+<li>READER: solicitudes/reservas propias, préstamos/ficha/evaluaciones propios y cuenta propia. No puede pasar otro <code>readerId</code> para convertirse en ese lector.</li>
+<li>LIBRARIAN: colección, cola/entrega, devoluciones, recibos, ficha limitada y simulación de salida. No inscripción ni listado administrativo de morosos.</li>
+<li>ADMIN: fichas completas, reenvío de activación, morosidad, consultas autorizadas y bandeja TEST. No entrega/devolución/mutación de colección.</li>
+</ul>
+<p><strong>Dónde se aplica:</strong> gateway identifica ruta/verbo y valida sesión/rol; el receptor verifica caller técnico, rol y reglas del recurso; GraphQL controla además campos privados. Ocultar un botón solo mejora UX, nunca sustituye estos controles.</p>
+<p><strong>DELETE no significa borrar historia:</strong> archiva obra/copia disponible, cancela pendiente/reserva vigente; préstamos emitidos, devoluciones y sanciones no tienen DELETE publicado.</p>
+<h1>Módulo 5 · Segundo UML: gateway y seguridad</h1>
+<p><img alt="UML del gateway, políticas y BFF" src="diagramas/03_gateway_seguridad.png" /></p>
+<p><code>diagramas/03_gateway_seguridad.puml</code> muestra atributos, operaciones, cardinalidades y fronteras. AuthenticationPolicy y AuthorizationPolicy son <strong>responsabilidades del diseño</strong> implementadas en ApiGateway, Principal y validadores del servicio; no se presentan como archivos Java separados inexistentes.</p>
+<table>
+<thead>
+<tr>
+<th>Elemento</th>
+<th>Responsabilidad concreta</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ApiGateway</td>
+<td>Publica UI/35 rutas explícitas, limita, introspecta sesión, transforma destino y crea cabeceras técnicas nuevas</td>
+</tr>
+<tr>
+<td>RouteDefinition (<code>Routes.Route</code>)</td>
+<td>ID, verbo, patrón externo, destino interno, roles, pantalla y propósito; 35 instancias</td>
+</tr>
+<tr>
+<td>AuthenticationPolicy</td>
+<td>Distingue anónimo/bearer, exige token válido y usa auth, no confía en rol del navegador</td>
+</tr>
+<tr>
+<td>AuthorizationPolicy/Principal</td>
+<td>Rol y titularidad, con estado de negocio en el servicio; denegación por defecto</td>
+</tr>
+<tr>
+<td>ServiceTarget (<code>Config.targets</code>)</td>
+<td>Topología fija HTTPS; no acepta host o URL del cliente ni proxy comodín</td>
+</tr>
+<tr>
+<td>SecretProvider/SecretManager</td>
+<td>Bundle propio, bootstrap de alcance mínimo, caché breve y fallo seguro</td>
+</tr>
+<tr>
+<td>Node/TechnicalIdentity</td>
+<td>HTTPS, firma/verificación HMAC, replay, tamaño, concurrencia, errores y logs saneados</td>
+</tr>
+<tr>
+<td>GraphQLGateway/Schema/Resolver/REST adapter</td>
+<td>Consulta agregada sin mutaciones, consulta fuentes por contrato y decide campos/errores por permiso</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Cardinalidades estructurales:</strong> un gateway usa 35 RouteDefinition, cada ruta tiene un destino; cada proceso tiene un Config y un SecretProvider, un proveedor consulta un gestor; un gestor atiende nueve consumidores de bundles; GraphQL tiene un esquema y cuatro destinos de negocio. Cada request produce un Principal verificado, no un objeto de identidad reutilizado desde el frontend.</p>
+<h2>5.1 Fronteras y controles</h2>
+<p>Navegador → gateway es frontera pública; gateway → servicio es privada y autenticada; servicio → su BD es otra frontera; servicio → secretos es acceso por consumidor. El gestor académico está inspirado en el patrón de clase, pero <strong>no es HashiCorp Vault</strong>, KMS ni un servicio de producción endurecido.</p>
+<ul>
+<li>TLS 1.2/1.3 en HTTP interno/externo; CA local por laboratorio y PKCS12 por identidad. Oracle usa TCPS preparado, todavía no validado.</li>
+<li>6000 peticiones/IP/minuto a API; login 10/IP/minuto; 64 operaciones concurrentes por proceso. Son límites locales, no distribuidos ni defensa completa DDoS.</li>
+<li>Conexión interna 2 s y timeout HTTP por llamada 4 s. No hay deadline global coordinado para toda una consulta GraphQL.</li>
+<li>Logs: servicio, verbo, status, duración y correlación; sin URL de activación, datos de ficha, tokens o cuerpos. Jobs conservan IDs de evento; no se afirma tracing distribuido completo.</li>
+<li>Cabeceras de respuesta: CSP propia sin inline/CDN, HSTS, nosniff, referrer no-referrer y no-store. Sin CORS abierto ni cookies de sesión.</li>
+</ul>
+<h2>5.2 Recorridos permitido y rechazado</h2>
+<p><img alt="Recorridos de acceso" src="diagramas/06_recorridos_acceso.png" /></p>
+<p><strong>Permitido:</strong> GET catálogo → allowlist PUBLIC → gateway firma caller+audiencia+request+principal anónimo → inventory verifica caller y operación pública → DTO sin datos personales → 200.</p>
+<p><strong>Rechazado por autenticación:</strong> POST solicitud sin bearer → 401 antes de llamar a orders.</p>
+<p><strong>Rechazado por autorización:</strong> lector intenta POST documento → 403 en gateway; lector intenta préstamo de otro → sesión válida, gateway permite consultar, orders comprueba propietario → 403.</p>
+<p><strong>Rechazado en la frontera privada:</strong> llamada directa sin firma a inventory → 403 aunque el proceso esté alcanzable por loopback. Reutilizar la misma firma/nonce también da 403. Spoofear <code>X-User-Context</code> en el navegador no funciona: no se reenvía.</p>
+<h1>Módulo 6 · Publicación, protocolos y credenciales</h1>
+<h2>6.1 Rutas y transformaciones</h2>
+<p><code>rutas_y_credenciales.csv</code> contiene las 35 rutas externas con verbo, destino HTTPS interno, transformación, rol y credencial técnica simbólica. Ejemplos:</p>
+<table>
+<thead>
+<tr>
+<th>Entrada pública</th>
+<th>Destino interno</th>
+<th>Transformación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET <code>/api/catalog?q=...&amp;size=10</code></td>
+<td>inventory GET <code>/documents?q=...&amp;size=10</code></td>
+<td>Prefijo explícito; no añade datos de identidad al catálogo</td>
+</tr>
+<tr>
+<td>POST <code>/api/requests</code></td>
+<td>orders POST <code>/requests</code></td>
+<td>Cuerpo validado en destino, Idempotency-Key y principal verificado nuevo</td>
+</tr>
+<tr>
+<td>POST <code>/api/requests/{id}/issue</code></td>
+<td>orders POST <code>/requests/{id}/issue</code></td>
+<td>ID seguro por patrón; no permite suministrar dueAt/ownerId/verified</td>
+</tr>
+<tr>
+<td>POST <code>/api/auth/logout</code></td>
+<td>auth POST <code>/logout</code></td>
+<td>El gateway sustituye el cuerpo por el token real de Authorization</td>
+</tr>
+<tr>
+<td>POST <code>/api/graphql</code></td>
+<td>graphql POST <code>/graphql</code></td>
+<td>JSON query/variables, bearer introspectado y contexto firmado</td>
+</tr>
+</tbody>
+</table>
+<p>El gateway no acepta un parámetro <code>url</code>, comodines de destino, verbos extra ni cabeceras internas del navegador. Las operaciones exclusivamente privadas y sus JSON se especifican en <strong>Anexo B</strong>: asignar/confirmar/devolver stock, verificar lector, crear cuenta, evaluación de gratuidad, lotes y eventos. La API de secretos no es una ruta pública.</p>
+<h2>6.2 Dos identidades, dos propósitos</h2>
+<p><strong>Usuario:</strong> token de sesión opaco, aleatorio, 20 min, hash en auth y revocación al cerrar. El gateway consulta auth antes de actuar en su nombre.</p>
+<p><strong>Servicio:</strong> HMAC-SHA256 por arista dirigida, con identidad de origen/destino y contexto de usuario protegido. Canonicalización exacta del Anexo B: caller, audience, método, path+query, SHA256 del cuerpo, contexto base64, timestamp y nonce. Ventana ±30 s, nonce de un uso. Una clave de orders→inventory no sirve como gateway→clients.</p>
+<p>El receptor no acepta <code>role=ADMIN</code>, <code>paid=true</code> o <code>verified=true</code> del cliente como autorización. El usuario tampoco recibe la clave del servicio que lo representa. TLS protege confidencialidad: la firma HMAC no cifra.</p>
+<h2>6.3 Inventario de secretos y ciclo operativo</h2>
+<p>El Anexo C lista emisor, consumidor, propósito, almacenamiento, alcance, rotación y revocación de contraseña de usuario, sesión, activación, bootstrap de consumidor, cada <code>K_ORIGEN_DESTINO</code>, claves AES de datos, clave HMAC biométrica/índices, credenciales de BD, TLS y raíz del gestor.</p>
+<p>Resumen: runtime generado con directorios 0700/archivos 0600; bundles AES-GCM en el gestor; cada consumidor solo descarga el suyo por token de bootstrap propio. Clave raíz del gestor y clave CA no se montan en el gateway. Los contenedores solo montan bootstrap/TLS de su identidad, más su propio directorio de datos cuando corresponde.</p>
+<p><code>scripts/rotate.py</code> implementa rotación <strong>offline</strong> de una arista o bootstrap existente, sin mostrar valores. Exige detener procesos, respaldo y confirmación; actualiza emisor y receptor antes de reiniciar. No implementa re-cifrado/rotación automática de claves de datos ni una falsa rotación segura de AES sin migrar el contenido.</p>
+<p>REST público y privado transporta JSON acotado; GraphQL es lectura agregada. <strong>No se publica gRPC</strong>, por ADR-002: no hay streaming ni evidencia que justifique añadir un segundo transporte. No se adjunta un <code>.proto</code> vacío como sustituto de implementación.</p>
+<h1>Módulo 7 · Datos sensibles y controles comprobados</h1>
+<h2>7.1 Clasificación y tratamiento</h2>
+<table>
+<thead>
+<tr>
+<th>Clase</th>
+<th>Ejemplos</th>
+<th>Protección y retención real</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pública</td>
+<td>Título, autor, categoría, soporte, estante, conteos</td>
+<td>DTO catálogo sin dueño; metadatos persistentes, baja lógica</td>
+</tr>
+<tr>
+<td>Personal</td>
+<td>Nombre/apellido/foto de ficha</td>
+<td>Clients cifra el perfil con AES-256-GCM y limita DTO según rol; sin purga institucional automática</td>
+</tr>
+<tr>
+<td>Personal restringida</td>
+<td>RUN, dirección, email, teléfono, documentos comprobados, muestra TEST</td>
+<td>Cifrado del perfil; índices RUN/email HMAC; muestra determinista solo HMAC, nunca retornada</td>
+</tr>
+<tr>
+<td>Contextual sensible</td>
+<td>Préstamos, sanción, reservas, morosidad</td>
+<td>Autorización por dueño/rol y TLS; CLOB en BD privada <strong>sin afirmar TDE</strong> ni cifrado de todos los préstamos en reposo</td>
+</tr>
+<tr>
+<td>Credencial</td>
+<td>Contraseña, token de sesión/activación, claves técnicas</td>
+<td>PBKDF2-HMAC-SHA256 con 600000 iteraciones y sal aleatoria para contraseñas; hashes de tokens; secretos fuera del cliente</td>
+</tr>
+</tbody>
+</table>
+<p>La protección de la contraseña es <strong>hash adaptativo con sal, no cifrado reversible</strong>. Perfil y eventos pendientes sí usan cifrado autenticado. La comparación de muestras del adaptador TEST <strong>no es reconocimiento biométrico</strong> y no admite que se cambie por una plantilla ruidosa real sin SDK y evaluación legal.</p>
+<p>Sesión expira a los 20 min y es revocable; filas expiradas se purgan después de un día. Activación dura 24 h, un uso; reenvío ADMIN reemplaza hash y revoca enlace previo. Notifications elimina contenido cifrado al confirmar entrega. Mail TEST purga después de siete días. No existe política aprobada de borrado de fichas/historial ni rotación automática de logs; se declaran tareas pendientes, no cumplimiento legal completo.</p>
+<h2>7.2 ¿Hay secretos en el cliente?</h2>
+<p><strong>Sí, temporalmente:</strong> contraseña introducida, bearer en memoria JavaScript y token de activación del enlace. Viajan por HTTPS, no se guardan en localStorage/sessionStorage/cookies; el enlace se retira de la barra con <code>history.replaceState</code>, no hay referrer a terceros y se cierra por inactividad de kiosco a los cinco minutos. Cerrar/recargar pierde el bearer local; logout revoca en servidor.</p>
+<p><strong>No:</strong> contraseñas de BD, claves HMAC/AES, secreto de bootstrap, clave CA, hashes/plantillas o credenciales del proveedor. No se incrustan en JS, capturas o contrato. Una persona con control del host/root queda fuera de la protección académica basada en archivos y debe tratarse con operación/KMS reales.</p>
+<h2>7.3 Seis comprobaciones exigidas</h2>
+<table>
+<thead>
+<tr>
+<th>Caso de seguridad</th>
+<th>Resultado ejecutado</th>
+<th>Evidencia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Catálogo anónimo</td>
+<td>200 y DTO público</td>
+<td>T01, UI01</td>
+</tr>
+<tr>
+<td>Servicio protegido sin sesión</td>
+<td>401</td>
+<td>T02, T18 reenvío sin sesión</td>
+</tr>
+<tr>
+<td>Operación administrativa con rol lector</td>
+<td>403</td>
+<td>T02/T18</td>
+</tr>
+<tr>
+<td>Préstamo/ficha de otro lector</td>
+<td>403 aunque sesión válida</td>
+<td>T03/T07/T08</td>
+</tr>
+<tr>
+<td>Backend directo sin identidad técnica</td>
+<td>403</td>
+<td>T02; T09 prueba replay y spoof</td>
+</tr>
+<tr>
+<td>Importe/estado de pago manipulado en frontend</td>
+<td>422 NO_MONETARY_PAYMENTS; evaluación y sanción no cambian</td>
+<td>T09, UI06</td>
+</tr>
+</tbody>
+</table>
+<p>Adicionalmente: expiración/revocación de sesiones, enlace de un uso/reenvío, validación de RUN/email/foto, carrera de stock, límites GraphQL, gestor caído fail-closed y persistencia tras reinicio. Las firmas y TLS se ejercitan mediante HTTP real; no solo invocando funciones Java.</p>
+<h1>Módulo 8 · Servicios privados y GraphQL real</h1>
+<h2>8.1 Clasificación</h2>
+<table>
+<thead>
+<tr>
+<th>Tipo</th>
+<th>Componentes/operaciones</th>
+<th>Criterio</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Transaccional</td>
+<td>Inventory asigna/confirma/devuelve; orders gestiona circulación; clients registra; payments evalúa; auth controla sesiones</td>
+<td>Invariantes y transacciones locales; comando REST, no mutación GraphQL distribuida</td>
+</tr>
+<tr>
+<td>Agregación</td>
+<td>GraphQL account para P03</td>
+<td>Combina <strong>cuatro</strong> fuentes sin leer BD ajena</td>
+</tr>
+<tr>
+<td>Procesamiento automático</td>
+<td>Procedures inventory/orders + workers/outbox + notifications</td>
+<td>Libera stock y detecta vencidos; comunica por Web Services</td>
+</tr>
+<tr>
+<td>Analítico</td>
+<td>No se implementa servicio analítico independiente</td>
+<td>Morosidad es operacional; ADR-001 justifica ausencia y disparadores</td>
+</tr>
+<tr>
+<td>Alta demanda potencial</td>
+<td>Catálogo público y cuenta paginada</td>
+<td>Medidos en spike; no se presume necesidad de gRPC o big data</td>
+</tr>
+</tbody>
+</table>
+<h2>8.2 Esquema y uso desde una pantalla</h2>
+<p>El esquema ejecutado está completo en <code>src/main/resources/schema.graphqls</code>. Su consulta raíz es:</p>
+<pre><code class="language-graphql">type Query {
+  account(readerId: ID, first: Int = 10, page: Int = 0): Account!
+}
+</code></pre>
+<p>Consulta real de la pantalla P03 (resumida sin cambiar fuentes):</p>
+<pre><code class="language-graphql">query Cuenta($first: Int!, $page: Int!) {
+  account(first: $first, page: $page) {
+    reader { id names surnames state email }
+    loans {
+      id mode state issuedAt
+      items { copyId title dueAt state document { author available inRoom } }
+      assessment { amount currency state }
+    }
+    reservations { id copyId date mode state }
+    totalLoans page hasMore sanctionUntil
+  }
+}
+</code></pre>
+<p><code>account</code> obtiene ficha de clients y préstamos/reservas de orders con el principal verificado. <code>LoanItem.document</code> resuelve metadatos/disponibilidad de inventory; <code>Loan.assessment</code> resuelve gratuidad de payments. La pantalla muestra 0 CLP/EXEMPT y plazos; no es una consulta aislada en una consola.</p>
+<p><img alt="Cuenta real con agregado GraphQL" src="../evidencias/P03_cuenta_GraphQL.png" /></p>
+<h2>8.3 Permisos por operación, campo y recurso</h2>
+<table>
+<thead>
+<tr>
+<th>Operación/campos</th>
+<th>Lector</th>
+<th>Bibliotecario</th>
+<th>Administrativo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Query.account(readerId)</td>
+<td>Solo su ID o implícito</td>
+<td>ID de lector para circulación</td>
+<td>ID de lector para gestión</td>
+</tr>
+<tr>
+<td>Account.loans/reservations/sanctionUntil y metadatos de página</td>
+<td>Propios</td>
+<td>Lector seleccionado</td>
+<td>Lector seleccionado; reservas por caller GraphQL, no S26 público</td>
+</tr>
+<tr>
+<td>Reader.id/names/surnames/state</td>
+<td>Propio</td>
+<td>Identidad limitada</td>
+<td>Lector seleccionado</td>
+</tr>
+<tr>
+<td>Reader.email/address/telephone/rut</td>
+<td>Propio</td>
+<td><strong>Denegado por campo</strong></td>
+<td>Permitido para gestión</td>
+</tr>
+<tr>
+<td>Loan.id/mode/state/issuedAt/items y campos de ítem</td>
+<td>Préstamo propio</td>
+<td>Circulación autorizada</td>
+<td>Gestión autorizada</td>
+</tr>
+<tr>
+<td>LoanItem.document y todos sus campos</td>
+<td>Público, dentro del agregado autorizado</td>
+<td>Igual</td>
+<td>Igual</td>
+</tr>
+<tr>
+<td>Loan.assessment y loanId/amount/currency/state</td>
+<td>Evaluación de préstamo propio</td>
+<td>Circulación</td>
+<td>Gestión</td>
+</tr>
+<tr>
+<td>Reservation.id/copyId/date/mode/state</td>
+<td>Propia</td>
+<td>Lector seleccionado</td>
+<td>Solo consulta agregada autorizada</td>
+</tr>
+<tr>
+<td>Mutations/subscriptions/introspection</td>
+<td>No existen / introspección bloqueada</td>
+<td>Igual</td>
+<td>Igual</td>
+</tr>
+</tbody>
+</table>
+<p>No existe permiso de escritura por añadir un campo a la consulta. Cada servicio vuelve a verificar propiedad; no basta con filtrar el array final en GraphQL. T08 prueba lector ajeno, campo vedado al bibliotecario y cuenta ADMIN legítima.</p>
+<h2>8.4 Costos, batching, timeout y errores parciales</h2>
+<ul>
+<li>Profundidad máxima 6 y complejidad 100 con instrumentación graphql-java, incluyendo alias/fragmentos; consulta ≤8192 caracteres, variables serializadas ≤4096.</li>
+<li><code>first</code> 1–20, <code>page</code> 0–1000. Se pagina préstamos y se informa total/hasMore; reservas están acotadas a la página correspondiente, sin prometer cursor universal.</li>
+<li>Caché <strong>por request</strong>, no compartida entre usuarios. Un lote de documentos (máximo 100 IDs distintos) y uno de evaluaciones (máximo 20 préstamos), evitando N+1 en cada ítem.</li>
+<li>HTTP interno con timeout de 4 s por llamada, sin deadline global de consulta. Las lecturas base se realizan por contrato, no con JOIN SQL.</li>
+<li><code>document</code> y <code>assessment</code> son nullables: caída de inventory puede dejar préstamos y evaluación disponibles con <code>errors[].extensions.code/path</code>; no se devuelve un stock ficticio. Si falla ficha o lista requerida, la raíz no se inventa.</li>
+<li>La UI indica errores parciales. T08 detiene inventory, comprueba <code>document:null</code> y confirma que assessment sigue disponible.</li>
+</ul>
+<h1>Módulo 9 · Spikes, analítica y gRPC</h1>
+<h2>9.1 Preguntas, alternativas y proyección</h2>
+<p>Según las guías de clase, la decisión sigue: requisito → incertidumbre → pregunta → spike → evidencia → alternativas → ADR y señal de revisión. No se elige gRPC o una plataforma analítica solo por aparecer en el enunciado.</p>
+<p><strong>Proyección de diseño, no dato del caso ni resultado medido:</strong> 500 lectores activos, 10000 títulos/30000 copias, 1000 préstamos/día, concurrencia de catálogo 16 y cuenta 8; objetivo orientativo de revisión 20 consultas catálogo/s y 2 cuentas/s. El caso no aporta volumen, SLA ni demanda de streaming. Estos números deben contrastarse con la biblioteca.</p>
+<p><strong>Incertidumbre:</strong> si REST/JSON paginado y un BFF bastan para una demostración municipal antes de asumir costo de gRPC/analítica. Alternativas: REST con lotes e índices; GraphQL para agregación con control de campos; añadir gRPC/servicio analítico tras un spike equivalente si aparece una necesidad.</p>
+<h2>9.2 Evidencia reproducible medida</h2>
+<p>Medición realizada: <strong>2026-11-19T03:37:59.234660+00:00</strong>, JAR SHA-256 <code>a3a5ad695a0c594a3ca3ba52d82ac52a2d2813cb788a89ebb323069e465dbd6e</code>. Entorno <strong>Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.35</strong>, 12 CPU lógicas, 15.57 GiB visibles; diez JVM independientes de hasta 160 MiB de heap cada una; H2 persistente en archivo. Dataset efectivo: <strong>104 títulos</strong>, con dos copias creadas por título y lectores/préstamos ficticios producidos por seed/E2E.</p>
+<p>Cada escenario usa 10 s solicitados, concurrencia cerrada 1/8/16, conexión HTTP/1.1 TLS reutilizada por trabajador y verificación CA. p95 por rango más próximo sobre solicitudes efectivamente terminadas; elapsed incluye arranque/finalización de trabajadores. CPU suma diez JVM y 100 % equivale a un núcleo; excluye generador Python. RSS es suma de procesos y puede contar páginas compartidas varias veces.</p>
+<table>
+<thead>
+<tr>
+<th>Consulta</th>
+<th>Conc.</th>
+<th>s efectivos</th>
+<th>Solic.</th>
+<th>req/s</th>
+<th>p95 ms</th>
+<th>Errores</th>
+<th>CPU % 1 core</th>
+<th>RSS MiB</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>REST</td>
+<td>1</td>
+<td>10.119</td>
+<td>178</td>
+<td>17.59</td>
+<td>64.24</td>
+<td>0</td>
+<td>93.49</td>
+<td>1483.55</td>
+</tr>
+<tr>
+<td>REST</td>
+<td>8</td>
+<td>10.057</td>
+<td>1453</td>
+<td>144.47</td>
+<td>64.98</td>
+<td>0</td>
+<td>279.49</td>
+<td>1566.91</td>
+</tr>
+<tr>
+<td>REST</td>
+<td>16</td>
+<td>10.074</td>
+<td>1978</td>
+<td>196.35</td>
+<td>107.5</td>
+<td>0</td>
+<td>305.44</td>
+<td>1632.39</td>
+</tr>
+<tr>
+<td>GraphQL</td>
+<td>1</td>
+<td>10.053</td>
+<td>75</td>
+<td>7.46</td>
+<td>151.36</td>
+<td>0</td>
+<td>101.86</td>
+<td>1662.25</td>
+</tr>
+<tr>
+<td>GraphQL</td>
+<td>8</td>
+<td>10.449</td>
+<td>180</td>
+<td>17.23</td>
+<td>515.95</td>
+<td>0</td>
+<td>196.38</td>
+<td>1684.88</td>
+</tr>
+<tr>
+<td>GraphQL</td>
+<td>16</td>
+<td>10.812</td>
+<td>200</td>
+<td>18.5</td>
+<td>900.19</td>
+<td>0</td>
+<td>153.35</td>
+<td>1708.69</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Total:</strong> 4064 solicitudes; 0 errores en los escenarios registrados. Promedios de respuesta de este conjunto: REST 5480 bytes; cuenta GraphQL 1511 bytes. No transporta archivos multimedia; foto de ficha puede llegar a 128000 bytes decodificados y está sujeta al límite de cuerpo.</p>
+<p>REST consulta catálogo y GraphQL consulta una cuenta con cuatro fuentes: <strong>no son cargas equivalentes para comparar protocolos</strong>. No se midió gRPC ni Oracle. Es una pasada corta, sin repeticiones estadísticamente suficientes, prueba de resistencia ni garantía de producción. Tampoco prueba capacidad de la proyección 30000 copias: las lecturas actuales tienen techo de 20000 registros de agregado y deben optimizarse/paginarse en SQL antes de esa escala.</p>
+<h2>9.3 Decisiones y señales de reapertura</h2>
+<table>
+<thead>
+<tr>
+<th>ADR</th>
+<th>Decisión</th>
+<th>Razón y señal de revisión</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ADR-001 Analítica</td>
+<td>No crear servicio analítico independiente</td>
+<td>RF13/14 son operación; revisar ante dashboards municipales aprobados, historia &gt;100000 hechos, consultas agregadas &gt;1 s o minería/análisis anonimizado requerido</td>
+</tr>
+<tr>
+<td>ADR-002 gRPC</td>
+<td>No implementar ahora</td>
+<td>Mensajes pequeños, sin streaming, baseline funcional; revisar ante &gt;100 RPC/s en una arista, mensajes &gt;256 KiB, streaming o perfil que atribuya &gt;30 % a serialización</td>
+</tr>
+<tr>
+<td>ADR-003 Oracle</td>
+<td>Oracle obligatorio sigue pendiente de aceptación</td>
+<td>H2 demuestra comportamiento pero no reemplaza Oracle; ejecutar ORA01–12 y registrar evidencia propia</td>
+</tr>
+<tr>
+<td>ADR-004 Pagos/reglas</td>
+<td>Gratuidad real, no multas; políticas temporales explícitas</td>
+<td>El caso sanciona en tiempo; cualquier cobro es incompatible; validar reglas propuestas con dirección</td>
+</tr>
+</tbody>
+</table>
+<p>Optimizar primero escaneos/paginación de copias, cerrojo global de escritura y round-trips. Un eventual spike gRPC debe comparar <strong>la misma operación/dataset</strong>, con TLS, concurrencia, errores, CPU/RSS y plazos equivalentes; no se declara superioridad de un protocolo no implementado. Sin requerimiento analítico no se fabrica un pipeline big data.</p>
+<h1>Módulo 10 · Implementación, pruebas y entrega</h1>
+<h2>10.1 Tecnología y persistencia</h2>
+<p>Java 21 orientado a objetos, JDK HttpsServer/HttpClient, JDBC, Jackson, graphql-java; Maven construye un JAR ejecutable con dependencias. UI vanilla JS/CSS, sin Node ni CDN. Versiones exactas en <code>pom.xml</code> y <code>requirements*.txt</code>.</p>
+<p>Capas: <code>web/</code> y Routes/ApiGateway (presentación/API); Auth/Clients/Inventory/Orders/Payments y Policies (aplicación/negocio); Store/SecretProvider/adaptadores (infraestructura). Los servicios no comparten conexiones ni leen archivos de BD ajenos.</p>
+<p>El repositorio guarda <strong>agregados JSON CLOB</strong> en <code>BEC_RECORDS(kind,id,payload,state,owner_id,due_at,ready_at,search_text,version)</code>, PK(kind,id), metadatos indexados y JSON válido en Oracle. No se afirma un ORM normalizado por clase. Invariantes y asociaciones se validan en el servicio; transacciones de escritura adquieren <code>BEC_LOCK FOR UPDATE</code>, también entre dos procesos del mismo esquema. Es una solución compacta académica con límite de escalabilidad reconocido, no un diseño de escritura masiva.</p>
+<p>Oracle: V001 crea repositorio/índices/versión; V002 inventory libera copias/holds y expira reservas; V002 orders detecta HOME vencidos y deja outbox diario deduplicado. El worker invoca los procedimientos cada segundo y luego usa la estructura persistente para llamar notifications por HTTPS. <strong>No ejecutados aquí.</strong> H2 usa mantenimiento equivalente Java, identificado en código y pruebas, no procedimientos Oracle ficticiamente aprobados.</p>
+<h2>10.2 Reglas y estados</h2>
+<table>
+<thead>
+<tr>
+<th>Agregado</th>
+<th>Transiciones relevantes e invariantes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cuenta/ficha</td>
+<td>INACTIVE → ACTIVE solo al validar correo; enlace 24 h, un uso, reenvío revoca anterior; RUN/email únicos</td>
+</tr>
+<tr>
+<td>Documento/copia</td>
+<td>Documento ACTIVE → ARCHIVED; copia AVAILABLE → HELD → HOME/ROOM → RESHELVING → AVAILABLE; RETIRED solo disponible/sin reserva</td>
+</tr>
+<tr>
+<td>Solicitud</td>
+<td>ALLOCATING → PENDING → ISSUING → ISSUED; FAILED/EXPIRED; cancelación durable solo en estado permitido</td>
+</tr>
+<tr>
+<td>Préstamo</td>
+<td>PREPARING → ACTIVE → CLOSED; ítems ACTIVE → RETURNING → RETURNED; devolución parcial no cierra otros ítems</td>
+</tr>
+<tr>
+<td>Reserva</td>
+<td>RESERVING → ACTIVE → CONSUMED/CANCELLED/EXPIRED; una copia/día, no cruza préstamo ajeno; hoy..90 días</td>
+</tr>
+<tr>
+<td>Sanción</td>
+<td>Devolución tarde calcula bloqueo temporal; nunca monto monetario ni desbloqueo por PAID</td>
+</tr>
+<tr>
+<td>Outbox/evaluación</td>
+<td>IDs/digests deduplican reintentos; una evaluación EXEMPT por préstamo y un recordatorio HOME/préstamo/día</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Reglas dadas por el caso:</strong> disponibilidad solo 30 min después de devolver; sala vence el mismo día; recibo HOME por documento; lector inactivo o sancionado no solicita; salida autorizada únicamente con HOME confirmado.</p>
+<p><strong>Reglas propuestas donde el caso no fija números:</strong> hold 20 min, máximo cinco copias, horizonte reserva 90 días, HOME 1–30 días y ROOM 1–8 horas configurables por documento, con límite sala 23:59:59.999999999 local. Sanción: un día de bloqueo por día/fracción de atraso, tope 30; se toma máxima fecha, no suma automática. Deben aprobarse con la biblioteca; no se presentan como texto original del caso.</p>
+<h2>10.3 Pruebas ejecutadas</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Cobertura principal</th>
+<th>Resultado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T01–T04</td>
+<td>Catálogo/allowlist; 401/403 y backend directo; activación/revocación/validación; CRUD lógico</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>T05–T07</td>
+<td>Stock concurrente todo-o-nada, idempotencia, reservas, identidad, HOME, recibo/plazos por ítem</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>T08–T09</td>
+<td>GraphQL de cuatro fuentes, campos/propiedad/límites/parcial; cobro manipulado, spoof y replay</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>T10–T12</td>
+<td>Sala/antirrobo, morosidad, devolución, buffer 1799/1800 s, sanción y expiración, recordatorio diario</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>T13–T16</td>
+<td>Caídas payments/inventory/secrets/mail, estados durables, recuperación y persistencia tras reinicio</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>T17–T18</td>
+<td>Sesión y hold vencidos; activación expirada/reenvío/único email y link anterior revocado</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>T_UNIT_01–05</td>
+<td>Fronteras de 30 min/plazos/sanción, hash con sal/AES íntegro y sala en último minuto</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>UI01–UI13</td>
+<td>Navegador real, solicitud/entrega/recibo, cuenta, reserva/cancelación, devolución, admin y móvil 390 px</td>
+<td>PASS</td>
+</tr>
+</tbody>
+</table>
+<p>La evidencia JUnit saneada conserva nombres, duración y resultado, sin propiedades de entorno ni stdout con rutas privadas. El SHA del JAR permite relacionar backend, interfaz y carga con el artefacto distribuido. Las capturas y el recibo usan únicamente datos ficticios; el cuerpo de mensajes de activación se enmascara.</p>
+<h2>10.4 Trazabilidad RF/CU y condiciones no aprobadas</h2>
+<p><code>trazabilidad.csv</code> es la matriz completa <strong>requisito → pantalla → servicio → prueba → resultado → evidencia</strong>. CU1–CU16 se vinculan al RF de igual número del caso. Los resultados distinguen PASS, PARCIAL y PENDIENTE.</p>
+<table>
+<thead>
+<tr>
+<th>RF/CU o condición</th>
+<th>Pantalla</th>
+<th>Servicio</th>
+<th>Prueba</th>
+<th>Resultado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RF01/CU01</td>
+<td>P02</td>
+<td>S01,S02,S04</td>
+<td>T02,T03,T17</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>RF02/CU02</td>
+<td>P04</td>
+<td>S05-S12</td>
+<td>T04,T05</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>RF03/CU03</td>
+<td>P01</td>
+<td>S05,S06</td>
+<td>T01,UI01</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>RF04/CU04</td>
+<td>P01,P02</td>
+<td>S01,S17</td>
+<td>T02,T05,UI03</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>RF05/CU05</td>
+<td>P05</td>
+<td>S13-S16</td>
+<td>T03,T18</td>
+<td>PARCIAL: datos y verificación TEST; SDK físico pendiente</td>
+</tr>
+<tr>
+<td>RF06/CU06</td>
+<td>P02,P05,P10</td>
+<td>S03,S13,S34,S35</td>
+<td>T03,T16,T18,UI10</td>
+<td>PARCIAL: API TEST ejecutada; Internet pendiente</td>
+</tr>
+<tr>
+<td>RF07/CU07</td>
+<td>P01</td>
+<td>S05,S06</td>
+<td>T01,T10</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>RF08/CU08</td>
+<td>P01,P03</td>
+<td>S17-S19</td>
+<td>T05,T07,T10</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>RF09/CU09</td>
+<td>P01,P03</td>
+<td>S25-S27</td>
+<td>T06,UI07</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>RF10/CU10</td>
+<td>P06</td>
+<td>S15,S18</td>
+<td>T05,T07,UI04</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>RF11/CU11</td>
+<td>P06</td>
+<td>S20,S22</td>
+<td>T07,T10,T_UNIT_02,T_UNIT_05</td>
+<td>PARCIAL: RUN y muestra TEST; SDK físico pendiente</td>
+</tr>
+<tr>
+<td>RF12/CU12</td>
+<td>P09</td>
+<td>S23</td>
+<td>T07,UI04</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>RF13/CU13</td>
+<td>P08</td>
+<td>S15,S28</td>
+<td>T10,T11,UI11</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>RF14/CU14</td>
+<td>P08,P10</td>
+<td>S28,S34</td>
+<td>T12,T16</td>
+<td>PARCIAL: outbox/API TEST; Internet pendiente</td>
+</tr>
+<tr>
+<td>RF15/CU15</td>
+<td>P07</td>
+<td>S24</td>
+<td>T11,T14,T_UNIT_01,UI09</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>RF16/CU16</td>
+<td>P01,P03,P07</td>
+<td>S17,S24,S25,S29-S31</td>
+<td>T09,T11,T12,T_UNIT_03,UI06</td>
+<td>PASS: fórmula propuesta requiere aprobación de negocio</td>
+</tr>
+<tr>
+<td>RNF-ANTIRROBO</td>
+<td>P07</td>
+<td>S33</td>
+<td>T07,T10,UI08</td>
+<td>PARCIAL: decisión software; RFID físico pendiente</td>
+</tr>
+<tr>
+<td>RNF-WEB-POO</td>
+<td>P01-P10</td>
+<td>S01-S35</td>
+<td>JUnit,UI01-UI13</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>RNF-ORACLE-SP</td>
+<td>P01-P10</td>
+<td>Todos persistentes</td>
+<td>ORA01-ORA12</td>
+<td>PENDIENTE: preparado, no ejecutado</td>
+</tr>
+<tr>
+<td>RNF-WS</td>
+<td>P02,P03,P06,P10</td>
+<td>S03,S20,S32,S34</td>
+<td>T07,T08,T13-T16</td>
+<td>PASS local; proveedor real pendiente</td>
+</tr>
+<tr>
+<td>RNF-SEGURIDAD</td>
+<td>P01-P10</td>
+<td>S01-S35</td>
+<td>T01-T03,T08-T09,T15,T17-T18</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>RNF-RESPONSIVE</td>
+<td>P01-P10</td>
+<td>Frontend</td>
+<td>UI01-UI13,UI12 390px</td>
+<td>PASS técnico; estudio de tareas pendiente</td>
+</tr>
+<tr>
+<td>RNF-AYUDA</td>
+<td>Ayuda web</td>
+<td>Frontend estático</td>
+<td>Inspección ayuda/Manual</td>
+<td>ENTREGADO</td>
+</tr>
+<tr>
+<td>RNF-APRENDIZAJE</td>
+<td>P01-P10</td>
+<td>Interfaz</td>
+<td>Estudio con usuarios</td>
+<td>PENDIENTE: no medido con personas</td>
+</tr>
+<tr>
+<td>RNF-ERROR-HUMANO</td>
+<td>P01-P10</td>
+<td>Interfaz</td>
+<td>Estudio con usuarios</td>
+<td>PENDIENTE: no equivale a cero errores HTTP</td>
+</tr>
+<tr>
+<td>M08-GRAPHQL</td>
+<td>P03</td>
+<td>S32</td>
+<td>T08,UI02,UI05</td>
+<td>PASS: cuatro fuentes</td>
+</tr>
+<tr>
+<td>M09-SPIKE</td>
+<td>P01,P03</td>
+<td>S05,S32</td>
+<td>6 escenarios de carga</td>
+<td>MEDIDO H2; no gRPC implementado ni comparación equivalente</td>
+</tr>
+<tr>
+<td>M10-RED-DOCKER</td>
+<td>Despliegue</td>
+<td>Compose</td>
+<td>ORA10</td>
+<td>PENDIENTE: configuración no ejecutada</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Aprobación técnica local no equivale a aceptación total:</strong> Oracle/TCPS/PLSQL/red Docker, envío real de email, reconocimiento biométrico, antirrobo físico, política legal de datos, estudio de aprendizaje/error humano y operación de producción están pendientes. No se ofrecen identidades administrativas, pagos o CRUD de historia que el caso no solicita.</p>
+<h2>10.5 Reproducción y operación</h2>
+<p>El README contiene comandos de compilación, generación de secretos, arranque, carga de datos ficticios, pruebas y apagado. <code>.runtime</code> se genera al instalar y <strong>no se distribuye</strong>. <code>run.py stop</code> conserva archivos; Docker <code>down</code> conserva volumen. Respaldo/rotación/revocación y límites documentados en Anexo C.</p>
+<ul>
+<li>Puertos locales: gateway 8443; secrets 9100, auth 9101, clients 9102, inventory 9103, orders 9104, payments 9105, notifications 9106, graphql 9107, mail 9108. Todos internos en loopback; en Compose solo gateway publicado.</li>
+<li>Health mínimo, timeouts y errores saneados; no confundir <code>/health</code> UP con disponibilidad de todas las dependencias.</li>
+<li>El proveedor de email es TEST persistente autenticado/deduplicado. El adaptador de huella coteja muestra determinista; la salida es una decisión software, sin accionar una barrera física.</li>
+<li>Manual estructurado y responsive incluidos; no se midieron aprendizaje &lt;4 h ni tasa de error humano &lt;1 % con usuarios reales.</li>
+<li>El ZIP contiene fuentes, JAR, documentos editables, contratos y evidencia; no claves, bases de datos ni credenciales. <code>MANIFEST.sha256</code> permite verificar integridad, no es una firma digital del autor.</li>
+</ul>
+<h2>Conclusión</h2>
+<p>La entrega demuestra los flujos de circulación y la seguridad exigida mediante una implementación reproducible y evidencia ejecutada, sin convertir sanciones temporales en multas. Las decisiones de no añadir analítica/gRPC se sustentan en alcance y spike real, con señales de revisión. El paso obligatorio restante para aceptar íntegramente el caso es ejecutar Oracle y las integraciones institucionales, conservando las limitaciones explícitas.</p>
+<h2>Referencias utilizadas</h2>
+<ol>
+<li><code>Tarea_parte_Backend.pdf</code>: diez módulos, entregables y evidencia esperada.</li>
+<li><code>Caso16.docx</code>: sistema de biblioteca, RF1–RF16/CU1–CU16 y requisitos tecnológicos/no funcionales.</li>
+<li><code>material_clases/API_GATEWAY_SECURE_GUIDE.pdf</code>: gateway, separación bearer/credencial técnica, TLS, secretos y fallo seguro. Sus ejemplos didácticos no se publican como proxy abierto.</li>
+<li><code>material_clases/Microservice Architecture Archivo.txt</code>: cohesión, acoplamiento, propiedad de datos y evolución.</li>
+<li><code>material_clases/API GATEWAY Archivo.txt</code>: fronteras, gateway y protocolos.</li>
+<li><code>Guia_Spike_ADR.pdf</code> y <code>presentacion_requerimientos_spikes_adr_trazable(1).pptx</code>, en <code>material_clases/</code>: evidencia admisible/suficiente/creíble, alternativas y ADR.</li>
+<li><code>DecidArch_Stakeholders.pdf</code> y <code>DecidArch_Events.pdf</code>, en <code>material_clases/</code>: actores sociotécnicos y revisión de decisiones.</li>
+<li>Código fuente, contratos, pruebas y registros anexos de esta entrega. Las láminas sin texto extraíble no se citan como si se hubiera realizado un OCR exhaustivo.</li>
+</ol></body></html>

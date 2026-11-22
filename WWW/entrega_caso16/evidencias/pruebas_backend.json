@@ -1,0 +1,174 @@
+{
+  "recorded_at_utc": "2026-11-19T03:45:33.999097+00:00",
+  "artifact_sha256": "a3a5ad695a0c594a3ca3ba52d82ac52a2d2813cb788a89ebb323069e465dbd6e",
+  "profile": "H2 FILE; siete repositorios; diez listeners HTTPS en JVM de pruebas",
+  "java": "21",
+  "total": 23,
+  "passed": 23,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "oracle_executed": false,
+  "source_reports_mtime_utc": {
+    "TEST-cl.bec.PoliciesTest.xml": "2026-11-19T03:32:46.308621+00:00",
+    "TEST-cl.bec.SystemTest.xml": "2026-11-19T03:33:28.725833+00:00"
+  },
+  "suites": [
+    {
+      "name": "cl.bec.PoliciesTest",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.714"
+    },
+    {
+      "name": "cl.bec.SystemTest",
+      "tests": "18",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "42.327"
+    }
+  ],
+  "tests": [
+    {
+      "name": "T_UNIT_03_sancionFronteraYTope",
+      "classname": "cl.bec.PoliciesTest",
+      "time": "0.076",
+      "result": "PASS"
+    },
+    {
+      "name": "T_UNIT_02_salaMismoDiaYPlazosDistintos",
+      "classname": "cl.bec.PoliciesTest",
+      "time": "0.678",
+      "result": "PASS"
+    },
+    {
+      "name": "T_UNIT_01_bufferExacto",
+      "classname": "cl.bec.PoliciesTest",
+      "time": "0.003",
+      "result": "PASS"
+    },
+    {
+      "name": "T_UNIT_05_salaUltimoMinutoNoVenceAntesDeEntrega",
+      "classname": "cl.bec.PoliciesTest",
+      "time": "0.001",
+      "result": "PASS"
+    },
+    {
+      "name": "T_UNIT_04_clavesYSobres",
+      "classname": "cl.bec.PoliciesTest",
+      "time": "0.893",
+      "result": "PASS"
+    },
+    {
+      "name": "T01_catalogoAnonimoYAllowlist",
+      "classname": "cl.bec.SystemTest",
+      "time": "0.295",
+      "result": "PASS"
+    },
+    {
+      "name": "T02_sesionRolYBackendDirecto",
+      "classname": "cl.bec.SystemTest",
+      "time": "0.259",
+      "result": "PASS"
+    },
+    {
+      "name": "T03_activacionUnicaLogoutYValidacion",
+      "classname": "cl.bec.SystemTest",
+      "time": "1.737",
+      "result": "PASS"
+    },
+    {
+      "name": "T04_CRUDColeccionSinBorradoHistorico",
+      "classname": "cl.bec.SystemTest",
+      "time": "0.854",
+      "result": "PASS"
+    },
+    {
+      "name": "T05_carreraAtomicaIdempotenciaYTitularidad",
+      "classname": "cl.bec.SystemTest",
+      "time": "0.792",
+      "result": "PASS"
+    },
+    {
+      "name": "T06_reservaFechaConflictoYCancelacion",
+      "classname": "cl.bec.SystemTest",
+      "time": "0.869",
+      "result": "PASS"
+    },
+    {
+      "name": "T07_entregaIdentidadComprobanteYSalida",
+      "classname": "cl.bec.SystemTest",
+      "time": "1.582",
+      "result": "PASS"
+    },
+    {
+      "name": "T08_GraphQLAgregadoCamposLimitesYPropiedad",
+      "classname": "cl.bec.SystemTest",
+      "time": "2.904",
+      "result": "PASS"
+    },
+    {
+      "name": "T09_pagoManipuladoYFirmaAntireplay",
+      "classname": "cl.bec.SystemTest",
+      "time": "0.431",
+      "result": "PASS"
+    },
+    {
+      "name": "T10_salaNoSaleYVenceMismoDia",
+      "classname": "cl.bec.SystemTest",
+      "time": "2.038",
+      "result": "PASS"
+    },
+    {
+      "name": "T11_devolucionSancionYBufferExacto",
+      "classname": "cl.bec.SystemTest",
+      "time": "1.979",
+      "result": "PASS"
+    },
+    {
+      "name": "T12_recordatorioDiarioSancionExpira",
+      "classname": "cl.bec.SystemTest",
+      "time": "3.12",
+      "result": "PASS"
+    },
+    {
+      "name": "T13_sagaEntregaRecuperaCaidaPagos",
+      "classname": "cl.bec.SystemTest",
+      "time": "1.19",
+      "result": "PASS"
+    },
+    {
+      "name": "T14_fallaInventarioSolicitudYDevolucionRecuperables",
+      "classname": "cl.bec.SystemTest",
+      "time": "1.419",
+      "result": "PASS"
+    },
+    {
+      "name": "T15_caidaSecretosCierraYAlcanceDenegado",
+      "classname": "cl.bec.SystemTest",
+      "time": "0.21",
+      "result": "PASS"
+    },
+    {
+      "name": "T16_correoReintentoYPersistenciaTrasReinicio",
+      "classname": "cl.bec.SystemTest",
+      "time": "1.605",
+      "result": "PASS"
+    },
+    {
+      "name": "T17_vencimientoSesionYRetencion",
+      "classname": "cl.bec.SystemTest",
+      "time": "1.309",
+      "result": "PASS"
+    },
+    {
+      "name": "T18_activacionVencidaReenvioYCorreoUnico",
+      "classname": "cl.bec.SystemTest",
+      "time": "5.706",
+      "result": "PASS"
+    }
+  ]
+}

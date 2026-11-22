@@ -1,0 +1,50 @@
+"""BFF privado; no contiene mutaciones de negocio."""
+type Query {
+  account(readerId: ID, first: Int = 10, page: Int = 0): Account!
+}
+type Account {
+  reader: Reader!
+  loans: [Loan!]!
+  reservations: [Reservation!]!
+  totalLoans: Int!
+  page: Int!
+  hasMore: Boolean!
+  sanctionUntil: String
+}
+type Reader {
+  id: ID!
+  names: String!
+  surnames: String!
+  state: String!
+  email: String
+  address: String
+  telephone: String
+  rut: String
+}
+type Loan {
+  id: ID!
+  mode: String!
+  state: String!
+  issuedAt: String
+  items: [LoanItem!]!
+  assessment: Assessment
+}
+type LoanItem {
+  copyId: ID!
+  title: String!
+  dueAt: String
+  state: String
+  returnedAt: String
+  readyAt: String
+  document: Document
+}
+type Document {
+  id: ID!
+  title: String!
+  author: String!
+  category: String!
+  available: Int!
+  inRoom: Int!
+}
+type Assessment { loanId: ID!, amount: Int!, currency: String!, state: String! }
+type Reservation { id: ID!, copyId: ID!, date: String!, mode: String!, state: String! }

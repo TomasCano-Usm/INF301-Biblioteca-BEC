@@ -1,0 +1,162 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><title>Caso 16 · validacion_oracle</title><style>
+@page {size:A4;margin:18mm 16mm 19mm}
+body{font-family:Arial,sans-serif;color:#203247;font-size:10pt;line-height:1.45}
+h1{color:#133b54;font-size:23pt;line-height:1.15;break-before:page;margin:0 0 16px}
+h1:first-of-type{break-before:auto}h2{font-size:15pt;color:#126268;margin-top:22px}
+h3{font-size:12pt;color:#126268}h1,h2,h3{break-after:avoid}
+p,li{orphans:3;widows:3}a{color:#086e78;text-decoration:none}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:8pt;table-layout:fixed}
+th{background:#e4f1f2;text-align:left;color:#133b54}
+th,td{padding:6px;border:1px solid #b7cbd1;vertical-align:top;overflow-wrap:anywhere}
+thead{display:table-header-group}tr{break-inside:avoid}
+pre{background:#f0f4f6;border:1px solid #ccd8df;padding:9px;white-space:pre-wrap;
+overflow-wrap:anywhere;font:8pt/1.4 Consolas,monospace;break-inside:auto}
+code{font-family:Consolas,monospace;font-size:.9em;overflow-wrap:anywhere}
+img{display:block;max-width:100%;max-height:225mm;object-fit:contain;margin:14px auto}
+blockquote{border-left:4px solid #12858b;padding-left:12px;color:#435567}
+hr{border:0;border-top:1px solid #c4d4da}
+</style><body><h1>Protocolo de aceptación Oracle — NO EJECUTADO</h1>
+<p><strong>Estado de esta entrega:</strong> pendiente. En el WSL de construcción no está habilitado Docker Engine. Las 23 pruebas Java, las 13 comprobaciones de interfaz y el spike de carga corresponden a H2 en archivo. No prueban compatibilidad PL/SQL, wallets, imagen Oracle ni redes Docker. Este documento permite completar esas pruebas en una máquina habilitada, sin confundir preparación con aceptación.</p>
+<h2>Preparación</h2>
+<ol>
+<li>Instalar Docker Engine/Compose v2, JDK 21, Python y las dependencias del README. Reservar al menos 6 GB para aplicaciones y Oracle.</li>
+<li>Detener el laboratorio local si ocupa el puerto 8443. No reutilizar <code>.runtime</code> H2.</li>
+<li>Ejecutar desde la raíz:</li>
+</ol>
+<pre><code class="language-bash">python3 scripts/deploy.py init --profile oracle
+python3 scripts/deploy.py config --profile oracle
+python3 scripts/deploy.py up --profile oracle
+python3 scripts/deploy.py ps --profile oracle
+</code></pre>
+<p><code>init</code> genera <code>.runtime-docker-oracle</code>, secretos por consumidor, certificados, wallet PKCS12 y SQL de inicialización con contraseñas aleatorias. <code>up</code> ajusta el propietario de los archivos <strong>generados para Oracle</strong> al UID 54321 mediante un contenedor auxiliar, sin cambiar permisos de otros archivos. La configuración renderizada incluye rutas privadas; no publicarla junto con logs de inicialización de Oracle, que pueden contener su contraseña administrativa aleatoria.</p>
+<p>El bootstrap SQL crea siete usuarios <code>BEC_AUTH</code>, <code>BEC_CLIENTS</code>, <code>BEC_INVENTORY</code>, <code>BEC_ORDERS</code>, <code>BEC_PAYMENTS</code>, <code>BEC_NOTIFICATIONS</code>, <code>BEC_MAIL</code>; se conecta como cada propietario antes de crear sus objetos. No otorga <code>SELECT ANY TABLE</code>, DBA ni acceso cruzado. Gateway y GraphQL no reciben usuario Oracle ni red de datos.</p>
+<h2>Lista de aceptación con evidencia obligatoria</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Prueba a ejecutar</th>
+<th>Resultado exigido</th>
+<th>Estado actual</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ORA01</td>
+<td>Versión de imagen/Oracle, <code>compose ps</code>, registro de digest y recursos</td>
+<td>Imagen descargada, Oracle y diez aplicaciones estables</td>
+<td>PENDIENTE</td>
+</tr>
+<tr>
+<td>ORA02</td>
+<td>Consultar objetos y errores de compilación</td>
+<td>Siete repositorios V001, V002 inventory/orders, procedimientos VALID y sin errores</td>
+<td>PENDIENTE</td>
+</tr>
+<tr>
+<td>ORA03</td>
+<td>JDBC por TCPS/2484 con CA y DN CN=oracle</td>
+<td>Conexión válida; CA incorrecta o DN incorrecto falla</td>
+<td>PENDIENTE</td>
+</tr>
+<tr>
+<td>ORA04</td>
+<td>Con credencial BEC_CLIENTS intentar leer BEC_ORDERS.BEC_RECORDS</td>
+<td>ORA-00942/ORA-01031; no acceso cruzado</td>
+<td>PENDIENTE</td>
+</tr>
+<tr>
+<td>ORA05</td>
+<td>Inscripción/activación/login, catálogo y solicitud mediante HTTPS</td>
+<td>Persistencia real en esquemas Oracle, validaciones y titularidad intactas</td>
+<td>PENDIENTE</td>
+</tr>
+<tr>
+<td>ORA06</td>
+<td>Entrega HOME y ROOM con RUN/muestra TEST, devolución y recibo</td>
+<td>Plazos por ítem; HOME autorizado para salida software y ROOM no</td>
+<td>PENDIENTE</td>
+</tr>
+<tr>
+<td>ORA07</td>
+<td><code>bec_tick_inventory</code> en sandbox con tiempos de frontera</td>
+<td>A los 1799 s RESHELVING; a los 1800 s AVAILABLE; sin liberación temprana</td>
+<td>PENDIENTE</td>
+</tr>
+<tr>
+<td>ORA08</td>
+<td><code>bec_tick_orders</code> repetido en sandbox con préstamo HOME vencido</td>
+<td>Una entrada OVERDUE por préstamo/día; outbox leído y correo TEST enviado una vez</td>
+<td>PENDIENTE</td>
+</tr>
+<tr>
+<td>ORA09</td>
+<td>Reinicio de contenedores sin eliminar volumen</td>
+<td>Identificadores, préstamos, sanciones y deduplicación conservados</td>
+<td>PENDIENTE</td>
+</tr>
+<tr>
+<td>ORA10</td>
+<td>Desde el host, probar puertos de backend/BD y ruta privada sin firma</td>
+<td>Sin publicación de puertos internos; llamada privada sin identidad 403 desde red autorizada</td>
+<td>PENDIENTE</td>
+</tr>
+<tr>
+<td>ORA11</td>
+<td>Detener payments/inventory/secrets y recuperar</td>
+<td>502/503 controlado; saga/outbox reanuda, sin stock ni evaluación duplicados</td>
+<td>PENDIENTE</td>
+</tr>
+<tr>
+<td>ORA12</td>
+<td>Repetir carga, restauración y flujos con perfil Oracle</td>
+<td>Métricas propias de Oracle, respaldo restaurable y aceptación documentada</td>
+<td>PENDIENTE</td>
+</tr>
+</tbody>
+</table>
+<h3>Inspección SQL de solo lectura</h3>
+<p>Abrir una consola local dentro del contenedor; no escribir contraseñas en un historial de comandos:</p>
+<pre><code class="language-bash">docker compose -f compose.yaml -f compose.oracle.yaml exec oracle sqlplus / as sysdba
+</code></pre>
+<p>En SQL*Plus:</p>
+<pre><code class="language-sql">ALTER SESSION SET CONTAINER = FREEPDB1;
+SELECT owner, object_name, status
+  FROM dba_objects
+ WHERE owner IN ('BEC_INVENTORY','BEC_ORDERS')
+   AND object_type='PROCEDURE';
+SELECT owner, name, line, position, text
+  FROM dba_errors
+ WHERE owner LIKE 'BEC_%'
+ ORDER BY owner, name, sequence;
+SELECT owner, table_name
+  FROM dba_tables
+ WHERE owner LIKE 'BEC_%'
+ ORDER BY owner, table_name;
+</code></pre>
+<p>Solo el operador de aceptación usa SYS para inspección. La aplicación nunca lo usa. Registrar versiones de <code>BEC_SCHEMA_VERSION</code> conectándose como cada propietario. <code>SHOW ERRORS</code> en el bootstrap es informativo: verificar <strong>explícitamente</strong> que no queden objetos INVALID antes de aceptar el despliegue.</p>
+<h3>Sembrado y pruebas web</h3>
+<p>Con los servicios sanos:</p>
+<pre><code class="language-bash">python3 scripts/seed.py --runtime .runtime-docker-oracle --titles 100
+python3 scripts/browser_test.py --runtime .runtime-docker-oracle --output evidencias-oracle
+</code></pre>
+<p>Los comandos anteriores son un plan, <strong>no resultados adjuntos</strong>. <code>seed.py</code> funciona por la API pública y no modifica la BD directamente. <code>load.py</code> suma <code>/proc</code> de los diez PID del lanzador local: para Docker debe adaptarse el monitor a <code>docker stats</code>/cgroups; no usar cifras de procesos locales como si fueran contenedores Oracle.</p>
+<h3>Fronteras de tiempo en sandbox</h3>
+<p>Los procedimientos reciben un instante ISO-8601 y <strong>no hacen COMMIT</strong>; el worker Java los invoca automáticamente cada segundo dentro de una transacción con el cerrojo <code>BEC_LOCK</code>. No requieren permisos <code>DBMS_SCHEDULER</code>. Para ORA07/08 preparar datos <strong>solo en una BD descartable</strong>, detener los workers de inventory/orders y ejecutar como el dueño correspondiente:</p>
+<pre><code class="language-sql">SELECT id FROM bec_lock WHERE id=1 FOR UPDATE;
+EXEC bec_tick_inventory('2026-11-20T15:29:59Z');
+-- Inspeccionar estado/payload del ejemplar con readyAt=15:30:00Z.
+EXEC bec_tick_inventory('2026-11-20T15:30:00Z');
+-- Debe cambiar a AVAILABLE exactamente en esta frontera.
+ROLLBACK;
+</code></pre>
+<p>Análogo para <code>bec_tick_orders</code> dos veces con el mismo día y préstamo vencido, comprobando un único OUTBOX. Adaptar instantes al fixture real y conservar consultas/estados antes y después. No ejecutar un tiempo futuro artificial sobre datos de biblioteca en uso.</p>
+<h3>Puertos, recuperación y cierre</h3>
+<ul>
+<li>Solo <code>127.0.0.1:8443</code> está publicado. <code>private</code> y <code>data</code> son redes internas; gateway no está en <code>data</code>.</li>
+<li>La BD escucha TCPS/2484 para aplicaciones; el TCP local de inicialización no está publicado al host. Verificar listener, DN y confianza real antes de ORA03.</li>
+<li><code>healthcheck.sh</code> del contenedor no sustituye la conexión JDBC ni la aceptación de cada servicio.</li>
+<li>Guardar evidencia saneada: fecha UTC, digest JAR/imagen, versiones, pruebas, estados y conteos. <strong>Eliminar</strong> contraseñas, tokens, foto, huella y SQL de bootstrap antes de adjuntar.</li>
+<li>Finalizar con <code>python3 scripts/deploy.py down --profile oracle</code>. No usar <code>down -v</code> ni borrar el volumen para “arreglar” una migración sin respaldo y autorización.</li>
+</ul>
+<p>Si falla la wallet, la sintaxis Oracle JSON, la imagen o el arranque, conservar el resultado como fallo y corregirlo/repetirlo: no sustituir silenciosamente Oracle por H2. Al aprobar ORA01–12, actualizar ADR-003 y la matriz de trazabilidad con evidencia nueva.</p></body></html>

@@ -1,0 +1,116 @@
+@startuml
+!pragma layout smetana
+title Segundo UML — control de acceso, gateway y agregación
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+package "Frontera pública: solo HTTPS 8443" {
+  class ApiGateway {
+    routes: List<Route>
+    rateWindows: Map<IP,Window>
+    authorize(request): Principal
+    forwardAllowlisted(request): Reply
+  }
+  class RouteDefinition <<Routes.Route>> {
+    id, method, external, internal: String
+    target, roles, screen, purpose: String
+    matches(verb, path): Boolean
+    destination(path): String
+  }
+  class AuthenticationPolicy <<responsabilidad en ApiGateway>> {
+    introspectBearer(): Principal
+    requireExpiryAndRevocation()
+  }
+  class AuthorizationPolicy <<gateway + cada servicio>> {
+    denyByDefault()
+    roles(allowedRoles)
+    owner(resourceOwnerId)
+  }
+  class Principal {
+    id: String
+    role: String
+    roles(allowedRoles)
+    owner(resourceOwnerId)
+  }
+}
+package "Frontera privada HTTPS / identidad dirigida" {
+  class Node {
+    config: Config
+    secrets: SecretProvider
+    store: Store [0..1]
+    call(target, method, path, body, principal)
+    verifyTechnicalIdentity(request)
+    safeTick()
+  }
+  class ServiceTarget <<Config.targets>> {
+    serviceName: String
+    uri: HTTPS URI
+    connectTimeout: 2 seconds
+    requestTimeout: 4 seconds
+  }
+  class TechnicalIdentity {
+    inbound/outboundKey: SecretReference
+    nonceCache: Map<Nonce,Timestamp>
+    sign(canonicalRequest)
+    verifySignatureAudienceTimeNonce()
+  }
+  class SecretProvider {
+    identity: ServiceName
+    cacheTTL: 5 seconds
+    all(): OwnSecretBundle
+    edge(direction, service): Key
+    invalidate()
+  }
+  class SecretManager {
+    acl: Map<Service,Hash(BootstrapToken)>
+    masterKey: AES256
+    getOwnBundle(identity): SecretBundle
+  }
+  class GraphQLGateway {
+    graph: GraphQL
+    accountResolver()
+    fieldAuthorization()
+    batch(type, ids)
+  }
+  class GraphQLSchema <<schema.graphqls>> {
+    account(readerId, first, page): Account
+    maxDepth: 6
+    maxCost: 100
+  }
+  class AccountResolver <<lambda + batch en GraphQLGateway>> {
+    accountCache: RequestScopedCache
+    documentBatch: Map<ID,Document>
+    assessmentBatch: Map<ID,Assessment>
+  }
+  class RESTAdapter <<Node.rpc/call>> {
+    forwardVerifiedPrincipal()
+    sanitizeDependencyFailure()
+  }
+}
+ApiGateway --|> Node
+GraphQLGateway --|> Node
+SecretManager --|> Node
+ApiGateway "1" *-- "35" RouteDefinition : lista explícita
+ApiGateway "1" *-- "1" AuthenticationPolicy
+ApiGateway "1" *-- "1" AuthorizationPolicy
+AuthenticationPolicy "1" --> "0..*" Principal : obtiene por introspección
+AuthorizationPolicy "1" ..> "0..*" Principal
+RouteDefinition "0..*" --> "1" ServiceTarget : destino permitido
+Node "1" *-- "1" SecretProvider : excepto manager raíz
+Node "1" --> "0..*" ServiceTarget
+Node "1" --> "1" TechnicalIdentity
+SecretProvider "1..*" --> "1" SecretManager : TLS + bootstrap propio
+GraphQLGateway "1" *-- "1" GraphQLSchema
+GraphQLGateway "1" *-- "1" AccountResolver
+AccountResolver "1" --> "1" RESTAdapter
+RESTAdapter "1" --> "4" ServiceTarget : clients/orders/inventory/payments
+note bottom of AuthorizationPolicy
+AuthenticationPolicy/AuthorizationPolicy son
+responsabilidades del código, no archivos Java ficticios.
+La matriz permiso+propiedad+estado se revalida atrás.
+end note
+note bottom of TechnicalIdentity
+HMAC incluye emisor, audiencia, verbo, URI,
+hash del cuerpo, principal, tiempo y nonce.
+Cabeceras técnicas del navegador se descartan.
+end note
+@enduml

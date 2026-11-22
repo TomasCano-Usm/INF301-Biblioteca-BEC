@@ -1,0 +1,196 @@
+{
+  "recorded_at_utc": "2026-11-21T18:34:11.507540+00:00",
+  "artifact_sha256": "30d6a2e565463f3ca8d12e7c6ed7d717caeb6dbcda87f966ef5e0f07aa5db758",
+  "profile": "H2 FILE; siete BD; diez listeners HTTPS en JVM de pruebas",
+  "java": "21",
+  "total": 26,
+  "passed": 26,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "oracle_executed": false,
+  "suites": [
+    {
+      "name": "cl.bec.PoliciesTest",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "2.942"
+    },
+    {
+      "name": "cl.bec.SystemTest",
+      "tests": "21",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "52.075"
+    }
+  ],
+  "tests": [
+    {
+      "name": "T_UNIT_03_sancionFronteraYTope",
+      "classname": "cl.bec.PoliciesTest",
+      "time": "0.148",
+      "result": "PASS"
+    },
+    {
+      "name": "T_UNIT_02_salaMismoDiaYPlazosDistintos",
+      "classname": "cl.bec.PoliciesTest",
+      "time": "1.489",
+      "result": "PASS"
+    },
+    {
+      "name": "T_UNIT_01_bufferExacto",
+      "classname": "cl.bec.PoliciesTest",
+      "time": "0.005",
+      "result": "PASS"
+    },
+    {
+      "name": "T_UNIT_05_salaUltimoMinutoNoVenceAntesDeEntrega",
+      "classname": "cl.bec.PoliciesTest",
+      "time": "0.003",
+      "result": "PASS"
+    },
+    {
+      "name": "T_UNIT_04_clavesYSobres",
+      "classname": "cl.bec.PoliciesTest",
+      "time": "1.181",
+      "result": "PASS"
+    },
+    {
+      "name": "T01_catalogoAnonimoYAllowlist",
+      "classname": "cl.bec.SystemTest",
+      "time": "0.441",
+      "result": "PASS"
+    },
+    {
+      "name": "T02_sesionRolYBackendDirecto",
+      "classname": "cl.bec.SystemTest",
+      "time": "0.363",
+      "result": "PASS"
+    },
+    {
+      "name": "T03_activacionUnicaLogoutYValidacion",
+      "classname": "cl.bec.SystemTest",
+      "time": "2.143",
+      "result": "PASS"
+    },
+    {
+      "name": "T04_CRUDColeccionSinBorradoHistorico",
+      "classname": "cl.bec.SystemTest",
+      "time": "1.108",
+      "result": "PASS"
+    },
+    {
+      "name": "T05_carreraAtomicaIdempotenciaYTitularidad",
+      "classname": "cl.bec.SystemTest",
+      "time": "1.136",
+      "result": "PASS"
+    },
+    {
+      "name": "T06_reservaFechaConflictoYCancelacion",
+      "classname": "cl.bec.SystemTest",
+      "time": "0.887",
+      "result": "PASS"
+    },
+    {
+      "name": "T07_entregaIdentidadComprobanteYSalida",
+      "classname": "cl.bec.SystemTest",
+      "time": "1.675",
+      "result": "PASS"
+    },
+    {
+      "name": "T08_GraphQLAgregadoCamposLimitesYPropiedad",
+      "classname": "cl.bec.SystemTest",
+      "time": "3.025",
+      "result": "PASS"
+    },
+    {
+      "name": "T09_pagoManipuladoYFirmaAntireplay",
+      "classname": "cl.bec.SystemTest",
+      "time": "0.43",
+      "result": "PASS"
+    },
+    {
+      "name": "T10_salaNoSaleYVenceMismoDia",
+      "classname": "cl.bec.SystemTest",
+      "time": "1.951",
+      "result": "PASS"
+    },
+    {
+      "name": "T11_devolucionSancionYBufferExacto",
+      "classname": "cl.bec.SystemTest",
+      "time": "1.891",
+      "result": "PASS"
+    },
+    {
+      "name": "T12_recordatorioDiarioSancionExpira",
+      "classname": "cl.bec.SystemTest",
+      "time": "3.266",
+      "result": "PASS"
+    },
+    {
+      "name": "T13_sagaEntregaRecuperaCaidaPagos",
+      "classname": "cl.bec.SystemTest",
+      "time": "1.23",
+      "result": "PASS"
+    },
+    {
+      "name": "T14_fallaInventarioSolicitudYDevolucionRecuperables",
+      "classname": "cl.bec.SystemTest",
+      "time": "1.465",
+      "result": "PASS"
+    },
+    {
+      "name": "T15_caidaSecretosCierraYAlcanceDenegado",
+      "classname": "cl.bec.SystemTest",
+      "time": "0.206",
+      "result": "PASS"
+    },
+    {
+      "name": "T16_correoReintentoYPersistenciaTrasReinicio",
+      "classname": "cl.bec.SystemTest",
+      "time": "1.6",
+      "result": "PASS"
+    },
+    {
+      "name": "T17_vencimientoSesionYRetencion",
+      "classname": "cl.bec.SystemTest",
+      "time": "1.29",
+      "result": "PASS"
+    },
+    {
+      "name": "T18_activacionVencidaReenvioYCorreoUnico",
+      "classname": "cl.bec.SystemTest",
+      "time": "6.152",
+      "result": "PASS"
+    },
+    {
+      "name": "T19_multimediaDigitalDescripcionYAltaAtomica",
+      "classname": "cl.bec.SystemTest",
+      "time": "1.691",
+      "result": "PASS"
+    },
+    {
+      "name": "T20_filtrosCombinadosAntesDePaginar",
+      "classname": "cl.bec.SystemTest",
+      "time": "0.722",
+      "result": "PASS"
+    },
+    {
+      "name": "T21_stockNoRetiraPrestadosYRollbackDeEdicion",
+      "classname": "cl.bec.SystemTest",
+      "time": "2.018",
+      "result": "PASS"
+    }
+  ],
+  "source_reports_mtime_utc": {
+    "TEST-cl.bec.PoliciesTest.xml": "2026-11-21T18:05:34.744155+00:00",
+    "TEST-cl.bec.SystemTest.xml": "2026-11-21T18:06:26.916334+00:00"
+  },
+  "react_checks": 25,
+  "frontend_source_sha256": "07bf5967195750bdae1e059bc01443b58d88a181c381f6c914012cab21b3ffe4",
+  "react_evidence": "/mnt/e/Biblioteca en React/evidencias/react.json",
+  "historical_evidence": "evidencias/{pruebas_backend,interfaz,carga}.json pertenece al JAR anterior; no prueba esta revisión."
+}

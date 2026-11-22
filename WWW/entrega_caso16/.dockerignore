@@ -1,0 +1,9 @@
+.runtime*
+target
+evidencias
+documentacion
+*.zip
+__pycache__
+**/*.key
+**/*.p12
+**/*.pem

@@ -1,0 +1,205 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><title>Caso 16 · contratos_privados</title><style>
+@page {size:A4;margin:18mm 16mm 19mm}
+body{font-family:Arial,sans-serif;color:#203247;font-size:10pt;line-height:1.45}
+h1{color:#133b54;font-size:23pt;line-height:1.15;break-before:page;margin:0 0 16px}
+h1:first-of-type{break-before:auto}h2{font-size:15pt;color:#126268;margin-top:22px}
+h3{font-size:12pt;color:#126268}h1,h2,h3{break-after:avoid}
+p,li{orphans:3;widows:3}a{color:#086e78;text-decoration:none}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:8pt;table-layout:fixed}
+th{background:#e4f1f2;text-align:left;color:#133b54}
+th,td{padding:6px;border:1px solid #b7cbd1;vertical-align:top;overflow-wrap:anywhere}
+thead{display:table-header-group}tr{break-inside:avoid}
+pre{background:#f0f4f6;border:1px solid #ccd8df;padding:9px;white-space:pre-wrap;
+overflow-wrap:anywhere;font:8pt/1.4 Consolas,monospace;break-inside:auto}
+code{font-family:Consolas,monospace;font-size:.9em;overflow-wrap:anywhere}
+img{display:block;max-width:100%;max-height:225mm;object-fit:contain;margin:14px auto}
+blockquote{border-left:4px solid #12858b;padding-left:12px;color:#435567}
+hr{border:0;border-top:1px solid #c4d4da}
+</style><body><h1>Anexo B — Contratos privados y propagación de confianza</h1>
+<h2>Reglas comunes</h2>
+<p>Todas las llamadas son HTTPS con CA verificada. No hay API privada de propósito general accesible desde el navegador. Salvo <code>GET /health</code> (solo vida, sin datos), se exige identidad técnica dirigida y luego autorización por consumidor/rol/propiedad. El secreto <code>K_A_B</code> solo es conocido por A como emisor y B como receptor; no habilita a otros destinos. El principal de usuario no se acepta sin la firma de esa llamada.</p>
+<p>Cabeceras generadas por <code>TechnicalIdentity</code>: <code>X-Service</code>, <code>X-Audience</code>, <code>X-User-Context</code>, <code>X-Timestamp</code>, <code>X-Nonce</code>, <code>X-Signature</code>. La forma exacta está en <code>TechnicalIdentity.java</code>; la cadena canónica incluye emisor, audiencia, verbo, URI completa, SHA-256 del cuerpo, principal serializado, tiempo y nonce. Tolerancia de reloj ±30 s; nonce de un solo uso durante esa ventana. Sin identidad: 403. Firma/alcance/replay inválidos: 403. Sincronizar relojes del despliegue.</p>
+<p>No se usan JWT autocontenidos ni gRPC; la sesión opaca del usuario se introspecta en Auth, y después solo se propaga el principal verificado. Las credenciales de base nunca viajan por el navegador ni por GraphQL.</p>
+<h2>Operaciones entre subsistemas</h2>
+<p>Los cuerpos son objetos JSON sin campos extra. <code>id</code>, <code>readerId</code>, <code>requestId</code>, <code>loanId</code> son strings de recurso; <code>items</code> contiene snapshots de ejemplares y plazos. Las rutas del gateway al servicio se enumeran, sin abreviar, en <code>rutas_y_credenciales.csv</code> y <code>contratos.md</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Emisor → receptor</th>
+<th>Método / ruta privada</th>
+<th>Entrada y validación</th>
+<th>Salida / error / idempotencia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>gateway → auth</td>
+<td>POST /introspect</td>
+<td>token de sesión, string URL-safe 43; solo gateway</td>
+<td>id, role, expiresAt; 401 inexistente/revocado/vencido</td>
+</tr>
+<tr>
+<td>clients → auth</td>
+<td>POST /accounts/check-email</td>
+<td>ADMIN; email con formato válido</td>
+<td>available:boolean; no expone cuentas ni claves</td>
+</tr>
+<tr>
+<td>clients → auth</td>
+<td>POST /accounts</td>
+<td>id, email, passwordHash PBKDF2 600000; solo clients</td>
+<td>201 id/state INACTIVE; mismo id devuelve existente; correo duplicado409</td>
+</tr>
+<tr>
+<td>clients → auth</td>
+<td>POST /accounts/{id}/activation</td>
+<td>ADMIN; cuerpo {}; cuenta INACTIVE</td>
+<td>queued, expiresInHours=24, previousLinkRevoked; 409 si activa; nuevo evento versionado</td>
+</tr>
+<tr>
+<td>auth → clients</td>
+<td>POST /activate/{id}</td>
+<td>id existente; solo Auth; no cuerpo personal</td>
+<td>active:true; repetible sin doble alta; 404 si falta ficha</td>
+</tr>
+<tr>
+<td>orders → clients</td>
+<td>GET /eligibility/{id}</td>
+<td>lector propio o personal que prepara entrega</td>
+<td>id, active:boolean; no contacto ni huella</td>
+</tr>
+<tr>
+<td>orders → clients</td>
+<td>POST /verify</td>
+<td>LIBRARIAN; readerId, rut válido, fingerprint32–2048</td>
+<td>verified, readerId, adapter;403 identidad no coincide; prueba determinista, no SDK físico</td>
+</tr>
+<tr>
+<td>notifications → clients</td>
+<td>GET /contact/{id}</td>
+<td>solo notifications y lector existente</td>
+<td>email, names mínimos para correo; no ficha completa</td>
+</tr>
+<tr>
+<td>orders → inventory</td>
+<td>POST /allocate</td>
+<td>READER dueño; requestId, readerId, copyIds1–5 únicos, mode</td>
+<td>201 Allocation{id,state,ownerId,mode,items,digest,expiresAt}; todo o nada; requestId+digest deduplican;409 stock/reserva/cuerpo distinto</td>
+</tr>
+<tr>
+<td>orders → inventory</td>
+<td>GET /allocations/{id}</td>
+<td>solo orders</td>
+<td>Allocation actualizado por mantenimiento; 404 si no existe</td>
+</tr>
+<tr>
+<td>orders → inventory</td>
+<td>DELETE /allocations/{id}</td>
+<td>solo orders; no COMMITTED</td>
+<td>released:true; ausente/repetido inocuo;409 si ya se entregó</td>
+</tr>
+<tr>
+<td>orders → inventory</td>
+<td>POST /commit</td>
+<td>requestId,loanId; solo orders; retención vigente</td>
+<td>Allocation COMMITTED con issuedAt/items/dueAt del servidor; mismo loanId repite resultado;409 vencida/otra entrega/reserva conflictiva</td>
+</tr>
+<tr>
+<td>orders → inventory</td>
+<td>POST /return</td>
+<td>copyId,loanId,returnedAt ISO, no futuro&gt;60s; solo orders</td>
+<td>copyId,state RESHELVING,readyAt; lastReturnLoanId deduplica;409 asociación no coincide</td>
+</tr>
+<tr>
+<td>orders → inventory</td>
+<td>POST /reserve</td>
+<td>READER dueño; reservationId,readerId,copyId,date hoy..+90d,mode</td>
+<td>slot{id=copia_fecha,reservationId,ownerId,state,copyId,documentId,date,mode}; una reserva activa por copia/día;409 conflicto</td>
+</tr>
+<tr>
+<td>orders → inventory</td>
+<td>DELETE /reservations/{id}</td>
+<td>solo orders; dueño si es READER</td>
+<td>cancelled:true; conserva historial; repetible</td>
+</tr>
+<tr>
+<td>graphql → inventory</td>
+<td>POST /documents/batch</td>
+<td>ids:string[]≤100, formato ID</td>
+<td>items:CatalogDocumentDTO[]; una llamada para todos los documentos de una página; sin lectores</td>
+</tr>
+<tr>
+<td>orders → payments</td>
+<td>POST /assessments</td>
+<td>loanId,readerId; solo orders</td>
+<td>201 Assessment EXEMPT/0CLP; misma PK loanId devuelve lo mismo;409 dueño distinto</td>
+</tr>
+<tr>
+<td>graphql → payments</td>
+<td>POST /assessments/batch</td>
+<td>roles R/L/A; loanIds:list≤20</td>
+<td>items:Assessment[]; cada recurso exige dueño si READER;403 ajeno</td>
+</tr>
+<tr>
+<td>graphql → clients</td>
+<td>GET /readers/{id}</td>
+<td>rol+propiedad; misma política que S15</td>
+<td>ReaderDTO filtrado por rol, sin hashes ni plantilla</td>
+</tr>
+<tr>
+<td>graphql → orders</td>
+<td>GET /loans?readerId&amp;size&amp;page</td>
+<td>roles R/L/A, READER propio</td>
+<td>LoanPage + sanctionUntil; paginación≤20</td>
+</tr>
+<tr>
+<td>graphql → orders</td>
+<td>GET /reservations?readerId&amp;size&amp;page</td>
+<td>READER propio, bibliotecario o ADMIN (solo caller graphql para ADMIN)</td>
+<td>ReservationPage; mantiene S26 público sin ADMIN</td>
+</tr>
+<tr>
+<td>auth → notifications</td>
+<td>POST /events</td>
+<td>id,kind=ACTIVATION,readerId,token; solo Auth para este tipo</td>
+<td>201 id,accepted:true; mismo id/cuerpo deduplica; cambios409</td>
+</tr>
+<tr>
+<td>orders → notifications</td>
+<td>POST /events</td>
+<td>id,kind=RECEIPT/OVERDUE,readerId,loanId; items en comprobante</td>
+<td>201 id,accepted:true; outbox solo se marca SENT tras aceptación; duplicados iguales inocuos</td>
+</tr>
+<tr>
+<td>notifications → mail</td>
+<td>POST /send</td>
+<td>id,to5–160,subject3–120,text5–20000; solo notifications</td>
+<td>201 id,status=ACCEPTED_BY_TEST_PROVIDER,internetDelivery:false; mismo id/cuerpo deduplica; cambios409</td>
+</tr>
+<tr>
+<td>cada consumidor → secrets</td>
+<td>GET /v1/secrets/{propioNombre}</td>
+<td>Bearer bootstrap propio, ACL del manager; TLS</td>
+<td>solo paquete de esa identidad;403 otro consumidor; no endpoint de escritura remota</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Alcance administrativo:</strong> P03 usa GraphQL como lector. S32 también permite ADMIN con <code>readerId</code> explícito. La consulta de reservas interna permite ADMIN únicamente al caller <code>graphql</code>; la ruta pública S26 sigue denegada para ese rol. T08 comprueba tanto la cuenta administrativa válida como la separación de la ruta pública y el recurso ajeno de un READER.</p>
+<h2>Ejemplos ficticios de llamadas privadas</h2>
+<p>No se publican firmas ni valores técnicos reales. En los ejemplos, HTTPS y las seis cabeceras técnicas anteriores son obligatorios.</p>
+<pre><code class="language-json">{&quot;requestId&quot;:&quot;q-ejemplo&quot;,&quot;readerId&quot;:&quot;r-ejemplo&quot;,&quot;copyIds&quot;:[&quot;BEC-0001-1&quot;],&quot;mode&quot;:&quot;HOME&quot;}
+</code></pre>
+<pre><code class="language-json">{&quot;id&quot;:&quot;q-ejemplo&quot;,&quot;state&quot;:&quot;HELD&quot;,&quot;ownerId&quot;:&quot;r-ejemplo&quot;,&quot;mode&quot;:&quot;HOME&quot;,&quot;expiresAt&quot;:&quot;2026-11-20T15:20:00Z&quot;,&quot;items&quot;:[{&quot;copyId&quot;:&quot;BEC-0001-1&quot;,&quot;documentId&quot;:&quot;d-ejemplo&quot;,&quot;title&quot;:&quot;Relato ficticio&quot;,&quot;homeDays&quot;:7,&quot;roomHours&quot;:2,&quot;shelf&quot;:&quot;A-01&quot;}],&quot;digest&quot;:&quot;SHA256_FICTICIO&quot;}
+</code></pre>
+<pre><code class="language-json">{&quot;requestId&quot;:&quot;q-ejemplo&quot;,&quot;loanId&quot;:&quot;l-ejemplo&quot;}
+</code></pre>
+<pre><code class="language-json">{&quot;loanId&quot;:&quot;l-ejemplo&quot;,&quot;readerId&quot;:&quot;r-ejemplo&quot;}
+</code></pre>
+<pre><code class="language-json">{&quot;id&quot;:&quot;l-ejemplo&quot;,&quot;loanId&quot;:&quot;l-ejemplo&quot;,&quot;ownerId&quot;:&quot;r-ejemplo&quot;,&quot;amount&quot;:0,&quot;currency&quot;:&quot;CLP&quot;,&quot;state&quot;:&quot;EXEMPT&quot;,&quot;policyId&quot;:&quot;MUNICIPAL_FREE&quot;,&quot;createdAt&quot;:&quot;2026-11-20T15:00:00Z&quot;}
+</code></pre>
+<pre><code class="language-json">{&quot;id&quot;:&quot;overdue-l-ejemplo-2026-11-28&quot;,&quot;kind&quot;:&quot;OVERDUE&quot;,&quot;readerId&quot;:&quot;r-ejemplo&quot;,&quot;loanId&quot;:&quot;l-ejemplo&quot;}
+</code></pre>
+<h2>Propiedad, fallas y transacciones</h2>
+<p>No hay consultas a otra base ni transacción distribuida. La retención de stock y el slot de reserva son autoridad de Inventory; la historia del préstamo y la sanción son de Orders. La copia de estado de reserva en Orders es una proyección para la cuenta. La consistencia es eventual entre subsistemas y fuerte dentro de cada comando local.</p>
+<p>Timeout de conexión 2 s, de llamada HTTP interna 4 s. Fallas 5xx/timeout se sanitizan a 502; no se ocultan con un préstamo ficticio. La operación durable queda en un estado transitorio para que el worker reintente con los mismos IDs. Un 4xx de negocio no se reintenta sin corregir la causa. Los eventos se aceptan al menos una vez y se deduplican por ID + hash, no se promete transporte “exactamente una vez”.</p>
+<p>Los workers usan los mismos contratos autenticados y corren cada segundo. El backoff del correo es exponencial hasta 256 s en el algoritmo actual (límite superior configurado en expresión: 300 s). No hay broker, retry automático ilimitado de comandos desde el navegador ni acceso directo SQL entre servicios.</p></body></html>

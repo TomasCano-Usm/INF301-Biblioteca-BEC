@@ -1,0 +1,1727 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><title>Caso 16 · contratos</title><style>
+@page {size:A4;margin:18mm 16mm 19mm}
+body{font-family:Arial,sans-serif;color:#203247;font-size:10pt;line-height:1.45}
+h1{color:#133b54;font-size:23pt;line-height:1.15;break-before:page;margin:0 0 16px}
+h1:first-of-type{break-before:auto}h2{font-size:15pt;color:#126268;margin-top:22px}
+h3{font-size:12pt;color:#126268}h1,h2,h3{break-after:avoid}
+p,li{orphans:3;widows:3}a{color:#086e78;text-decoration:none}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:8pt;table-layout:fixed}
+th{background:#e4f1f2;text-align:left;color:#133b54}
+th,td{padding:6px;border:1px solid #b7cbd1;vertical-align:top;overflow-wrap:anywhere}
+thead{display:table-header-group}tr{break-inside:avoid}
+pre{background:#f0f4f6;border:1px solid #ccd8df;padding:9px;white-space:pre-wrap;
+overflow-wrap:anywhere;font:8pt/1.4 Consolas,monospace;break-inside:auto}
+code{font-family:Consolas,monospace;font-size:.9em;overflow-wrap:anywhere}
+img{display:block;max-width:100%;max-height:225mm;object-fit:contain;margin:14px auto}
+blockquote{border-left:4px solid #12858b;padding-left:12px;color:#435567}
+hr{border:0;border-top:1px solid #c4d4da}
+</style><body><h1>Anexo A — Catálogo y contratos completos</h1>
+<p>Fuente de rutas: <code>src/main/java/cl/bec/Routes.java</code>. Generación: <code>python3 scripts/contracts.py</code>.
+Todos los JSON siguientes son ficticios; los tokens A… y las contraseñas de ejemplo no funcionan. No hay credenciales iniciales fijas.</p>
+<h2>Convenciones comunes</h2>
+<ul>
+<li>Base <code>https://localhost:8443</code>; JSON UTF-8, <code>Content-Type: application/json</code> cuando hay cuerpo; campos extra rechazados excepto intención de pago deliberadamente rechazada.</li>
+<li>IDs de ruta: 1–100 caracteres <code>[A-Za-z0-9_-]</code>. Fechas/hora UTC ISO-8601 con <code>Z</code>; fecha de reserva y plazos de negocio en <code>America/Santiago</code>.</li>
+<li><code>Authorization: Bearer &lt;sesión&gt;</code> para operaciones protegidas. Catálogo, política de gratuidad, login y activación permiten anónimo; un Bearer inválido, aun en ruta pública, se rechaza.</li>
+<li><code>Idempotency-Key</code> obligatorio en S17/S24/S25: 8–80 caracteres <code>[A-Za-z0-9_-]</code>; misma clave y cuerpo distinto →409. S20 usa ID de solicitud como clave natural.</li>
+<li><code>X-Correlation-ID</code> opcional, 8–64 caracteres alfanuméricos/guión; se recomienda UUID. Si no es válido, el servidor genera uno. Se devuelve en cabecera y en errores. No hay llaves técnicas en el cliente.</li>
+<li>Comunes: 400 JSON/validación; 401 sesión ausente/inválida/vencida; 403 rol/propiedad; 404 recurso/ruta; 405 verbo no publicado; 413 cuerpo&gt;256KiB; 414 URI&gt;2048; 415 tipo de contenido; 429 64 peticiones activas o rate limit; 502 dependencia; 503 secretos/persistencia propia; 500 error controlado sin stack trace.</li>
+<li>Límite por IP/minuto: login 10, API 6000; fijo por minuto, no distribuido. Las pruebas aisladas elevan únicamente login para no bloquear fixtures.</li>
+<li>DELETE es cancelación o baja lógica donde corresponde; no se inventan DELETE de préstamos, lectores, pagos ni auditoría.</li>
+</ul>
+<p>Error REST común:</p>
+<pre><code class="language-json">{
+  &quot;error&quot;: {
+    &quot;code&quot;: &quot;VALIDATION&quot;,
+    &quot;message&quot;: &quot;Datos inválidos.&quot;,
+    &quot;correlationId&quot;: &quot;00000000-0000-4000-8000-000000000001&quot;
+  }
+}
+</code></pre>
+<h2>Tipos de entrada: obligatoriedad, validación y clasificación</h2>
+<h3>LoginInput</h3>
+<p>Objeto JSON; sin propiedades adicionales.</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo</th>
+<th>Obligatorio</th>
+<th>Validación</th>
+<th>Clasificación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>email</td>
+<td>string</td>
+<td>Sí</td>
+<td>Correo normalizado a minúsculas; 5–160; formato de correo.</td>
+<td>Personal</td>
+</tr>
+<tr>
+<td>password</td>
+<td>string</td>
+<td>Sí</td>
+<td>1–128 al ingresar; se transmite solo por TLS.</td>
+<td>Credencial</td>
+</tr>
+</tbody>
+</table>
+<h3>ActivationInput</h3>
+<p>Objeto JSON; sin propiedades adicionales.</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo</th>
+<th>Obligatorio</th>
+<th>Validación</th>
+<th>Clasificación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>token</td>
+<td>string</td>
+<td>Sí</td>
+<td>Token de un uso: longitud 43; vence a las 24 horas; el reenvío revoca el anterior.</td>
+<td>Credencial</td>
+</tr>
+</tbody>
+</table>
+<h3>EmptyInput</h3>
+<p>Objeto JSON; sin propiedades adicionales.</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo</th>
+<th>Obligatorio</th>
+<th>Validación</th>
+<th>Clasificación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3>DocumentInput</h3>
+<p>Objeto JSON; sin propiedades adicionales.</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo</th>
+<th>Obligatorio</th>
+<th>Validación</th>
+<th>Clasificación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>title</td>
+<td>string</td>
+<td>Sí</td>
+<td>2–200 caracteres.</td>
+<td>Público</td>
+</tr>
+<tr>
+<td>author</td>
+<td>string</td>
+<td>Sí</td>
+<td>2–140.</td>
+<td>Público</td>
+</tr>
+<tr>
+<td>type</td>
+<td>string</td>
+<td>Sí</td>
+<td>Tipo documental.</td>
+<td>Público</td>
+</tr>
+<tr>
+<td>medium</td>
+<td>string</td>
+<td>Sí</td>
+<td>BOOK/TECHNICAL solo PAPER.</td>
+<td>Público</td>
+</tr>
+<tr>
+<td>publisher</td>
+<td>string</td>
+<td>Sí</td>
+<td>2–120.</td>
+<td>Público</td>
+</tr>
+<tr>
+<td>edition</td>
+<td>string</td>
+<td>Sí</td>
+<td>1–40.</td>
+<td>Público</td>
+</tr>
+<tr>
+<td>year</td>
+<td>integer</td>
+<td>Sí</td>
+<td>1450 hasta el año del servidor.</td>
+<td>Público</td>
+</tr>
+<tr>
+<td>shelf</td>
+<td>string</td>
+<td>Sí</td>
+<td>1–40; ubicación general.</td>
+<td>Público</td>
+</tr>
+<tr>
+<td>category</td>
+<td>string</td>
+<td>Sí</td>
+<td>2–80.</td>
+<td>Público</td>
+</tr>
+<tr>
+<td>homeDays</td>
+<td>integer</td>
+<td>Sí</td>
+<td>Plazo de domicilio, 1–30 días.</td>
+<td>Público</td>
+</tr>
+<tr>
+<td>roomHours</td>
+<td>integer</td>
+<td>Sí</td>
+<td>Plazo sala, 1–8 h; siempre termina el mismo día.</td>
+<td>Público</td>
+</tr>
+</tbody>
+</table>
+<h3>CopyInput</h3>
+<p>Objeto JSON; sin propiedades adicionales.</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo</th>
+<th>Obligatorio</th>
+<th>Validación</th>
+<th>Clasificación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>code</td>
+<td>string</td>
+<td>Sí</td>
+<td>Único; 3–40; A–Z, 0–9 y guión.</td>
+<td>Público</td>
+</tr>
+<tr>
+<td>shelf</td>
+<td>string</td>
+<td>Sí</td>
+<td>1–40.</td>
+<td>Público</td>
+</tr>
+</tbody>
+</table>
+<h3>ShelfInput</h3>
+<p>Objeto JSON; sin propiedades adicionales.</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo</th>
+<th>Obligatorio</th>
+<th>Validación</th>
+<th>Clasificación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>shelf</td>
+<td>string</td>
+<td>Sí</td>
+<td>1–40 caracteres.</td>
+<td>Público</td>
+</tr>
+</tbody>
+</table>
+<h3>ReaderInput</h3>
+<p>Objeto JSON; sin propiedades adicionales.</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo</th>
+<th>Obligatorio</th>
+<th>Validación</th>
+<th>Clasificación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>rut</td>
+<td>string</td>
+<td>Sí</td>
+<td>RUN con módulo 11 válido; único, con o sin puntos; 7–8 dígitos y DV.</td>
+<td>Personal restringido</td>
+</tr>
+<tr>
+<td>names</td>
+<td>string</td>
+<td>Sí</td>
+<td>2–80.</td>
+<td>Personal</td>
+</tr>
+<tr>
+<td>surnames</td>
+<td>string</td>
+<td>Sí</td>
+<td>2–100.</td>
+<td>Personal</td>
+</tr>
+<tr>
+<td>address</td>
+<td>string</td>
+<td>Sí</td>
+<td>5–200.</td>
+<td>Personal restringido</td>
+</tr>
+<tr>
+<td>email</td>
+<td>string</td>
+<td>Sí</td>
+<td>Único, formato correo 5–160.</td>
+<td>Personal restringido</td>
+</tr>
+<tr>
+<td>telephone</td>
+<td>string</td>
+<td>Sí</td>
+<td>8–20 caracteres; no se presupone verificación telefónica.</td>
+<td>Personal restringido</td>
+</tr>
+<tr>
+<td>photo</td>
+<td>string</td>
+<td>Sí</td>
+<td>PNG/JPEG base64; máximo 128000 bytes decodificados, imagen ≤1024×1024; texto 40–180000.</td>
+<td>Personal restringido</td>
+</tr>
+<tr>
+<td>fingerprint</td>
+<td>string</td>
+<td>Sí</td>
+<td>Muestra BASE64 determinista TEST; 32–2048 caracteres, ≥24 bytes; no SDK de reconocimiento físico.</td>
+<td>Personal biométrico restringido</td>
+</tr>
+<tr>
+<td>password</td>
+<td>string</td>
+<td>Sí</td>
+<td>12–128 al inscribir; nunca se devuelve ni se registra en logs.</td>
+<td>Credencial</td>
+</tr>
+<tr>
+<td>documentsChecked</td>
+<td>boolean</td>
+<td>Sí</td>
+<td>Debe ser true; comprobación a cargo del administrativo.</td>
+<td>Personal restringido</td>
+</tr>
+</tbody>
+</table>
+<h3>ContactInput</h3>
+<p>Objeto JSON; sin propiedades adicionales.</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo</th>
+<th>Obligatorio</th>
+<th>Validación</th>
+<th>Clasificación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>address</td>
+<td>string</td>
+<td>Sí</td>
+<td>5–200.</td>
+<td>Personal restringido</td>
+</tr>
+<tr>
+<td>telephone</td>
+<td>string</td>
+<td>Sí</td>
+<td>8–20.</td>
+<td>Personal restringido</td>
+</tr>
+<tr>
+<td>photo</td>
+<td>string</td>
+<td>Sí</td>
+<td>Mismas reglas PNG/JPEG de inscripción.</td>
+<td>Personal restringido</td>
+</tr>
+</tbody>
+</table>
+<h3>RequestInput</h3>
+<p>Objeto JSON; sin propiedades adicionales.</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo</th>
+<th>Obligatorio</th>
+<th>Validación</th>
+<th>Clasificación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>copyIds</td>
+<td>array</td>
+<td>Sí</td>
+<td>1–5 IDs, únicos, existentes; cada ID [A-Za-z0-9_-], 1–80.</td>
+<td>Contextual</td>
+</tr>
+<tr>
+<td>mode</td>
+<td>string</td>
+<td>Sí</td>
+<td>Modalidad seleccionada.</td>
+<td>Público</td>
+</tr>
+</tbody>
+</table>
+<h3>IssueInput</h3>
+<p>Objeto JSON; sin propiedades adicionales.</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo</th>
+<th>Obligatorio</th>
+<th>Validación</th>
+<th>Clasificación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>rut</td>
+<td>string</td>
+<td>Sí</td>
+<td>RUN válido del lector de la solicitud, módulo 11.</td>
+<td>Personal restringido</td>
+</tr>
+<tr>
+<td>fingerprint</td>
+<td>string</td>
+<td>Sí</td>
+<td>Muestra TEST 32–2048 que debe coincidir; nunca se acepta verified:true del frontend.</td>
+<td>Personal biométrico restringido</td>
+</tr>
+</tbody>
+</table>
+<h3>ReturnInput</h3>
+<p>Objeto JSON; sin propiedades adicionales.</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo</th>
+<th>Obligatorio</th>
+<th>Validación</th>
+<th>Clasificación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>copyId</td>
+<td>string</td>
+<td>Sí</td>
+<td>Código de ejemplar con ítem ACTIVE; 3–40.</td>
+<td>Contextual</td>
+</tr>
+</tbody>
+</table>
+<h3>ReservationInput</h3>
+<p>Objeto JSON; sin propiedades adicionales.</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo</th>
+<th>Obligatorio</th>
+<th>Validación</th>
+<th>Clasificación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>copyId</td>
+<td>string</td>
+<td>Sí</td>
+<td>Código 3–40.</td>
+<td>Contextual</td>
+</tr>
+<tr>
+<td>date</td>
+<td>string</td>
+<td>Sí</td>
+<td>ISO AAAA-MM-DD; hoy (Santiago) a hoy+90 días.</td>
+<td>Contextual</td>
+</tr>
+<tr>
+<td>mode</td>
+<td>string</td>
+<td>Sí</td>
+<td>Modalidad.</td>
+<td>Público</td>
+</tr>
+</tbody>
+</table>
+<h3>GraphQLInput</h3>
+<p>Objeto JSON; sin propiedades adicionales.</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo</th>
+<th>Obligatorio</th>
+<th>Validación</th>
+<th>Clasificación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>query</td>
+<td>string</td>
+<td>Sí</td>
+<td>SDL de consulta, 5–8192; profundidad≤6, costo≤100; sin introspección.</td>
+<td>Contextual</td>
+</tr>
+<tr>
+<td>variables</td>
+<td>object</td>
+<td>No</td>
+<td>Opcional; JSON serializado ≤4096 caracteres; first 1–20, page 0–1000.</td>
+<td>Contextual</td>
+</tr>
+<tr>
+<td>operationName</td>
+<td>string</td>
+<td>No</td>
+<td>Opcional 1–80.</td>
+<td>Contextual</td>
+</tr>
+</tbody>
+</table>
+<h3>TamperedIntent</h3>
+<p>Cualquier intención monetaria se rechaza 422. No hay campos capaces de crear un pago ni levantar sanciones.</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo</th>
+<th>Obligatorio</th>
+<th>Validación</th>
+<th>Clasificación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2>Índice de acciones</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Pantalla</th>
+<th>Verbo y ruta</th>
+<th>Responsable</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S01</td>
+<td>P02</td>
+<td>POST <code>/api/auth/login</code></td>
+<td>auth</td>
+</tr>
+<tr>
+<td>S02</td>
+<td>P02</td>
+<td>POST <code>/api/auth/logout</code></td>
+<td>auth</td>
+</tr>
+<tr>
+<td>S03</td>
+<td>P02</td>
+<td>POST <code>/api/auth/activate</code></td>
+<td>auth</td>
+</tr>
+<tr>
+<td>S04</td>
+<td>P02</td>
+<td>GET <code>/api/auth/me</code></td>
+<td>auth</td>
+</tr>
+<tr>
+<td>S05</td>
+<td>P01</td>
+<td>GET <code>/api/catalog</code></td>
+<td>inventory</td>
+</tr>
+<tr>
+<td>S06</td>
+<td>P01</td>
+<td>GET <code>/api/catalog/{id}</code></td>
+<td>inventory</td>
+</tr>
+<tr>
+<td>S07</td>
+<td>P04</td>
+<td>POST <code>/api/documents</code></td>
+<td>inventory</td>
+</tr>
+<tr>
+<td>S08</td>
+<td>P04</td>
+<td>PUT <code>/api/documents/{id}</code></td>
+<td>inventory</td>
+</tr>
+<tr>
+<td>S09</td>
+<td>P04</td>
+<td>DELETE <code>/api/documents/{id}</code></td>
+<td>inventory</td>
+</tr>
+<tr>
+<td>S10</td>
+<td>P04</td>
+<td>POST <code>/api/documents/{id}/copies</code></td>
+<td>inventory</td>
+</tr>
+<tr>
+<td>S11</td>
+<td>P04</td>
+<td>PUT <code>/api/copies/{id}</code></td>
+<td>inventory</td>
+</tr>
+<tr>
+<td>S12</td>
+<td>P04</td>
+<td>DELETE <code>/api/copies/{id}</code></td>
+<td>inventory</td>
+</tr>
+<tr>
+<td>S13</td>
+<td>P05</td>
+<td>POST <code>/api/readers</code></td>
+<td>clients</td>
+</tr>
+<tr>
+<td>S14</td>
+<td>P05</td>
+<td>GET <code>/api/readers</code></td>
+<td>clients</td>
+</tr>
+<tr>
+<td>S15</td>
+<td>P05</td>
+<td>GET <code>/api/readers/{id}</code></td>
+<td>clients</td>
+</tr>
+<tr>
+<td>S16</td>
+<td>P05</td>
+<td>PUT <code>/api/readers/{id}</code></td>
+<td>clients</td>
+</tr>
+<tr>
+<td>S17</td>
+<td>P01</td>
+<td>POST <code>/api/requests</code></td>
+<td>orders</td>
+</tr>
+<tr>
+<td>S18</td>
+<td>P03,P06</td>
+<td>GET <code>/api/requests</code></td>
+<td>orders</td>
+</tr>
+<tr>
+<td>S19</td>
+<td>P03,P06</td>
+<td>DELETE <code>/api/requests/{id}</code></td>
+<td>orders</td>
+</tr>
+<tr>
+<td>S20</td>
+<td>P06</td>
+<td>POST <code>/api/requests/{id}/issue</code></td>
+<td>orders</td>
+</tr>
+<tr>
+<td>S21</td>
+<td>P03,P06</td>
+<td>GET <code>/api/loans</code></td>
+<td>orders</td>
+</tr>
+<tr>
+<td>S22</td>
+<td>P03,P06</td>
+<td>GET <code>/api/loans/{id}</code></td>
+<td>orders</td>
+</tr>
+<tr>
+<td>S23</td>
+<td>P09</td>
+<td>GET <code>/api/loans/{id}/receipt</code></td>
+<td>orders</td>
+</tr>
+<tr>
+<td>S24</td>
+<td>P07</td>
+<td>POST <code>/api/returns</code></td>
+<td>orders</td>
+</tr>
+<tr>
+<td>S25</td>
+<td>P01</td>
+<td>POST <code>/api/reservations</code></td>
+<td>orders</td>
+</tr>
+<tr>
+<td>S26</td>
+<td>P03,P06</td>
+<td>GET <code>/api/reservations</code></td>
+<td>orders</td>
+</tr>
+<tr>
+<td>S27</td>
+<td>P03,P06</td>
+<td>DELETE <code>/api/reservations/{id}</code></td>
+<td>orders</td>
+</tr>
+<tr>
+<td>S28</td>
+<td>P08</td>
+<td>GET <code>/api/overdue</code></td>
+<td>orders</td>
+</tr>
+<tr>
+<td>S29</td>
+<td>P03</td>
+<td>GET <code>/api/payments/policy</code></td>
+<td>payments</td>
+</tr>
+<tr>
+<td>S30</td>
+<td>P03</td>
+<td>GET <code>/api/payments/assessments/{id}</code></td>
+<td>payments</td>
+</tr>
+<tr>
+<td>S31</td>
+<td>P03</td>
+<td>POST <code>/api/payments/intents</code></td>
+<td>payments</td>
+</tr>
+<tr>
+<td>S32</td>
+<td>P03</td>
+<td>POST <code>/api/graphql</code></td>
+<td>graphql</td>
+</tr>
+<tr>
+<td>S33</td>
+<td>P07</td>
+<td>GET <code>/api/exit-check/{id}</code></td>
+<td>inventory</td>
+</tr>
+<tr>
+<td>S34</td>
+<td>P10</td>
+<td>GET <code>/api/lab/mailbox</code></td>
+<td>mail</td>
+</tr>
+<tr>
+<td>S35</td>
+<td>P05</td>
+<td>POST <code>/api/readers/{id}/activation</code></td>
+<td>clients</td>
+</tr>
+</tbody>
+</table>
+<h2>Contratos individuales</h2>
+<h3>S01 — Iniciar sesión</h3>
+<p><strong>POST <code>/api/auth/login</code></strong> · pantalla P02 · Anónimo permitido.
+Destino privado: <code>auth POST /login</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> <code>LoginInput</code> (tabla de campos anterior).
+Parámetros: ninguno.</p>
+<p><strong>Regla y autorización.</strong> Solo cuentas ACTIVE. Respuesta genérica no distingue correo inexistente/inactivo.</p>
+<p><strong>Errores específicos.</strong> 400 VALIDATION; 401 INVALID_CREDENTIALS; 429 RATE_LIMIT; además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{
+  &quot;email&quot;: &quot;lectora@bec.example.invalid&quot;,
+  &quot;password&quot;: &quot;Ficticia_NoEsUnaClaveReal_2026&quot;
+}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 200:</p>
+<pre><code class="language-json">{
+  &quot;token&quot;: &quot;AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&quot;,
+  &quot;expiresAt&quot;: &quot;2026-11-20T15:20:00Z&quot;,
+  &quot;id&quot;: &quot;r-ejemplo&quot;,
+  &quot;role&quot;: &quot;READER&quot;
+}
+</code></pre>
+<h3>S02 — Revocar sesión</h3>
+<p><strong>POST <code>/api/auth/logout</code></strong> · pantalla P02 · Bearer; Lector, Bibliotecario, Administrativo.
+Destino privado: <code>auth POST /logout</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> <code>EmptyInput</code> (tabla de campos anterior).
+Parámetros: ninguno.</p>
+<p><strong>Regla y autorización.</strong> El gateway usa el Bearer actual: ignora cualquier token del cuerpo. Revocación inmediata en Auth.</p>
+<p><strong>Errores específicos.</strong> 400 validación; además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 200:</p>
+<pre><code class="language-json">{
+  &quot;revoked&quot;: true
+}
+</code></pre>
+<h3>S03 — Validar correo de lector</h3>
+<p><strong>POST <code>/api/auth/activate</code></strong> · pantalla P02 · Anónimo permitido.
+Destino privado: <code>auth POST /activate</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> <code>ActivationInput</code> (tabla de campos anterior).
+Parámetros: ninguno.</p>
+<p><strong>Regla y autorización.</strong> Un solo uso, 24 horas; actualiza perfil y cuenta mediante contrato privado.</p>
+<p><strong>Errores específicos.</strong> 400 INVALID_ACTIVATION; 409 TOKEN_USED; 410 ACTIVATION_EXPIRED; además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{
+  &quot;token&quot;: &quot;AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&quot;
+}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 200:</p>
+<pre><code class="language-json">{
+  &quot;activated&quot;: true
+}
+</code></pre>
+<h3>S04 — Identidad de sesión</h3>
+<p><strong>GET <code>/api/auth/me</code></strong> · pantalla P02 · Bearer; Lector, Bibliotecario, Administrativo.
+Destino privado: <code>auth GET /me</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> Sin cuerpo.
+Parámetros: ninguno.</p>
+<p><strong>Regla y autorización.</strong> Rol permitido y reglas del contrato; denegación por defecto</p>
+<p><strong>Errores específicos.</strong> 400 validación; además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 200:</p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;r-ejemplo&quot;,
+  &quot;role&quot;: &quot;READER&quot;
+}
+</code></pre>
+<h3>S05 — Buscar catálogo anónimo</h3>
+<p><strong>GET <code>/api/catalog</code></strong> · pantalla P01 · Anónimo permitido.
+Destino privado: <code>inventory GET /documents</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> Sin cuerpo.
+Parámetros: q (query, opcional); page (query, opcional); size (query, opcional).</p>
+<p><strong>Regla y autorización.</strong> Anónimo: título/autor/categoría; cuenta AVAILABLE y ROOM sin revelar prestatarios.</p>
+<p><strong>Errores específicos.</strong> 400 validación; además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 200:</p>
+<pre><code class="language-json">{
+  &quot;items&quot;: [
+    {
+      &quot;id&quot;: &quot;d-ejemplo&quot;,
+      &quot;title&quot;: &quot;Relatos del barrio (ficticio)&quot;,
+      &quot;author&quot;: &quot;Autora Ficticia&quot;,
+      &quot;type&quot;: &quot;BOOK&quot;,
+      &quot;medium&quot;: &quot;PAPER&quot;,
+      &quot;publisher&quot;: &quot;Editorial Ejemplo&quot;,
+      &quot;edition&quot;: &quot;1&quot;,
+      &quot;year&quot;: 2026,
+      &quot;shelf&quot;: &quot;A-01&quot;,
+      &quot;category&quot;: &quot;Literatura&quot;,
+      &quot;homeDays&quot;: 7,
+      &quot;roomHours&quot;: 2,
+      &quot;state&quot;: &quot;ACTIVE&quot;,
+      &quot;available&quot;: 1,
+      &quot;inRoom&quot;: 0,
+      &quot;total&quot;: 1,
+      &quot;copies&quot;: [
+        {
+          &quot;id&quot;: &quot;BEC-0001-1&quot;,
+          &quot;state&quot;: &quot;AVAILABLE&quot;,
+          &quot;shelf&quot;: &quot;A-01&quot;,
+          &quot;dueAt&quot;: null,
+          &quot;readyAt&quot;: null
+        }
+      ]
+    }
+  ],
+  &quot;total&quot;: 1,
+  &quot;page&quot;: 0,
+  &quot;size&quot;: 10
+}
+</code></pre>
+<h3>S06 — Detalle y disponibilidad</h3>
+<p><strong>GET <code>/api/catalog/{id}</code></strong> · pantalla P01 · Anónimo permitido.
+Destino privado: <code>inventory GET /documents/{id}</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> Sin cuerpo.
+Parámetros: id (path, obligatorio).</p>
+<p><strong>Regla y autorización.</strong> Rol permitido y reglas del contrato; denegación por defecto</p>
+<p><strong>Errores específicos.</strong> 404 NOT_FOUND (incluido archivado); además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 200:</p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;d-ejemplo&quot;,
+  &quot;title&quot;: &quot;Relatos del barrio (ficticio)&quot;,
+  &quot;author&quot;: &quot;Autora Ficticia&quot;,
+  &quot;type&quot;: &quot;BOOK&quot;,
+  &quot;medium&quot;: &quot;PAPER&quot;,
+  &quot;publisher&quot;: &quot;Editorial Ejemplo&quot;,
+  &quot;edition&quot;: &quot;1&quot;,
+  &quot;year&quot;: 2026,
+  &quot;shelf&quot;: &quot;A-01&quot;,
+  &quot;category&quot;: &quot;Literatura&quot;,
+  &quot;homeDays&quot;: 7,
+  &quot;roomHours&quot;: 2,
+  &quot;state&quot;: &quot;ACTIVE&quot;,
+  &quot;available&quot;: 1,
+  &quot;inRoom&quot;: 0,
+  &quot;total&quot;: 1,
+  &quot;copies&quot;: [
+    {
+      &quot;id&quot;: &quot;BEC-0001-1&quot;,
+      &quot;state&quot;: &quot;AVAILABLE&quot;,
+      &quot;shelf&quot;: &quot;A-01&quot;,
+      &quot;dueAt&quot;: null,
+      &quot;readyAt&quot;: null
+    }
+  ]
+}
+</code></pre>
+<h3>S07 — Registrar documento</h3>
+<p><strong>POST <code>/api/documents</code></strong> · pantalla P04 · Bearer; Bibliotecario.
+Destino privado: <code>inventory POST /documents</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> <code>DocumentInput</code> (tabla de campos anterior).
+Parámetros: ninguno.</p>
+<p><strong>Regla y autorización.</strong> Rol permitido y reglas del contrato; denegación por defecto</p>
+<p><strong>Errores específicos.</strong> 400 validación; además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{
+  &quot;title&quot;: &quot;Relatos del barrio (ficticio)&quot;,
+  &quot;author&quot;: &quot;Autora Ficticia&quot;,
+  &quot;type&quot;: &quot;BOOK&quot;,
+  &quot;medium&quot;: &quot;PAPER&quot;,
+  &quot;publisher&quot;: &quot;Editorial Ejemplo&quot;,
+  &quot;edition&quot;: &quot;1&quot;,
+  &quot;year&quot;: 2026,
+  &quot;shelf&quot;: &quot;A-01&quot;,
+  &quot;category&quot;: &quot;Literatura&quot;,
+  &quot;homeDays&quot;: 7,
+  &quot;roomHours&quot;: 2
+}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 201:</p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;d-ejemplo&quot;,
+  &quot;title&quot;: &quot;Relatos del barrio (ficticio)&quot;,
+  &quot;author&quot;: &quot;Autora Ficticia&quot;,
+  &quot;type&quot;: &quot;BOOK&quot;,
+  &quot;medium&quot;: &quot;PAPER&quot;,
+  &quot;publisher&quot;: &quot;Editorial Ejemplo&quot;,
+  &quot;edition&quot;: &quot;1&quot;,
+  &quot;year&quot;: 2026,
+  &quot;shelf&quot;: &quot;A-01&quot;,
+  &quot;category&quot;: &quot;Literatura&quot;,
+  &quot;homeDays&quot;: 7,
+  &quot;roomHours&quot;: 2,
+  &quot;state&quot;: &quot;ACTIVE&quot;,
+  &quot;available&quot;: 0,
+  &quot;inRoom&quot;: 0,
+  &quot;total&quot;: 0,
+  &quot;copies&quot;: []
+}
+</code></pre>
+<h3>S08 — Actualizar documento</h3>
+<p><strong>PUT <code>/api/documents/{id}</code></strong> · pantalla P04 · Bearer; Bibliotecario.
+Destino privado: <code>inventory PUT /documents/{id}</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> <code>DocumentInput</code> (tabla de campos anterior).
+Parámetros: id (path, obligatorio).</p>
+<p><strong>Regla y autorización.</strong> PUT completo; conserva id; solo documento ACTIVE.</p>
+<p><strong>Errores específicos.</strong> 400 VALIDATION; 404 NOT_FOUND; 409 ARCHIVED; además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{
+  &quot;title&quot;: &quot;Relatos del barrio (ficticio)&quot;,
+  &quot;author&quot;: &quot;Autora Ficticia&quot;,
+  &quot;type&quot;: &quot;BOOK&quot;,
+  &quot;medium&quot;: &quot;PAPER&quot;,
+  &quot;publisher&quot;: &quot;Editorial Ejemplo&quot;,
+  &quot;edition&quot;: &quot;1&quot;,
+  &quot;year&quot;: 2026,
+  &quot;shelf&quot;: &quot;A-01&quot;,
+  &quot;category&quot;: &quot;Literatura&quot;,
+  &quot;homeDays&quot;: 7,
+  &quot;roomHours&quot;: 2
+}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 200:</p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;d-ejemplo&quot;,
+  &quot;title&quot;: &quot;Relatos del barrio (ficticio)&quot;,
+  &quot;author&quot;: &quot;Autora Ficticia&quot;,
+  &quot;type&quot;: &quot;BOOK&quot;,
+  &quot;medium&quot;: &quot;PAPER&quot;,
+  &quot;publisher&quot;: &quot;Editorial Ejemplo&quot;,
+  &quot;edition&quot;: &quot;1&quot;,
+  &quot;year&quot;: 2026,
+  &quot;shelf&quot;: &quot;A-01&quot;,
+  &quot;category&quot;: &quot;Literatura&quot;,
+  &quot;homeDays&quot;: 7,
+  &quot;roomHours&quot;: 2,
+  &quot;state&quot;: &quot;ACTIVE&quot;
+}
+</code></pre>
+<h3>S09 — Archivar documento</h3>
+<p><strong>DELETE <code>/api/documents/{id}</code></strong> · pantalla P04 · Bearer; Bibliotecario.
+Destino privado: <code>inventory DELETE /documents/{id}</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> Sin cuerpo.
+Parámetros: id (path, obligatorio).</p>
+<p><strong>Regla y autorización.</strong> Baja lógica; retira ejemplares. No se elimina historia.</p>
+<p><strong>Errores específicos.</strong> 404 NOT_FOUND; 409 DOCUMENT_IN_USE / DOCUMENT_RESERVED; además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 200:</p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;d-ejemplo&quot;,
+  &quot;state&quot;: &quot;ARCHIVED&quot;
+}
+</code></pre>
+<h3>S10 — Incorporar ejemplar</h3>
+<p><strong>POST <code>/api/documents/{id}/copies</code></strong> · pantalla P04 · Bearer; Bibliotecario.
+Destino privado: <code>inventory POST /documents/{id}/copies</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> <code>CopyInput</code> (tabla de campos anterior).
+Parámetros: id (path, obligatorio).</p>
+<p><strong>Regla y autorización.</strong> Rol permitido y reglas del contrato; denegación por defecto</p>
+<p><strong>Errores específicos.</strong> 400 VALIDATION; 404 NOT_FOUND; 409 COPY_EXISTS / ARCHIVED; además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{
+  &quot;code&quot;: &quot;BEC-0001-1&quot;,
+  &quot;shelf&quot;: &quot;A-01&quot;
+}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 201:</p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;BEC-0001-1&quot;,
+  &quot;documentId&quot;: &quot;d-ejemplo&quot;,
+  &quot;shelf&quot;: &quot;A-01&quot;,
+  &quot;state&quot;: &quot;AVAILABLE&quot;
+}
+</code></pre>
+<h3>S11 — Actualizar ubicación</h3>
+<p><strong>PUT <code>/api/copies/{id}</code></strong> · pantalla P04 · Bearer; Bibliotecario.
+Destino privado: <code>inventory PUT /copies/{id}</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> <code>ShelfInput</code> (tabla de campos anterior).
+Parámetros: id (path, obligatorio).</p>
+<p><strong>Regla y autorización.</strong> Rol permitido y reglas del contrato; denegación por defecto</p>
+<p><strong>Errores específicos.</strong> 404 NOT_FOUND; 409 RETIRED; además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{
+  &quot;shelf&quot;: &quot;A-02&quot;
+}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 200:</p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;BEC-0001-1&quot;,
+  &quot;documentId&quot;: &quot;d-ejemplo&quot;,
+  &quot;shelf&quot;: &quot;A-02&quot;,
+  &quot;state&quot;: &quot;AVAILABLE&quot;
+}
+</code></pre>
+<h3>S12 — Retirar ejemplar disponible</h3>
+<p><strong>DELETE <code>/api/copies/{id}</code></strong> · pantalla P04 · Bearer; Bibliotecario.
+Destino privado: <code>inventory DELETE /copies/{id}</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> Sin cuerpo.
+Parámetros: id (path, obligatorio).</p>
+<p><strong>Regla y autorización.</strong> Baja lógica; solo AVAILABLE o ya RETIRED, sin reserva activa.</p>
+<p><strong>Errores específicos.</strong> 404 NOT_FOUND; 409 COPY_IN_USE / COPY_RESERVED; además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 200:</p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;BEC-0001-1&quot;,
+  &quot;state&quot;: &quot;RETIRED&quot;
+}
+</code></pre>
+<h3>S13 — Inscribir lector y enviar activación</h3>
+<p><strong>POST <code>/api/readers</code></strong> · pantalla P05 · Bearer; Administrativo.
+Destino privado: <code>clients POST /readers</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> <code>ReaderInput</code> (tabla de campos anterior).
+Parámetros: ninguno.</p>
+<p><strong>Regla y autorización.</strong> ADMIN comprueba documentos; RUN/correo únicos; cuenta pendiente durable y activación vía outbox.</p>
+<p><strong>Errores específicos.</strong> 400 INVALID_RUT / DOCUMENTS_REQUIRED / PHOTO_FORMAT / BIOMETRIC_FORMAT; 409 RUT_EXISTS / EMAIL_EXISTS; además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{
+  &quot;names&quot;: &quot;Lectora&quot;,
+  &quot;surnames&quot;: &quot;Ficticia Ejemplo&quot;,
+  &quot;photo&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/l9sAAAAASUVORK5CYII=&quot;,
+  &quot;rut&quot;: &quot;12345678-5&quot;,
+  &quot;address&quot;: &quot;Calle Ficticia 123&quot;,
+  &quot;email&quot;: &quot;lectora@bec.example.invalid&quot;,
+  &quot;telephone&quot;: &quot;+56900000000&quot;,
+  &quot;documentsChecked&quot;: true,
+  &quot;fingerprint&quot;: &quot;bXVlc3RyYS1maWN0aWNpYS1uby1lc3VuYS1odWVsbGEtcmVhbA==&quot;,
+  &quot;password&quot;: &quot;Ficticia_NoEsUnaClaveReal_2026&quot;
+}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 201:</p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;r-ejemplo&quot;,
+  &quot;state&quot;: &quot;INACTIVE&quot;,
+  &quot;message&quot;: &quot;Ficha registrada; debe validar el correo antes de ingresar.&quot;
+}
+</code></pre>
+<h3>S14 — Buscar fichas</h3>
+<p><strong>GET <code>/api/readers</code></strong> · pantalla P05 · Bearer; Administrativo.
+Destino privado: <code>clients GET /readers</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> Sin cuerpo.
+Parámetros: q (query, opcional); page (query, opcional); size (query, opcional).</p>
+<p><strong>Regla y autorización.</strong> Solo ADMIN; busca nombre/apellidos/RUN (catálogo no expone estos datos).</p>
+<p><strong>Errores específicos.</strong> 400 validación; además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 200:</p>
+<pre><code class="language-json">{
+  &quot;items&quot;: [
+    {
+      &quot;id&quot;: &quot;r-ejemplo&quot;,
+      &quot;state&quot;: &quot;ACTIVE&quot;,
+      &quot;names&quot;: &quot;Lectora&quot;,
+      &quot;surnames&quot;: &quot;Ficticia Ejemplo&quot;,
+      &quot;photo&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/l9sAAAAASUVORK5CYII=&quot;,
+      &quot;rut&quot;: &quot;12345678-5&quot;,
+      &quot;address&quot;: &quot;Calle Ficticia 123&quot;,
+      &quot;email&quot;: &quot;lectora@bec.example.invalid&quot;,
+      &quot;telephone&quot;: &quot;+56900000000&quot;,
+      &quot;documentsChecked&quot;: true
+    }
+  ],
+  &quot;total&quot;: 1,
+  &quot;page&quot;: 0,
+  &quot;size&quot;: 10
+}
+</code></pre>
+<h3>S15 — Consultar ficha según rol</h3>
+<p><strong>GET <code>/api/readers/{id}</code></strong> · pantalla P05 · Bearer; Lector, Bibliotecario, Administrativo.
+Destino privado: <code>clients GET /readers/{id}</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> Sin cuerpo.
+Parámetros: id (path, obligatorio).</p>
+<p><strong>Regla y autorización.</strong> READER solo su id; LIBRARIAN recibe únicamente id/estado/nombres/apellidos/foto; ADMIN ficha completa.</p>
+<p><strong>Errores específicos.</strong> 403 FORBIDDEN (titular distinto); 404 NOT_FOUND; además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 200:</p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;r-ejemplo&quot;,
+  &quot;state&quot;: &quot;ACTIVE&quot;,
+  &quot;names&quot;: &quot;Lectora&quot;,
+  &quot;surnames&quot;: &quot;Ficticia Ejemplo&quot;,
+  &quot;photo&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/l9sAAAAASUVORK5CYII=&quot;,
+  &quot;rut&quot;: &quot;12345678-5&quot;,
+  &quot;address&quot;: &quot;Calle Ficticia 123&quot;,
+  &quot;email&quot;: &quot;lectora@bec.example.invalid&quot;,
+  &quot;telephone&quot;: &quot;+56900000000&quot;,
+  &quot;documentsChecked&quot;: true
+}
+</code></pre>
+<h3>S16 — Actualizar contacto y fotografía</h3>
+<p><strong>PUT <code>/api/readers/{id}</code></strong> · pantalla P05 · Bearer; Administrativo.
+Destino privado: <code>clients PUT /readers/{id}</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> <code>ContactInput</code> (tabla de campos anterior).
+Parámetros: id (path, obligatorio).</p>
+<p><strong>Regla y autorización.</strong> Solo ADMIN. No cambia RUN, email, clave ni huella; esos campos adicionales se rechazan.</p>
+<p><strong>Errores específicos.</strong> 400 UNKNOWN_FIELD / VALIDATION / PHOTO_FORMAT; 404 NOT_FOUND; además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{
+  &quot;address&quot;: &quot;Calle Ficticia 123&quot;,
+  &quot;telephone&quot;: &quot;+56900000000&quot;,
+  &quot;photo&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/l9sAAAAASUVORK5CYII=&quot;
+}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 200:</p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;r-ejemplo&quot;,
+  &quot;state&quot;: &quot;ACTIVE&quot;,
+  &quot;names&quot;: &quot;Lectora&quot;,
+  &quot;surnames&quot;: &quot;Ficticia Ejemplo&quot;,
+  &quot;photo&quot;: &quot;iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/l9sAAAAASUVORK5CYII=&quot;,
+  &quot;rut&quot;: &quot;12345678-5&quot;,
+  &quot;address&quot;: &quot;Calle Ficticia 123&quot;,
+  &quot;email&quot;: &quot;lectora@bec.example.invalid&quot;,
+  &quot;telephone&quot;: &quot;+56900000000&quot;,
+  &quot;documentsChecked&quot;: true
+}
+</code></pre>
+<h3>S17 — Solicitar préstamo</h3>
+<p><strong>POST <code>/api/requests</code></strong> · pantalla P01 · Bearer; Lector.
+Destino privado: <code>orders POST /requests</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> <code>RequestInput</code> (tabla de campos anterior).
+Parámetros: Idempotency-Key (header, obligatorio).</p>
+<p><strong>Regla y autorización.</strong> Idempotency-Key obligatorio; lector activo, sin sanción ni préstamos vencidos. Retiene TODOS los ejemplares 20 minutos o ninguno.</p>
+<p><strong>Errores específicos.</strong> 400 IDEMPOTENCY_REQUIRED; 403 READER_INACTIVE; 409 COPY_UNAVAILABLE / RESERVATION_CONFLICT / READER_SANCTIONED / READER_OVERDUE / IDEMPOTENCY_CONFLICT; además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{
+  &quot;copyIds&quot;: [
+    &quot;BEC-0001-1&quot;
+  ],
+  &quot;mode&quot;: &quot;HOME&quot;
+}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 201:</p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;q-ejemplo&quot;,
+  &quot;ownerId&quot;: &quot;r-ejemplo&quot;,
+  &quot;state&quot;: &quot;PENDING&quot;,
+  &quot;mode&quot;: &quot;HOME&quot;,
+  &quot;copyIds&quot;: [
+    &quot;BEC-0001-1&quot;
+  ],
+  &quot;createdAt&quot;: &quot;2026-11-20T15:00:00Z&quot;,
+  &quot;expiresAt&quot;: &quot;2026-11-20T15:20:00Z&quot;,
+  &quot;items&quot;: [
+    {
+      &quot;copyId&quot;: &quot;BEC-0001-1&quot;,
+      &quot;documentId&quot;: &quot;d-ejemplo&quot;,
+      &quot;title&quot;: &quot;Relatos del barrio (ficticio)&quot;,
+      &quot;homeDays&quot;: 7,
+      &quot;roomHours&quot;: 2,
+      &quot;shelf&quot;: &quot;A-01&quot;
+    }
+  ]
+}
+</code></pre>
+<h3>S18 — Solicitudes propias o cola</h3>
+<p><strong>GET <code>/api/requests</code></strong> · pantalla P03,P06 · Bearer; Lector, Bibliotecario.
+Destino privado: <code>orders GET /requests</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> Sin cuerpo.
+Parámetros: page (query, opcional); size (query, opcional).</p>
+<p><strong>Regla y autorización.</strong> READER: solo propias. LIBRARIAN: cola ALLOCATING/PENDING/ISSUING.</p>
+<p><strong>Errores específicos.</strong> 400 validación; además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 200:</p>
+<pre><code class="language-json">{
+  &quot;items&quot;: [
+    {
+      &quot;id&quot;: &quot;q-ejemplo&quot;,
+      &quot;ownerId&quot;: &quot;r-ejemplo&quot;,
+      &quot;state&quot;: &quot;PENDING&quot;,
+      &quot;mode&quot;: &quot;HOME&quot;,
+      &quot;copyIds&quot;: [
+        &quot;BEC-0001-1&quot;
+      ],
+      &quot;createdAt&quot;: &quot;2026-11-20T15:00:00Z&quot;,
+      &quot;expiresAt&quot;: &quot;2026-11-20T15:20:00Z&quot;,
+      &quot;items&quot;: [
+        {
+          &quot;copyId&quot;: &quot;BEC-0001-1&quot;,
+          &quot;documentId&quot;: &quot;d-ejemplo&quot;,
+          &quot;title&quot;: &quot;Relatos del barrio (ficticio)&quot;,
+          &quot;homeDays&quot;: 7,
+          &quot;roomHours&quot;: 2,
+          &quot;shelf&quot;: &quot;A-01&quot;
+        }
+      ]
+    }
+  ],
+  &quot;total&quot;: 1
+}
+</code></pre>
+<h3>S19 — Cancelar solicitud pendiente</h3>
+<p><strong>DELETE <code>/api/requests/{id}</code></strong> · pantalla P03,P06 · Bearer; Lector, Bibliotecario.
+Destino privado: <code>orders DELETE /requests/{id}</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> Sin cuerpo.
+Parámetros: id (path, obligatorio).</p>
+<p><strong>Regla y autorización.</strong> Titular o bibliotecario. Solo PENDING/CANCELLING/CANCELLED; libera retención con reintentos.</p>
+<p><strong>Errores específicos.</strong> 403 FORBIDDEN; 404 NOT_FOUND; 409 INVALID_STATE; además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 200:</p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;q-ejemplo&quot;,
+  &quot;state&quot;: &quot;CANCELLED&quot;
+}
+</code></pre>
+<h3>S20 — Verificar RUN/huella y entregar</h3>
+<p><strong>POST <code>/api/requests/{id}/issue</code></strong> · pantalla P06 · Bearer; Bibliotecario.
+Destino privado: <code>orders POST /requests/{id}/issue</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> <code>IssueInput</code> (tabla de campos anterior).
+Parámetros: id (path, obligatorio).</p>
+<p><strong>Regla y autorización.</strong> PENDING vigente: RUN+huella TEST, activo y elegible. Plazo por ejemplar calculado al confirmar, nunca desde el navegador. ISSUING recuperable e ISSUED idempotente.</p>
+<p><strong>Errores específicos.</strong> 403 IDENTITY_MISMATCH / READER_INACTIVE; 404 NOT_FOUND; 409 INVALID_STATE / HOLD_EXPIRED / READER_SANCTIONED / RESERVATION_CONFLICT; además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{
+  &quot;rut&quot;: &quot;12345678-5&quot;,
+  &quot;fingerprint&quot;: &quot;bXVlc3RyYS1maWN0aWNpYS1uby1lc3VuYS1odWVsbGEtcmVhbA==&quot;
+}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 200:</p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;l-ejemplo&quot;,
+  &quot;requestId&quot;: &quot;q-ejemplo&quot;,
+  &quot;ownerId&quot;: &quot;r-ejemplo&quot;,
+  &quot;mode&quot;: &quot;HOME&quot;,
+  &quot;state&quot;: &quot;ACTIVE&quot;,
+  &quot;preparedAt&quot;: &quot;2026-11-20T15:00:00Z&quot;,
+  &quot;issuedAt&quot;: &quot;2026-11-20T15:00:00Z&quot;,
+  &quot;items&quot;: [
+    {
+      &quot;copyId&quot;: &quot;BEC-0001-1&quot;,
+      &quot;documentId&quot;: &quot;d-ejemplo&quot;,
+      &quot;title&quot;: &quot;Relatos del barrio (ficticio)&quot;,
+      &quot;homeDays&quot;: 7,
+      &quot;roomHours&quot;: 2,
+      &quot;shelf&quot;: &quot;A-01&quot;,
+      &quot;dueAt&quot;: &quot;2026-11-27T15:00:00Z&quot;,
+      &quot;state&quot;: &quot;ACTIVE&quot;
+    }
+  ],
+  &quot;dueAt&quot;: &quot;2026-11-27T15:00:00Z&quot;
+}
+</code></pre>
+<h3>S21 — Listar préstamos por alcance</h3>
+<p><strong>GET <code>/api/loans</code></strong> · pantalla P03,P06 · Bearer; Lector, Bibliotecario, Administrativo.
+Destino privado: <code>orders GET /loans</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> Sin cuerpo.
+Parámetros: readerId (query, opcional); page (query, opcional); size (query, opcional).</p>
+<p><strong>Regla y autorización.</strong> READER propio siempre; LIBRARIAN/ADMIN pueden filtrar lector o consultar lista. No se elimina historial.</p>
+<p><strong>Errores específicos.</strong> 400 validación; además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 200:</p>
+<pre><code class="language-json">{
+  &quot;items&quot;: [
+    {
+      &quot;id&quot;: &quot;l-ejemplo&quot;,
+      &quot;requestId&quot;: &quot;q-ejemplo&quot;,
+      &quot;ownerId&quot;: &quot;r-ejemplo&quot;,
+      &quot;mode&quot;: &quot;HOME&quot;,
+      &quot;state&quot;: &quot;ACTIVE&quot;,
+      &quot;preparedAt&quot;: &quot;2026-11-20T15:00:00Z&quot;,
+      &quot;issuedAt&quot;: &quot;2026-11-20T15:00:00Z&quot;,
+      &quot;items&quot;: [
+        {
+          &quot;copyId&quot;: &quot;BEC-0001-1&quot;,
+          &quot;documentId&quot;: &quot;d-ejemplo&quot;,
+          &quot;title&quot;: &quot;Relatos del barrio (ficticio)&quot;,
+          &quot;homeDays&quot;: 7,
+          &quot;roomHours&quot;: 2,
+          &quot;shelf&quot;: &quot;A-01&quot;,
+          &quot;dueAt&quot;: &quot;2026-11-27T15:00:00Z&quot;,
+          &quot;state&quot;: &quot;ACTIVE&quot;
+        }
+      ],
+      &quot;dueAt&quot;: &quot;2026-11-27T15:00:00Z&quot;
+    }
+  ],
+  &quot;total&quot;: 1,
+  &quot;sanctionUntil&quot;: null
+}
+</code></pre>
+<h3>S22 — Detalle de préstamo</h3>
+<p><strong>GET <code>/api/loans/{id}</code></strong> · pantalla P03,P06 · Bearer; Lector, Bibliotecario, Administrativo.
+Destino privado: <code>orders GET /loans/{id}</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> Sin cuerpo.
+Parámetros: id (path, obligatorio).</p>
+<p><strong>Regla y autorización.</strong> Titular READER o personal autorizado; backend comprueba ownerId.</p>
+<p><strong>Errores específicos.</strong> 403 FORBIDDEN; 404 NOT_FOUND; además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 200:</p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;l-ejemplo&quot;,
+  &quot;requestId&quot;: &quot;q-ejemplo&quot;,
+  &quot;ownerId&quot;: &quot;r-ejemplo&quot;,
+  &quot;mode&quot;: &quot;HOME&quot;,
+  &quot;state&quot;: &quot;ACTIVE&quot;,
+  &quot;preparedAt&quot;: &quot;2026-11-20T15:00:00Z&quot;,
+  &quot;issuedAt&quot;: &quot;2026-11-20T15:00:00Z&quot;,
+  &quot;items&quot;: [
+    {
+      &quot;copyId&quot;: &quot;BEC-0001-1&quot;,
+      &quot;documentId&quot;: &quot;d-ejemplo&quot;,
+      &quot;title&quot;: &quot;Relatos del barrio (ficticio)&quot;,
+      &quot;homeDays&quot;: 7,
+      &quot;roomHours&quot;: 2,
+      &quot;shelf&quot;: &quot;A-01&quot;,
+      &quot;dueAt&quot;: &quot;2026-11-27T15:00:00Z&quot;,
+      &quot;state&quot;: &quot;ACTIVE&quot;
+    }
+  ],
+  &quot;dueAt&quot;: &quot;2026-11-27T15:00:00Z&quot;
+}
+</code></pre>
+<h3>S23 — Comprobante de domicilio</h3>
+<p><strong>GET <code>/api/loans/{id}/receipt</code></strong> · pantalla P09 · Bearer; Lector, Bibliotecario.
+Destino privado: <code>orders GET /loans/{id}/receipt</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> Sin cuerpo.
+Parámetros: id (path, obligatorio).</p>
+<p><strong>Regla y autorización.</strong> Solo HOME entregado (no PREPARING); titular o bibliotecario. Ítems con fecha/hora propia; impresión en P09.</p>
+<p><strong>Errores específicos.</strong> 403 FORBIDDEN; 404 NOT_FOUND; 409 NO_HOME_RECEIPT; además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 200:</p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;receipt-l-ejemplo&quot;,
+  &quot;loanId&quot;: &quot;l-ejemplo&quot;,
+  &quot;readerId&quot;: &quot;r-ejemplo&quot;,
+  &quot;issuedAt&quot;: &quot;2026-11-20T15:00:00Z&quot;,
+  &quot;items&quot;: [
+    {
+      &quot;copyId&quot;: &quot;BEC-0001-1&quot;,
+      &quot;documentId&quot;: &quot;d-ejemplo&quot;,
+      &quot;title&quot;: &quot;Relatos del barrio (ficticio)&quot;,
+      &quot;homeDays&quot;: 7,
+      &quot;roomHours&quot;: 2,
+      &quot;shelf&quot;: &quot;A-01&quot;,
+      &quot;dueAt&quot;: &quot;2026-11-27T15:00:00Z&quot;,
+      &quot;state&quot;: &quot;ACTIVE&quot;
+    }
+  ],
+  &quot;amount&quot;: 0,
+  &quot;currency&quot;: &quot;CLP&quot;
+}
+</code></pre>
+<h3>S24 — Devolver por código</h3>
+<p><strong>POST <code>/api/returns</code></strong> · pantalla P07 · Bearer; Bibliotecario.
+Destino privado: <code>orders POST /returns</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> <code>ReturnInput</code> (tabla de campos anterior).
+Parámetros: Idempotency-Key (header, obligatorio).</p>
+<p><strong>Regla y autorización.</strong> Idempotency-Key obligatorio. Hora servidor; préstamo devuelto inmediatamente, copia RESHELVING hasta returnedAt+30 minutos. Sanción temporal si hay atraso.</p>
+<p><strong>Errores específicos.</strong> 400 IDEMPOTENCY_REQUIRED; 409 NO_ACTIVE_LOAN / IDEMPOTENCY_CONFLICT; además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{
+  &quot;copyId&quot;: &quot;BEC-0001-1&quot;
+}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 200:</p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;ret-ejemplo&quot;,
+  &quot;loanId&quot;: &quot;l-ejemplo&quot;,
+  &quot;copyId&quot;: &quot;BEC-0001-1&quot;,
+  &quot;returnedAt&quot;: &quot;2026-11-20T15:00:00Z&quot;,
+  &quot;state&quot;: &quot;RETURNED&quot;,
+  &quot;late&quot;: false,
+  &quot;sanctionUntil&quot;: null,
+  &quot;readyAt&quot;: &quot;2026-11-20T15:30:00Z&quot;
+}
+</code></pre>
+<h3>S25 — Reservar ejemplar/fecha</h3>
+<p><strong>POST <code>/api/reservations</code></strong> · pantalla P01 · Bearer; Lector.
+Destino privado: <code>orders POST /reservations</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> <code>ReservationInput</code> (tabla de campos anterior).
+Parámetros: Idempotency-Key (header, obligatorio).</p>
+<p><strong>Regla y autorización.</strong> Idempotency-Key; lector elegible; slot copia/fecha único. No atraviesa préstamo vigente ni acepta fecha &gt;90 días.</p>
+<p><strong>Errores específicos.</strong> 400 INVALID_DATE / IDEMPOTENCY_REQUIRED; 409 RESERVATION_CONFLICT / COPY_UNAVAILABLE / READER_SANCTIONED / IDEMPOTENCY_CONFLICT; además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{
+  &quot;copyId&quot;: &quot;BEC-0001-1&quot;,
+  &quot;date&quot;: &quot;2026-12-10&quot;,
+  &quot;mode&quot;: &quot;ROOM&quot;
+}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 201:</p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;v-ejemplo&quot;,
+  &quot;ownerId&quot;: &quot;r-ejemplo&quot;,
+  &quot;state&quot;: &quot;ACTIVE&quot;,
+  &quot;copyId&quot;: &quot;BEC-0001-1&quot;,
+  &quot;date&quot;: &quot;2026-12-10&quot;,
+  &quot;mode&quot;: &quot;ROOM&quot;,
+  &quot;createdAt&quot;: &quot;2026-11-20T15:00:00Z&quot;
+}
+</code></pre>
+<h3>S26 — Consultar reservas</h3>
+<p><strong>GET <code>/api/reservations</code></strong> · pantalla P03,P06 · Bearer; Lector, Bibliotecario.
+Destino privado: <code>orders GET /reservations</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> Sin cuerpo.
+Parámetros: readerId (query, opcional); page (query, opcional); size (query, opcional).</p>
+<p><strong>Regla y autorización.</strong> Titular READER; bibliotecario puede filtrar lector.</p>
+<p><strong>Errores específicos.</strong> 400 validación; además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 200:</p>
+<pre><code class="language-json">{
+  &quot;items&quot;: [
+    {
+      &quot;id&quot;: &quot;v-ejemplo&quot;,
+      &quot;ownerId&quot;: &quot;r-ejemplo&quot;,
+      &quot;state&quot;: &quot;ACTIVE&quot;,
+      &quot;copyId&quot;: &quot;BEC-0001-1&quot;,
+      &quot;date&quot;: &quot;2026-12-10&quot;,
+      &quot;mode&quot;: &quot;ROOM&quot;,
+      &quot;createdAt&quot;: &quot;2026-11-20T15:00:00Z&quot;
+    }
+  ],
+  &quot;total&quot;: 1
+}
+</code></pre>
+<h3>S27 — Cancelar reserva futura</h3>
+<p><strong>DELETE <code>/api/reservations/{id}</code></strong> · pantalla P03,P06 · Bearer; Lector, Bibliotecario.
+Destino privado: <code>orders DELETE /reservations/{id}</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> Sin cuerpo.
+Parámetros: id (path, obligatorio).</p>
+<p><strong>Regla y autorización.</strong> Titular o bibliotecario; ACTIVE/CANCELLING/CANCELLED. No borra historia.</p>
+<p><strong>Errores específicos.</strong> 403 FORBIDDEN; 404 NOT_FOUND; 409 INVALID_STATE; además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 200:</p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;v-ejemplo&quot;,
+  &quot;state&quot;: &quot;CANCELLED&quot;
+}
+</code></pre>
+<h3>S28 — Morosidad sala/domicilio</h3>
+<p><strong>GET <code>/api/overdue</code></strong> · pantalla P08 · Bearer; Administrativo.
+Destino privado: <code>orders GET /overdue</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> Sin cuerpo.
+Parámetros: mode (query, opcional); page (query, opcional); size (query, opcional).</p>
+<p><strong>Regla y autorización.</strong> ADMIN; lista operacional de ítems ACTIVE vencidos (HOME por defecto o ROOM). Recordatorio automático solo HOME.</p>
+<p><strong>Errores específicos.</strong> 400 VALIDATION; además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 200:</p>
+<pre><code class="language-json">{
+  &quot;items&quot;: [
+    {
+      &quot;loanId&quot;: &quot;l-ejemplo&quot;,
+      &quot;readerId&quot;: &quot;r-ejemplo&quot;,
+      &quot;copyId&quot;: &quot;BEC-0001-1&quot;,
+      &quot;title&quot;: &quot;Relatos del barrio (ficticio)&quot;,
+      &quot;dueAt&quot;: &quot;2026-11-19T15:00:00Z&quot;,
+      &quot;mode&quot;: &quot;HOME&quot;
+    }
+  ],
+  &quot;total&quot;: 1
+}
+</code></pre>
+<h3>S29 — Consultar gratuidad</h3>
+<p><strong>GET <code>/api/payments/policy</code></strong> · pantalla P03 · Anónimo permitido.
+Destino privado: <code>payments GET /policy</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> Sin cuerpo.
+Parámetros: ninguno.</p>
+<p><strong>Regla y autorización.</strong> No hay precio ni multa; no necesita sesión.</p>
+<p><strong>Errores específicos.</strong> 400 validación; además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 200:</p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;MUNICIPAL_FREE&quot;,
+  &quot;currency&quot;: &quot;CLP&quot;,
+  &quot;amount&quot;: 0,
+  &quot;chargesEnabled&quot;: false,
+  &quot;sanction&quot;: &quot;TIME_ONLY&quot;
+}
+</code></pre>
+<h3>S30 — Consultar evaluación de gratuidad</h3>
+<p><strong>GET <code>/api/payments/assessments/{id}</code></strong> · pantalla P03 · Bearer; Lector, Bibliotecario, Administrativo.
+Destino privado: <code>payments GET /assessments/{id}</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> Sin cuerpo.
+Parámetros: id (path, obligatorio).</p>
+<p><strong>Regla y autorización.</strong> id de ruta = loanId; lector titular, bibliotecario o administrativo.</p>
+<p><strong>Errores específicos.</strong> 403 FORBIDDEN; 404 NOT_FOUND; además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 200:</p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;l-ejemplo&quot;,
+  &quot;loanId&quot;: &quot;l-ejemplo&quot;,
+  &quot;ownerId&quot;: &quot;r-ejemplo&quot;,
+  &quot;amount&quot;: 0,
+  &quot;currency&quot;: &quot;CLP&quot;,
+  &quot;state&quot;: &quot;EXEMPT&quot;,
+  &quot;policyId&quot;: &quot;MUNICIPAL_FREE&quot;,
+  &quot;createdAt&quot;: &quot;2026-11-20T15:00:00Z&quot;
+}
+</code></pre>
+<h3>S31 — Rechazar cobro ajeno al caso</h3>
+<p><strong>POST <code>/api/payments/intents</code></strong> · pantalla P03 · Bearer; Lector.
+Destino privado: <code>payments POST /intents</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> <code>TamperedIntent</code> (tabla de campos anterior).
+Parámetros: ninguno.</p>
+<p><strong>Regla y autorización.</strong> Ruta explícita para rechazar una intención ajena al caso. NO crea transacción ni toca sanciones.</p>
+<p><strong>Errores específicos.</strong> 422 NO_MONETARY_PAYMENTS; además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{
+  &quot;loanId&quot;: &quot;l-ejemplo&quot;,
+  &quot;amount&quot;: 0,
+  &quot;status&quot;: &quot;PAID&quot;
+}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 422:</p>
+<pre><code class="language-json">{
+  &quot;error&quot;: {
+    &quot;code&quot;: &quot;NO_MONETARY_PAYMENTS&quot;,
+    &quot;message&quot;: &quot;El caso no contempla cobros. Un pago nunca levanta una sanción temporal.&quot;,
+    &quot;correlationId&quot;: &quot;00000000-0000-4000-8000-000000000001&quot;
+  }
+}
+</code></pre>
+<h3>S32 — Resumen agregado de cuenta</h3>
+<p><strong>POST <code>/api/graphql</code></strong> · pantalla P03 · Bearer; Lector, Bibliotecario, Administrativo.
+Destino privado: <code>graphql POST /graphql</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> <code>GraphQLInput</code> (tabla de campos anterior).
+Parámetros: ninguno.</p>
+<p><strong>Regla y autorización.</strong> Cuenta: Clients+Orders+Inventory+Payments. first≤20, page≤1000, profundidad≤6, costo≤100; batch por petición. HTTP200 puede incluir errors parciales; no significa éxito total.</p>
+<p><strong>Errores específicos.</strong> 400 VALIDATION / VARIABLES_LIMIT; 200 errors[].extensions.code: FIELD_FORBIDDEN / FORBIDDEN / DEPENDENCY_UNAVAILABLE / ValidationError; además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{
+  &quot;query&quot;: &quot;query Cuenta($first:Int!){account(first:$first){reader{id names state}loans{id mode items{copyId title dueAt document{author available}}assessment{amount currency state}}totalLoans reservations{id date state}}}&quot;,
+  &quot;variables&quot;: {
+    &quot;first&quot;: 10
+  }
+}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 200:</p>
+<pre><code class="language-json">{
+  &quot;data&quot;: {
+    &quot;account&quot;: {
+      &quot;reader&quot;: {
+        &quot;id&quot;: &quot;r-ejemplo&quot;,
+        &quot;names&quot;: &quot;Lectora&quot;,
+        &quot;state&quot;: &quot;ACTIVE&quot;
+      },
+      &quot;loans&quot;: [
+        {
+          &quot;id&quot;: &quot;l-ejemplo&quot;,
+          &quot;mode&quot;: &quot;HOME&quot;,
+          &quot;items&quot;: [
+            {
+              &quot;copyId&quot;: &quot;BEC-0001-1&quot;,
+              &quot;title&quot;: &quot;Relatos del barrio (ficticio)&quot;,
+              &quot;dueAt&quot;: &quot;2026-11-27T15:00:00Z&quot;,
+              &quot;document&quot;: {
+                &quot;author&quot;: &quot;Autora Ficticia&quot;,
+                &quot;available&quot;: 0
+              }
+            }
+          ],
+          &quot;assessment&quot;: {
+            &quot;amount&quot;: 0,
+            &quot;currency&quot;: &quot;CLP&quot;,
+            &quot;state&quot;: &quot;EXEMPT&quot;
+          }
+        }
+      ],
+      &quot;totalLoans&quot;: 1,
+      &quot;reservations&quot;: []
+    }
+  }
+}
+</code></pre>
+<h3>S33 — Simular control de salida</h3>
+<p><strong>GET <code>/api/exit-check/{id}</code></strong> · pantalla P07 · Bearer; Bibliotecario.
+Destino privado: <code>inventory GET /exit-check/{id}</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> Sin cuerpo.
+Parámetros: id (path, obligatorio).</p>
+<p><strong>Regla y autorización.</strong> LIBRARIAN; solo copia HOME con loanId confirmado permite salida. Es prueba software, NO barrera física.</p>
+<p><strong>Errores específicos.</strong> 404 NOT_FOUND; además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 200:</p>
+<pre><code class="language-json">{
+  &quot;copyId&quot;: &quot;BEC-0001-1&quot;,
+  &quot;allowExit&quot;: true,
+  &quot;adapter&quot;: &quot;SOFTWARE_TEST_NO_PHYSICAL_RFID&quot;
+}
+</code></pre>
+<h3>S34 — Bandeja del proveedor de prueba</h3>
+<p><strong>GET <code>/api/lab/mailbox</code></strong> · pantalla P10 · Bearer; Administrativo.
+Destino privado: <code>mail GET /mailbox</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> Sin cuerpo.
+Parámetros: page (query, opcional); size (query, opcional).</p>
+<p><strong>Regla y autorización.</strong> ADMIN y labMode=true; texto de proveedor TEST. No demuestra entrega a Internet.</p>
+<p><strong>Errores específicos.</strong> 404 NOT_FOUND (laboratorio deshabilitado); además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 200:</p>
+<pre><code class="language-json">{
+  &quot;items&quot;: [
+    {
+      &quot;id&quot;: &quot;activation-r-ejemplo-v1&quot;,
+      &quot;to&quot;: &quot;lectora@bec.example.invalid&quot;,
+      &quot;subject&quot;: &quot;Active su cuenta BEC&quot;,
+      &quot;text&quot;: &quot;ENLACE FICTICIO: https://localhost:8443/?activation=TOKEN_FICTICIO_NO_VALIDO&quot;,
+      &quot;createdAt&quot;: &quot;2026-11-20T15:00:00Z&quot;
+    }
+  ],
+  &quot;total&quot;: 1,
+  &quot;adapter&quot;: &quot;TEST_NO_INTERNET_DELIVERY&quot;
+}
+</code></pre>
+<h3>S35 — Reenviar activación e invalidar enlace anterior</h3>
+<p><strong>POST <code>/api/readers/{id}/activation</code></strong> · pantalla P05 · Bearer; Administrativo.
+Destino privado: <code>clients POST /readers/{id}/activation</code>; el gateway conserva query y JSON salvo S02 (token derivado del Bearer).</p>
+<p><strong>Entrada.</strong> <code>EmptyInput</code> (tabla de campos anterior).
+Parámetros: id (path, obligatorio).</p>
+<p><strong>Regla y autorización.</strong> ADMIN; solo lector INACTIVE y cuenta provisionada; invalida enlace previo, nueva vigencia 24 h.</p>
+<p><strong>Errores específicos.</strong> 404 NOT_FOUND; 409 ALREADY_ACTIVE / ACCOUNT_PENDING; además los errores comunes aplicables.</p>
+<p>Entrada JSON ficticia:</p>
+<pre><code class="language-json">{}
+</code></pre>
+<p>Salida JSON ficticia — HTTP 200:</p>
+<pre><code class="language-json">{
+  &quot;queued&quot;: true,
+  &quot;expiresInHours&quot;: 24,
+  &quot;previousLinkRevoked&quot;: true
+}
+</code></pre>
+<h2>Semántica de salidas y campos condicionales</h2>
+<p>Los esquemas <code>SxxResponse</code> en <code>openapi.json</code> indican los tipos de cada proyección, no solo un nombre genérico. <code>docs/contratos.json</code> conserva los ejemplos y la clasificación de entradas. En páginas, <code>items</code> es una lista, <code>total</code> entero; <code>page</code>/<code>size</code> se devuelven donde aparecen en el contrato.
+Los IDs, estados y fechas de préstamos/reservas son contextuales y privados. <code>ownerId</code> nunca se acepta desde el navegador en las creaciones propias. En catálogo, <code>dueAt</code>/<code>readyAt</code> son públicos contextuales sin vincular personas. Cualquier <code>*Hash</code>, <code>*Cipher</code>, secreto técnico o plantilla está excluido de los DTO.
+En resultados de saga se puede observar ALLOCATING/ISSUING/PREPARING/RESERVING/RETURNING; un 502 no autoriza a duplicar la operación con otra clave. Reconsultar/reintentar la misma clave hasta resolver. Un error GraphQL tiene <code>errors[].message</code>, <code>path</code> y <code>extensions.code</code>; los campos nullable pueden quedar null con datos parciales de otros subsistemas.
+Las respuestas de registro no devuelven clave ni enlace de activación. La excepción deliberada de exposición de enlace es S34, bandeja de laboratorio: solo ADMIN y deshabilitable con --no-lab. Nunca habilitarla en un piloto real.</p></body></html>

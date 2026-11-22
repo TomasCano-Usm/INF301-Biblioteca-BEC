@@ -1,0 +1,157 @@
+{
+  "recorded_at_utc": "2026-11-22T04:24:38.343647+00:00",
+  "profile": "oracle",
+  "backend_artifact_sha256": "6733620e471c504df3ba877952be38f63aefa27e8914002b9d4dd4e12cb4c9d1",
+  "java": [
+    "openjdk version \"21.0.13.1\" 2026-11-17 LTS",
+    "OpenJDK Runtime Environment (Red_Hat-21.0.13.1.2-1.1) (build 21.0.13.1+2-LTS)",
+    "OpenJDK 64-Bit Server VM (Red_Hat-21.0.13.1.2-1.1) (build 21.0.13.1+2-LTS, mixed mode, sharing)"
+  ],
+  "sql_validation": [
+    "Oracle AI Database 26ai Free Release 23.26.4.0.0 - Develop, Learn, and Run for Free",
+    "BEC_SCHEMAS=7",
+    "BEC_INVENTORY.BEC_TICK_INVENTORY=VALID",
+    "BEC_ORDERS.BEC_TICK_ORDERS=VALID",
+    "BEC_COMPILATION_ERRORS=0",
+    "ACTIVE_DOCUMENTS=12",
+    "ACTIVE_COPIES=54"
+  ],
+  "schema_validation": "BEC_SCHEMA_VALIDATION=OK",
+  "catalog": {
+    "status": 200,
+    "active_titles": 12
+  },
+  "seed": {
+    "fictional": true,
+    "titles": 12,
+    "copies": 24,
+    "activated_readers": 2
+  },
+  "containers": [
+    {
+      "service": "auth",
+      "image_id": "sha256:5722a9bdebe2a764b093ece2b91607df127acd204a114afed53e82c0d7a84eea",
+      "status": "running",
+      "health": null,
+      "memory_limit_bytes": 268435456,
+      "published_ports": {}
+    },
+    {
+      "service": "clients",
+      "image_id": "sha256:5722a9bdebe2a764b093ece2b91607df127acd204a114afed53e82c0d7a84eea",
+      "status": "running",
+      "health": null,
+      "memory_limit_bytes": 268435456,
+      "published_ports": {}
+    },
+    {
+      "service": "gateway",
+      "image_id": "sha256:5722a9bdebe2a764b093ece2b91607df127acd204a114afed53e82c0d7a84eea",
+      "status": "running",
+      "health": null,
+      "memory_limit_bytes": 268435456,
+      "published_ports": {
+        "8443/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "8443"
+          }
+        ]
+      }
+    },
+    {
+      "service": "graphql",
+      "image_id": "sha256:5722a9bdebe2a764b093ece2b91607df127acd204a114afed53e82c0d7a84eea",
+      "status": "running",
+      "health": null,
+      "memory_limit_bytes": 268435456,
+      "published_ports": {}
+    },
+    {
+      "service": "inventory",
+      "image_id": "sha256:5722a9bdebe2a764b093ece2b91607df127acd204a114afed53e82c0d7a84eea",
+      "status": "running",
+      "health": null,
+      "memory_limit_bytes": 268435456,
+      "published_ports": {}
+    },
+    {
+      "service": "mail",
+      "image_id": "sha256:5722a9bdebe2a764b093ece2b91607df127acd204a114afed53e82c0d7a84eea",
+      "status": "running",
+      "health": null,
+      "memory_limit_bytes": 268435456,
+      "published_ports": {}
+    },
+    {
+      "service": "notifications",
+      "image_id": "sha256:5722a9bdebe2a764b093ece2b91607df127acd204a114afed53e82c0d7a84eea",
+      "status": "running",
+      "health": null,
+      "memory_limit_bytes": 268435456,
+      "published_ports": {}
+    },
+    {
+      "service": "oracle",
+      "image_id": "sha256:5c9fce6ea16f0efd2b0fb1acf4c96380d86b70a456023f3d008f8eaf7ad61ef1",
+      "status": "running",
+      "health": "healthy",
+      "memory_limit_bytes": 3221225472,
+      "published_ports": {}
+    },
+    {
+      "service": "orders",
+      "image_id": "sha256:5722a9bdebe2a764b093ece2b91607df127acd204a114afed53e82c0d7a84eea",
+      "status": "running",
+      "health": null,
+      "memory_limit_bytes": 268435456,
+      "published_ports": {}
+    },
+    {
+      "service": "payments",
+      "image_id": "sha256:5722a9bdebe2a764b093ece2b91607df127acd204a114afed53e82c0d7a84eea",
+      "status": "running",
+      "health": null,
+      "memory_limit_bytes": 268435456,
+      "published_ports": {}
+    },
+    {
+      "service": "secrets",
+      "image_id": "sha256:5722a9bdebe2a764b093ece2b91607df127acd204a114afed53e82c0d7a84eea",
+      "status": "running",
+      "health": null,
+      "memory_limit_bytes": 268435456,
+      "published_ports": {}
+    }
+  ],
+  "react": {
+    "checks": 25,
+    "passed": true,
+    "javascript_errors": 0,
+    "frontend_source_sha256": "30f4b7fa33931f0e66aec7a6044696641e8a04af960e8f8593f0de5f1c74a8dc",
+    "evidence": "evidencias-oracle/react.json",
+    "frontend_directory": "Biblioteca en React"
+  },
+  "bootstrap_guard_tests": {
+    "passed": 8,
+    "scope": "SQLPlus simulado, no reglas de negocio Oracle."
+  },
+  "source_sha256": {
+    "deploy/oracle/Dockerfile": "754445dfdf28611ce0ccd7299ff4808a0913d8338a94d703858095fb2ed37238",
+    "deploy/oracle/tls.sh": "b2e8ce9ad701d3eec1fcc8cbe5de30e51e95d0a43f3d7ef35a3abf846b04baeb",
+    "deploy/oracle/provision.sh": "047df6e0b03d653e8fcf1ad030fe62822deb4f63e78aea5788bd08e9d55934fb",
+    "deploy/oracle/healthcheck.sh": "ec0f0b7d753fe349f82e1a1526e3aba62fc8e9f3c4b72b1012c3aa55448b4ebd",
+    "compose.oracle.yaml": "004458c6e053c43c6e14dba6744b0dadec1321ebd2deb69ad3ff08835d5c2764",
+    "db/oracle/inventory.sql": "ed2500a91ed2301bdef5aaf9fad39c5f04b29c634d81982a589b1dfed09c2727",
+    "db/oracle/orders.sql": "95a2ed63462223ca29178206e93930141233c20c93c3f51ceefc83f9956addff",
+    "db/oracle/validate.sql": "ed541fde9fe6f9c90f78b46f8a375868c29f64dff4b785c939d37445ac941cfa",
+    "scripts/test_oracle_bootstrap.py": "51cb87d37df545060ed87187a04a060d1d7a032ebd9b6325a13d9217b4a444f4",
+    "scripts/verify_oracle.py": "18ce1d05ff8b983584002115037fb32c5341e3b52684a87b8338f71bbbd2d256"
+  },
+  "limits": [
+    "No certifica ORA01–ORA12 completos.",
+    "TCPS positivo; CA/DN negativos pendientes.",
+    "Sin carga/restauración Oracle, correo Internet ni dispositivos físicos.",
+    "Los JUnit y las mediciones H2 anteriores conservan su perfil."
+  ]
+}

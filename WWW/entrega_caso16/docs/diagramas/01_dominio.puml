@@ -1,0 +1,128 @@
+@startuml
+!pragma layout smetana
+title Caso 16 — UML de dominio (vista de agregados; no es un ORM)
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam backgroundColor #FFFFFF
+skinparam packageStyle rectangle
+hide empty methods
+class Reader {
+  id: UUID
+  rut: RUN <<restringido>>
+  names, surnames: String
+  address, email, telephone: String
+  photo: Base64 <<restringido>>
+  fingerprintHash: HMAC <<interno>>
+  documentsChecked: Boolean
+  state: INACTIVE | ACTIVE
+}
+class Document {
+  id: UUID
+  title, author, publisher: String
+  type: BOOK | TECHNICAL | AUDIO | VIDEO
+  medium: PAPER | CASSETTE | CD | DVD | BLURAY
+  edition, category, shelf: String
+  year, homeDays, roomHours: Integer
+  state: ACTIVE | ARCHIVED
+}
+class Copy {
+  id: CopyCode
+  documentId: UUID
+  shelf: String
+  state: CopyState
+  holdId, loanId: UUID [0..1]
+  dueAt, readyAt: Instant [0..1]
+  lastReturnLoanId: UUID [0..1]
+}
+class LoanRequest {
+  id, ownerId: UUID
+  mode: HOME | ROOM
+  copyIds: CopyCode[1..5]
+  createdAt, expiresAt: Instant
+  state: RequestState
+  loanId: UUID [0..1]
+}
+class Allocation {
+  id: RequestId
+  ownerId: UUID
+  digest: SHA256
+  mode: HOME | ROOM
+  state: HELD | COMMITTED | RELEASED | EXPIRED
+  expiresAt, issuedAt: Instant
+}
+class Loan {
+  id, requestId, ownerId: UUID
+  mode: HOME | ROOM
+  state: PREPARING | ACTIVE | CLOSED | ABORTED
+  preparedAt, issuedAt: Instant
+  dueAt: Instant [0..1]
+}
+class LoanItem {
+  copyId, documentId: ID
+  title: String <<snapshot>>
+  shelf: String <<snapshot>>
+  homeDays, roomHours: Integer
+  dueAt: Instant
+  state: ACTIVE | RETURNING | RETURNED
+  returnedAt, readyAt: Instant [0..1]
+}
+class Reservation {
+  id, ownerId: UUID
+  copyId, documentId: ID
+  date: LocalDate
+  mode: HOME | ROOM
+  state: ReservationState
+}
+class ReturnRecord {
+  id, loanId, copyId: ID
+  returnedAt, readyAt: Instant
+  late: Boolean
+  sanctionUntil: Instant [0..1]
+  state: RETURNING | RETURNED
+}
+class Sanction {
+  id, ownerId: ReaderId
+  until: Instant
+  rule: DAY_PER_LATE_DAY_MAX_30
+  sourceReturn: ReturnId
+}
+class FreeAssessment {
+  id: LoanId
+  ownerId: ReaderId
+  amount: Decimal = 0
+  currency: CLP
+  state: EXEMPT
+}
+class OutboxEvent {
+  id: String <<deduplicación>>
+  state: PENDING | SENT
+  event: Receipt | Overdue
+}
+Reader "1" -- "0..*" LoanRequest : solicita >
+Reader "1" -- "0..*" Loan : responsable >
+Reader "1" -- "0..*" Reservation : agenda >
+Reader "1" -- "0..1" Sanction : bloqueo consolidado >
+Document "1" *-- "0..*" Copy : ejemplares
+LoanRequest "0..*" -- "1..5" Copy : selecciona (en el tiempo)
+LoanRequest "1" -- "0..1" Allocation : retención distribuida
+Allocation "0..*" -- "1..5" Copy : toma exclusiva vigente
+LoanRequest "1" -- "0..1" Loan : origina
+Loan "1" *-- "1..5" LoanItem : vencimiento por ítem
+LoanItem "0..*" -- "1" Copy : historial de
+Reservation "0..*" -- "1" Copy : una activa por fecha/copia
+LoanItem "1" -- "0..1" ReturnRecord : recepción
+ReturnRecord "0..*" -- "0..1" Sanction : puede ampliar
+Loan "1" -- "0..1" FreeAssessment : saga, eventual
+Loan "1" -- "0..*" OutboxEvent : comprobante / recordatorio
+note bottom of Copy
+CopyState = AVAILABLE, HELD, HOME, ROOM,
+RESHELVING, RETIRED.
+Un solo préstamo/retención vigente por ejemplar.
+La relación histórica no habilita doble disponibilidad.
+end note
+note bottom of Reservation
+Reserva no equivale a préstamo ni salida.
+El dueño se referencia por ID: sin FK entre bases.
+Estado en Orders + slot exclusivo en Inventory.
+end note
+@enduml

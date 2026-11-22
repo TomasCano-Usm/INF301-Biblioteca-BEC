@@ -1,0 +1,48 @@
+@startuml
+title Entrega HOME — identidad, saga durable y recuperación
+skinparam shadowing false
+actor Bibliotecario as B
+participant ApiGateway as G
+participant AuthService as A
+participant OrdersService as O
+participant ClientsService as C
+participant InventoryService as I
+participant PaymentsService as P
+participant NotificationService as N
+B -> G : POST /api/requests/{id}/issue\nBearer + RUN + muestra TEST
+G -> A : POST /introspect\nHTTPS + HMAC gateway→auth
+A --> G : principal LIBRARIAN vigente
+G -> O : POST /requests/{id}/issue\nnueva identidad firmada gateway→orders
+O -> C : GET /eligibility/{reader}\nPOST /verify (RUN + evidencia)
+C --> O : activo + verificado (adaptador TEST)
+O -> O : tx local: REQUEST=ISSUING\nLOAN=PREPARING, ID determinista
+O -> I : POST /commit(requestId,loanId)\nHMAC orders→inventory
+I -> I : tx: HELD→HOME\nplazos por ítem, commit idempotente
+I --> O : items + issuedAt + dueAt servidor
+O -> P : POST /assessments(loanId,readerId)
+alt payments disponible
+  P -> P : tx: EXEMPT, 0 CLP, PK loanId
+  P --> O : evaluación idempotente
+  O -> O : tx: LOAN=ACTIVE, REQUEST=ISSUED\nOUTBOX comprobante
+  O --> G : 200 LoanDTO
+  G --> B : comprobante imprimible
+else timeout / 5xx
+  O --> G : 502 DEPENDENCY_UNAVAILABLE
+  G --> B : error sanitizado + correlationId
+  note over O,I
+  No deshacer a ciegas: inventory pudo confirmar.
+  ISSUING no admite cancelación.
+  end note
+  O -> I : worker reintenta /commit MISMO ID
+  I --> O : mismo resultado; no doble préstamo
+  O -> P : worker reintenta /assessments MISMO loanId
+  P --> O : una sola evaluación
+  O -> O : finaliza ACTIVE + OUTBOX
+end
+O -> N : worker POST /events(receipt-loanId)
+N --> O : aceptado / duplicado idéntico
+note over N
+API de correo TEST, persistente y con reintentos.
+No se afirma entrega por Internet.
+end note
+@enduml
