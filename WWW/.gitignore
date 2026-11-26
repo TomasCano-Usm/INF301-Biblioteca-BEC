@@ -1,3 +1,6 @@
+# Prototipo Figma local; no versionar esta carpeta.
+referencias/
+
 # Instalaciones y caché local de pnpm: se regeneran en cada equipo.
 **/node_modules/
 **/node_modules.*/
