@@ -6,23 +6,9 @@ disco/directorio. No hay que conservar `E:\` ni `/mnt/e/`.
 ```text
 WWW/
 ├── Biblioteca en React/     # React, Vite y configuración del proxy HTTPS
-├── referencias/              # Prototipo React/Vite implementado desde Figma Make
 ├── entrega_caso16/          # Backend Java, gateway, Oracle y documentación
 └── .pnpm-store/             # Caché local; NO subir a GitHub
 ```
-
-## Actualización local del frontend Figma
-
-- Se incorporó `referencias/` como una aplicación React 19, TypeScript y Vite,
-  preparada para Figma Make, con recursos visuales y servicios de muestra.
-- El prototipo cubre el catálogo público con búsqueda y filtros, inicio de sesión,
-  menú bibliotecario, gestión de colecciones, catálogo y solicitudes, y los flujos
-  de préstamo, devolución, alta y edición de documentos.
-- Se añadieron estados de carga, error y reintento, validaciones, notificaciones
-  accesibles y presentación adaptable a móviles.
-- Se actualizaron las capturas y los recursos gráficos de `Biblioteca en React`.
-  El `.gitignore` general de `WWW` ahora también contempla los archivos temporales
-  y de entorno generados por Figma Make y las herramientas asociadas.
 
 ## Iniciar una instalación existente
 

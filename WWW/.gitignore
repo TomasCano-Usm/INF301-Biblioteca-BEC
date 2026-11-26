@@ -7,20 +7,13 @@
 **/target/
 **/.cache/
 **/.vite/
-**/vite.config.*.timestamp-*
 **/*.tsbuildinfo
-**/*-debug.log*
-**/logs/
-**/.claude-replay.*
-**/.tmp-*
-**/.figma/design-context/
-**/.plugins/
-**/.opencode-skills/
 
 # Entornos, credenciales, certificados privados, BD y registros.
 **/.runtime/
 **/.runtime-*/
-**/.env*
+**/.env
+**/.env.*
 !**/.env.example
 **/.venv/
 **/__pycache__/
