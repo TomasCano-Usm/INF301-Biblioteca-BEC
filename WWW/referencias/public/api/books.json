@@ -1,0 +1,44 @@
+[
+  {
+    "title": "Phantom Blood",
+    "author": "Hirohiko Araki",
+    "category": "Acción/Terror",
+    "image": "/assets/13b97.png",
+    "description": "La historia comienza con Jonathan Joestar, un joven aristócrata cuya vida cambia cuando Dio Brando llega a su familia. Una rivalidad marcada por la ambición, la traición y poderes sobrenaturales dará origen al legendario destino de los Joestar."
+  },
+  {
+    "title": "Battle Tendency",
+    "author": "Hirohiko Araki",
+    "category": "Acción/Aventura",
+    "image": "/assets/31a2d.png",
+    "description": "Joseph Joestar, nieto de Jonathan, se enfrenta a una antigua amenaza vinculada a los misteriosos Hombres del Pilar. Con su ingenio, humor y dominio del Hamon, deberá superar enemigos extraordinariamente poderosos para proteger a la humanidad."
+  },
+  {
+    "title": "Stardust Cruzaders",
+    "author": "Hirohiko Araki",
+    "category": "Acción/Sobrenatural",
+    "image": "/assets/ec346.png",
+    "description": "Jotaro Kujo descubre que posee un misterioso poder conocido como Stand. Junto a sus aliados, emprende un peligroso viaje desde Japón hasta Egipto para enfrentar a un enemigo del pasado y salvar a su madre."
+  },
+  {
+    "title": "Diamond Is Unbreakable",
+    "author": "Hirohiko Araki",
+    "category": "Misterio/Sobrenatural",
+    "image": "/assets/be1c6.png",
+    "description": "En la tranquila ciudad japonesa de Morioh, Josuke Higashikata y sus amigos descubren que numerosos habitantes poseen habilidades sobrenaturales. Entre misterios y sucesos inexplicables, deberán proteger su ciudad de peligros ocultos."
+  },
+  {
+    "title": "Golden Wind",
+    "author": "Hirohiko Araki",
+    "category": "Acción/Crimen",
+    "image": "/assets/66241.png",
+    "description": "Giorno Giovanna sueña con convertirse en una estrella del mundo criminal para transformar la mafia italiana desde dentro. Junto a un grupo de usuarios de Stand, se adentra en una organización peligrosa donde la lealtad y la traición deciden el destino de sus integrantes."
+  },
+  {
+    "title": "Stone Ocean",
+    "author": "Hirohiko Araki",
+    "category": "Acción/Sobrenatural",
+    "image": "/assets/6faa0.png",
+    "description": "Jolyne Cujoh es encarcelada injustamente en una prisión de máxima seguridad en Florida. Tras despertar su Stand, deberá enfrentarse a enemigos extraordinarios y descubrir una conspiración relacionada con el pasado de su familia."
+  }
+]
