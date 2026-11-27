@@ -1,29 +1,55 @@
 import { useEffect, useId, useRef, type ReactNode } from "react";
-import { go, type Document } from "./api";
+import { go, type Document, type Role } from "./api";
 import { useApplication } from "./session";
 
 const A = "/assets";
 export function Header({ title }: { title?: string }) {
   const { session, logout } = useApplication();
-  return <header className="app-header">
-    <button className="logo-button" onClick={() => go("home")} aria-label="Ir al inicio"><img src={`${A}/782e0.png`} alt="Biblioteca Estación Central" /></button>
-    {title && <h1>{title}</h1>}
-    {session?.role === "LIBRARIAN" && <button className="header-collection" onClick={() => go("collections")}>Colecciones</button>}
-    <button className="auth-button" onClick={() => session ? void logout() : go("login")}>
-      <img src={`${A}/4ff76.svg`} alt="" />{session ? "Cerrar sesión" : "Ingresar"}
-    </button>
-  </header>;
+  return <>
+    <header className="app-header">
+      <button className="logo-button" onClick={() => go("home")} aria-label="Ir al inicio"><img src={`${A}/782e0.png`} alt="Biblioteca Estación Central" /></button>
+      <div className="header-title"><span className="eyebrow">Biblioteca Municipal</span>{title && <h1>{title}</h1>}</div>
+      {session && <span className="session-chip">{roleName(session.role)}</span>}
+      <button className="auth-button" onClick={() => session ? void logout() : go("login")}>
+        <img src={`${A}/4ff76.svg`} alt="" /><span>{session ? "Cerrar sesión" : "Ingresar"}</span>
+      </button>
+    </header>
+    {!title && session && <WorkspaceNavigation />}
+  </>;
 }
+
+const navigation: { label: string; route: string; roles: Role[] }[] = [
+  { label: "Panel", route: "menu", roles: ["READER", "LIBRARIAN", "ADMIN"] },
+  { label: "Catálogo", route: "home", roles: ["READER", "LIBRARIAN", "ADMIN"] },
+  { label: "Mi cuenta", route: "account", roles: ["READER"] },
+  { label: "Colección", route: "collections", roles: ["LIBRARIAN"] },
+  { label: "Solicitudes", route: "requests", roles: ["LIBRARIAN"] },
+  { label: "Devoluciones", route: "returns", roles: ["LIBRARIAN"] },
+  { label: "Lectores", route: "readers", roles: ["ADMIN"] },
+  { label: "Morosidad", route: "overdue", roles: ["ADMIN"] },
+  { label: "Correo de prueba", route: "mailbox", roles: ["ADMIN"] },
+];
+
+export function roleName(role: Role) {
+  return role === "LIBRARIAN" ? "Bibliotecario" : role === "ADMIN" ? "Administrativo" : "Lector";
+}
+
+function WorkspaceNavigation() {
+  const { notify, session } = useApplication();
+  const visibleNavigation = navigation.filter((item) => session && item.roles.includes(session.role));
+  const rawRoute = window.location.hash.slice(1).split("/")[0] || "home";
+  const currentRoute = ["add", "edit", "detail"].includes(rawRoute) ? "collections" : rawRoute === "loan" ? "requests" : rawRoute === "return" ? "returns" : rawRoute;
+  return <nav className="workspace-nav" aria-label="Navegación principal">
+    {visibleNavigation.map((item) => <button key={item.route} type="button" aria-current={currentRoute === item.route ? "page" : undefined} onClick={() => go(item.route)}>{item.label}</button>)}
+    {session?.role === "LIBRARIAN" && <button type="button" onClick={() => go("add")} className="nav-primary">Añadir documento</button>}
+    <button className="nav-help" type="button" onClick={() => notify({ title: "Ayuda de la biblioteca", message: "Las acciones disponibles dependen del perfil de tu cuenta. El servidor valida permisos y reglas para cada operación." })} aria-label="Ayuda">?</button>
+  </nav>;
+}
+
 export function AdminShell({ title, children }: { title: string; children: ReactNode }) {
-  const { notify } = useApplication();
   return <div className="admin-screen">
     <Header title={title} />
-    <aside className="admin-sidebar" aria-label="Navegación">
-      <button onClick={() => go("add")} aria-label="Añadir documento" title="Añadir documento"><img src={`${A}/c735e.svg`} alt="" /></button>
-      <button onClick={() => go("collections")} aria-label="Colecciones" title="Colecciones"><img src={`${A}/ca582.svg`} alt="" /></button>
-      <button onClick={() => go("requests")} aria-label="Solicitudes" title="Solicitudes"><img src={`${A}/a2ab7.svg`} alt="" /></button>
-      <button className="sidebar-help" onClick={() => notify({ title: "Gestión de colección", message: "Selecciona Editar en la fila del documento para cambiar sus datos o eliminarlo. La eliminación requiere una confirmación y conserva el historial." })} aria-label="Ayuda">?</button>
-    </aside>
+    <WorkspaceNavigation />
     <main className="admin-main">{children}</main>
   </div>;
 }
@@ -35,10 +61,26 @@ export function SearchBox({ value, onChange }: { value: string; onChange: (value
   </label>;
 }
 export function Status({ children }: { children: string }) {
-  const kind = children === "Disponible" || children === "Finalizado" || children === "ISSUED"
-    ? "good" : children === "No disponible" || children === "CANCELLED" || children === "EXPIRED"
-      ? "bad" : children === "PENDING" || children === "ALLOCATING" ? "pending" : "loaned";
-  return <span className={`status ${kind}`}>{children}</span>;
+  const labels: Record<string, string> = {
+    AVAILABLE: "Disponible", UNAVAILABLE: "No disponible", PENDING: "Pendiente",
+    ALLOCATING: "Asignando", ISSUING: "Preparando entrega", ISSUED: "Entregado",
+    ACTIVE: "Activo", INACTIVE: "Inactivo", CANCELLED: "Cancelado", CANCELLING: "Cancelando",
+    EXPIRED: "Vencido", FAILED: "Fallido", RETURNED: "Devuelto", RESHELVING: "En reposición",
+    ROOM: "En sala", HOME: "Domicilio", EXEMPT: "Sin cobro", PREPARING: "Preparando",
+    ABORTED: "Interrumpido", RESERVING: "Reservando", RESERVED: "Reservado",
+  };
+  const good = ["Disponible", "Finalizado", "ISSUED", "ACTIVE", "RETURNED", "EXEMPT"];
+  const bad = ["No disponible", "CANCELLED", "CANCELLING", "EXPIRED", "FAILED", "ABORTED", "INACTIVE"];
+  const pending = ["PENDING", "ALLOCATING", "ISSUING", "PREPARING", "RESERVING", "RESHELVING"];
+  const kind = good.includes(children) ? "good" : bad.includes(children) ? "bad" : pending.includes(children) ? "pending" : "loaned";
+  return <span className={`status ${kind}`}><span>{labels[children] ?? children}</span></span>;
+}
+
+export function LoadState({ busy, error = "", empty, onRetry }: { busy: boolean; error?: string; empty?: boolean; onRetry?: () => void }) {
+  if (busy) return <div className="service-state service-loading" role="status"><span className="loading-spinner" /><span>Cargando información…</span></div>;
+  if (error) return <div className="service-state service-error" role="alert"><strong>No se pudo cargar la información.</strong><span>{error}</span>{onRetry && <button type="button" onClick={onRetry}>Reintentar</button>}</div>;
+  if (empty) return <div className="service-state service-empty" role="status"><span>No hay resultados para mostrar.</span></div>;
+  return null;
 }
 export function Dialog({ title, children, onCancel, busy = false }: {
   title: string; children: ReactNode; onCancel: () => void; busy?: boolean;

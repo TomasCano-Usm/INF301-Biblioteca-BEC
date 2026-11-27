@@ -267,36 +267,46 @@ no basta con cambiar `.env.local`.
 
 ## 3. Pruebas reproducibles
 
-Backend, desde `WWW`:
+### Prueba completa aislada de frontend (recomendada)
+
+Requisitos: JDK 21, Maven 3.9+, Python 3.10+, Node 22, pnpm y Chromium de
+Playwright. Desde `WWW/Biblioteca en React`:
 
 ```bash
-cd entrega_caso16
-mvn -B -ntp test
-```
-
-React, en otra terminal desde `WWW`:
-
-```bash
-cd "Biblioteca en React"
+python3 -m venv .venv
+source .venv/bin/activate
+python3 -m pip install -r ../entrega_caso16/scripts/requirements.txt -r scripts/requirements-test.txt
+python3 -m playwright install chromium
+pnpm install --frozen-lockfile
 pnpm test:paths
 pnpm typecheck
 pnpm build
-# En un entorno Python de pruebas:
-pip install playwright==1.55.0
-python -m playwright install chromium
-python scripts/test_ui.py --runtime ../entrega_caso16/.runtime
+python3 scripts/test_frontend_local.py
 ```
 
-El último comando requiere el backend iniciado y sembrado y React sirviendo en
-`https://localhost:5173`. Comprueba los HTTP reales, recarga, multimedia, los seis
-filtros, confirmación/cancelación, errores de negocio sin falso éxito y móvil.
-Solo archiva los documentos ficticios que crea; no borra la colección existente.
-El navegador automatizado acepta el certificado local; API y proxy verifican la CA.
-Los resultados nuevos se guardan en `evidencias/react.json` con el hash del JAR
-y de las fuentes React; no deben confundirse con las evidencias del frontend anterior.
+`test_frontend_local.py` es la forma de probar **todo el frontend sin escribir
+datos en el runtime existente**. Genera un snapshot temporal del backend actual
+desde Git, compila el artefacto en `/tmp`, crea un runtime H2 de prueba con puertos
+locales libres, carga datos ficticios, ejecuta los E2E del catálogo, cuenta,
+colección, lectores, cola, entrega, devolución, comprobante, morosidad y correo,
+y al terminar detiene los procesos y elimina runtime, credenciales y bases H2.
+No usa el puerto estándar 8443 ni se conecta al entorno desplegado.
 
-Para probar Oracle sin atribuirle por error el hash del JAR local H2, desde la
-raíz del backend copiar primero el artefacto realmente desplegado:
+Solo permanecen los resultados deliberados de frontend en
+`evidencias/frontend-redesign/`: JSON de pruebas y capturas, incluidas las cuatro
+resoluciones obligatorias **390×844, 768×1024, 1024×768 y 1440×900**. Todos los
+datos de negocio, credenciales y logs del runtime de pruebas se eliminan.
+El navegador automatizado acepta el certificado efímero; Vite y el cliente React
+verifican la CA del Gateway.
+
+Para iniciar manualmente contra un runtime de laboratorio ya creado, sigue la
+sección 1. Ese modo no es descartable: los datos de negocio permanecen en ese
+runtime, por lo que no se recomienda para la validación completa aislada.
+
+Las pruebas contra Oracle son independientes y no las ejecuta el test aislado.
+Solo se deben realizar sobre un entorno Oracle local separado, nunca sobre el
+despliegue actual sin autorización explícita. Para documentar una ejecución Oracle
+es necesario identificar el artefacto real que está corriendo:
 
 ```bash
 docker cp bec-caso16-inventory-1:/app/bec.jar /ruta/privada/bec-oracle-running.jar
@@ -311,15 +321,20 @@ python scripts/test_ui.py \
   --output evidencias-oracle
 ```
 
-Vite también debe apuntar a ese runtime. No declares el perfil Oracle aprobado
-solo por haber generado su configuración.
+Vite también debe apuntar al runtime Oracle indicado. No declares el perfil Oracle
+aprobado solo por haber generado su configuración.
 
-## Alcance de esta actualización
+## Pantallas integradas y alcance funcional
 
-La gestión de colección usa este React. El frontend anterior del backend se
-conserva como referencia para los otros trámites del caso (fichas, entrega con
-identidad, devoluciones, morosidad, cuenta GraphQL, etc.); **esta corrección no
-afirma que todos esos formularios se hayan migrado a React**. Aquí se conectaron
-catálogo, login, solicitud de lector, cola de solicitudes y CRUD de documentos.
-Correo, huella y dispositivo de salida mantienen las limitaciones TEST ya
-documentadas; esta modificación no las convierte en integraciones físicas.
+El frontend React ofrece catálogo y reservas, activación/login, cuenta de lector
+con agregación GraphQL, gestión de documentos y ejemplares, administración de
+lectores, cola y entrega de solicitudes, devoluciones/control de salida,
+morosidad, comprobantes y bandeja de correo TEST. La interfaz `web/` heredada se
+conserva como referencia del comportamiento y no como ruta de ejecución React.
+
+Las operaciones se realizan mediante el API Gateway y las rutas/roles existentes.
+No hay un endpoint para emitir un préstamo independiente de una solicitud: la
+entrega siempre se inicia desde la cola P06. La biometría, el correo y el control
+de salida continúan siendo adaptadores TEST; no equivalen a lector físico,
+entrega de correo por Internet ni RFID. El soporte DIGITAL describe el formato,
+no ofrece descargas ni streaming.

@@ -1,0 +1,541 @@
+{
+  "recorded_at_utc": "2026-11-27T03:21:06.174104+00:00",
+  "profile": "h2",
+  "browser": "Chromium / Playwright",
+  "backend": "API Gateway HTTPS con H2 temporal; runtime retirado al terminar test_frontend_local.py",
+  "responsiveness": [
+    "390x844",
+    "768x1024",
+    "1024x768",
+    "1440x900"
+  ],
+  "checks": [
+    {
+      "name": "P01 catálogo anónimo con catálogo real",
+      "passed": true
+    },
+    {
+      "name": "P03 cuenta personal con agregación GraphQL",
+      "passed": true
+    },
+    {
+      "name": "P01 solicitud de préstamo con clave de idempotencia y respuesta real",
+      "passed": true
+    },
+    {
+      "name": "P01/P03 reserva y cancelación mediante servicios reales",
+      "passed": true
+    },
+    {
+      "name": "P03 cancelación de solicitud pendiente",
+      "passed": true
+    },
+    {
+      "name": "P05 inscripción administrativa con autorización y alta reales",
+      "passed": true
+    },
+    {
+      "name": "P05 consulta de ficha y reenvío de activación",
+      "passed": true
+    },
+    {
+      "name": "P10 bandeja TEST y activación a través del Gateway",
+      "passed": true
+    },
+    {
+      "name": "P02 activación y login con cuenta creada por ADMIN",
+      "passed": true
+    },
+    {
+      "name": "P06 verificación y entrega del préstamo solicitada",
+      "passed": true
+    },
+    {
+      "name": "P09 consulta del comprobante Home emitido por el servicio",
+      "passed": true
+    },
+    {
+      "name": "P07 control de salida software para préstamo HOME",
+      "passed": true
+    },
+    {
+      "name": "P07 devolución con vencimiento de reposición calculado por backend",
+      "passed": true
+    },
+    {
+      "name": "P08 consulta administrativa de morosidad",
+      "passed": true
+    },
+    {
+      "name": "Responsive P01 validado a 390×844, 768×1024, 1024×768 y 1440×900",
+      "passed": true
+    },
+    {
+      "name": "Sin errores JavaScript y llamadas de negocio a través del API Gateway",
+      "passed": true
+    }
+  ],
+  "http": [
+    {
+      "method": "GET",
+      "path": "non-api",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "non-api",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "non-api",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "non-api",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "non-api",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "non-api",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "non-api",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "non-api",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "non-api",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "non-api",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "non-api",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "non-api",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "non-api",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "non-api",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "non-api",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "non-api",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "non-api",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "non-api",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "non-api",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "non-api",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "non-api",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "non-api",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "non-api",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "non-api",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "non-api",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "non-api",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "non-api",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/catalog",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/requests",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/payments/policy",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/graphql",
+      "status": 200,
+      "response": "{\"data\":{\"account\":{\"reader\":{\"id\":\"r-ac5b97ff-b2de-40ad-94da-c9cfeaed291b\",\"names\":\"Andrea Ejemplo\",\"surnames\":\"Datos Ficticios\",\"state\":\"ACTIVE\",\"email\":\"lector@bec.example.invalid\"},\"totalLoans\":0,\"page\":0,\"hasMore\":false,\"sanctionUntil\":null,\"loans\":[],\"reservations\":[]}}}"
+    },
+    {
+      "method": "GET",
+      "path": "/api/catalog",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/requests",
+      "status": 201
+    },
+    {
+      "method": "GET",
+      "path": "/api/requests",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/payments/policy",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/graphql",
+      "status": 200,
+      "response": "{\"data\":{\"account\":{\"reader\":{\"id\":\"r-ac5b97ff-b2de-40ad-94da-c9cfeaed291b\",\"names\":\"Andrea Ejemplo\",\"surnames\":\"Datos Ficticios\",\"state\":\"ACTIVE\",\"email\":\"lector@bec.example.invalid\"},\"totalLoans\":0,\"page\":0,\"hasMore\":false,\"sanctionUntil\":null,\"loans\":[],\"reservations\":[]}}}"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/requests/q-b481fd3a-ef01-4145-a1fb-b86f1c4f5594",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/payments/policy",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/requests",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/graphql",
+      "status": 200,
+      "response": "{\"data\":{\"account\":{\"reader\":{\"id\":\"r-ac5b97ff-b2de-40ad-94da-c9cfeaed291b\",\"names\":\"Andrea Ejemplo\",\"surnames\":\"Datos Ficticios\",\"state\":\"ACTIVE\",\"email\":\"lector@bec.example.invalid\"},\"totalLoans\":0,\"page\":0,\"hasMore\":false,\"sanctionUntil\":null,\"loans\":[],\"reservations\":[]}}}"
+    },
+    {
+      "method": "GET",
+      "path": "/api/catalog",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/reservations",
+      "status": 201
+    },
+    {
+      "method": "GET",
+      "path": "/api/requests",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/payments/policy",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/graphql",
+      "status": 200,
+      "response": "{\"data\":{\"account\":{\"reader\":{\"id\":\"r-ac5b97ff-b2de-40ad-94da-c9cfeaed291b\",\"names\":\"Andrea Ejemplo\",\"surnames\":\"Datos Ficticios\",\"state\":\"ACTIVE\",\"email\":\"lector@bec.example.invalid\"},\"totalLoans\":0,\"page\":0,\"hasMore\":false,\"sanctionUntil\":null,\"loans\":[],\"reservations\":[{\"id\":\"v-af50bb0f-fef4-4a0e-89ee-5607a850c30d\",\"copyId\":\"BEC-0001-1\",\"date\":\"2026-11-28\",\"mode\":\"ROOM\",\"state\":\"ACTIVE\"}]}}}"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/reservations/v-af50bb0f-fef4-4a0e-89ee-5607a850c30d",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/payments/policy",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/requests",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/graphql",
+      "status": 200,
+      "response": "{\"data\":{\"account\":{\"reader\":{\"id\":\"r-ac5b97ff-b2de-40ad-94da-c9cfeaed291b\",\"names\":\"Andrea Ejemplo\",\"surnames\":\"Datos Ficticios\",\"state\":\"ACTIVE\",\"email\":\"lector@bec.example.invalid\"},\"totalLoans\":0,\"page\":0,\"hasMore\":false,\"sanctionUntil\":null,\"loans\":[],\"reservations\":[{\"id\":\"v-af50bb0f-fef4-4a0e-89ee-5607a850c30d\",\"copyId\":\"BEC-0001-1\",\"date\":\"2026-11-28\",\"mode\":\"ROOM\",\"state\":\"CANCELLED\"}]}}}"
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/logout",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/readers",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/readers",
+      "status": 201
+    },
+    {
+      "method": "GET",
+      "path": "/api/readers",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/readers",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/readers",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/readers/r-c51b5d80-7e29-4221-a4f3-61ca096be211",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/readers/r-c51b5d80-7e29-4221-a4f3-61ca096be211/activation",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/lab/mailbox",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/lab/mailbox",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/lab/mailbox",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/activate",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/lab/mailbox",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/payments/policy",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/requests",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/graphql",
+      "status": 200,
+      "response": "{\"data\":{\"account\":{\"reader\":{\"id\":\"r-c51b5d80-7e29-4221-a4f3-61ca096be211\",\"names\":\"Lectora E2E\",\"surnames\":\"Datos de prueba\",\"state\":\"ACTIVE\",\"email\":\"lectora-e2e-0e34a99f@bec.example.invalid\"},\"totalLoans\":0,\"page\":0,\"hasMore\":false,\"sanctionUntil\":null,\"loans\":[],\"reservations\":[]}}}"
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/logout",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/payments/policy",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/catalog",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/requests",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/logout",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/reservations",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/requests",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/readers/r-1181021d-ed35-441e-b92c-55e1684ab6db",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/requests/q-f9b6fa63-7d8b-40c4-af5e-aae014665058/issue",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/loans/l-f9b6fa63-7d8b-40c4-af5e-aae014665058/receipt",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/exit-check/BEC-0002-1",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/returns",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/exit-check/BEC-0002-1",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/logout",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/overdue",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/logout",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/catalog",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "non-api",
+      "status": 200
+    }
+  ],
+  "javascript_errors": [],
+  "business_data_persisted": false,
+  "passed": true,
+  "test_reader_email": "[redactado]",
+  "created_test_runtime": "eliminado por test_frontend_local.py al finalizar"
+}

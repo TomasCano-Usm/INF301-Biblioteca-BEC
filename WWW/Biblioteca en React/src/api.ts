@@ -16,9 +16,51 @@ export type DocumentInput = Pick<Document, "title" | "author" | "type" | "medium
 export interface Page<T> { items: T[]; total: number; page?: number; size?: number }
 export interface LoanRequest {
   id: string; ownerId: string; state: string; mode: "HOME" | "ROOM"; createdAt: string; expiresAt?: string;
-  items?: { copyId: string; title: string; shelf: string }[];
+  items?: { copyId: string; documentId?: string; title: string; shelf: string; homeDays?: number; roomHours?: number }[];
   copyIds?: string[];
 }
+export interface LoanItem {
+  copyId: string; documentId: string; title: string; shelf?: string; dueAt?: string;
+  state?: string; returnedAt?: string; readyAt?: string;
+  document?: { id: string; author: string; category: string; available: number };
+}
+export interface Loan {
+  id: string; requestId: string; ownerId: string; mode: "HOME" | "ROOM"; state: string;
+  preparedAt?: string; issuedAt?: string; dueAt?: string; items: LoanItem[];
+  assessment?: { amount: number; currency: string; state: string } | null;
+}
+export interface Reservation {
+  id: string; ownerId: string; state: string; copyId: string; date: string;
+  mode: "HOME" | "ROOM"; createdAt: string;
+}
+export interface Reader {
+  id: string; state: "ACTIVE" | "INACTIVE"; names: string; surnames: string;
+  photo?: string; rut?: string; email?: string; address?: string; telephone?: string;
+  documentsChecked?: boolean;
+}
+export interface ReaderInput {
+  rut: string; names: string; surnames: string; address: string; email: string;
+  telephone: string; password: string; fingerprint: string; photo: string; documentsChecked: boolean;
+}
+export interface ReturnResult {
+  id: string; loanId: string; copyId: string; returnedAt: string; state: string;
+  late: boolean; sanctionUntil: string | null; readyAt: string;
+}
+export interface ExitCheck { copyId: string; allowExit: boolean; adapter: string }
+export interface Receipt {
+  id: string; loanId: string; readerId: string; issuedAt: string;
+  items: LoanItem[]; amount: number; currency: string;
+}
+export interface OverdueItem { readerId: string; copyId: string; title: string; dueAt: string }
+export interface MailMessage { id: string; to: string; subject: string; text: string; createdAt: string }
+export interface GraphQLIssue { message: string; path?: (string | number)[]; extensions?: { code?: string } }
+export interface GraphQLResponse<T> { data?: T | null; errors?: GraphQLIssue[] }
+export interface Account {
+  reader: Reader; loans: Loan[]; reservations: Reservation[]; totalLoans: number;
+  page: number; hasMore: boolean; sanctionUntil: string | null;
+}
+export interface OverduePage extends Page<OverdueItem> {}
+export interface MailboxPage extends Page<MailMessage> { adapter?: string }
 export interface Filters {
   q: string; title: string; author: string; type: string;
   publisher: string; availability: string; subcategory: string;

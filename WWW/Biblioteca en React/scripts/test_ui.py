@@ -64,7 +64,7 @@ def main():
         help="JAR realmente desplegado; para Docker, copiar /app/bec.jar a una ruta local.")
     parser.add_argument("--runtime", type=Path)
     parser.add_argument("--url", default="https://localhost:5173")
-    parser.add_argument("--output", type=Path, default=ROOT / "evidencias")
+    parser.add_argument("--output", type=Path, default=ROOT / "evidencias/frontend-redesign")
     args = parser.parse_args()
     runtime = (args.runtime or args.backend / ".runtime").resolve()
     output = args.output.resolve()
@@ -104,10 +104,12 @@ def main():
             "status": response.status}) if "/api/" in response.url else None)
 
         def login():
-            page.get_by_label("Email", exact=True).wait_for()
-            page.get_by_label("Email", exact=True).fill(backend.credentials["bibliotecario"]["email"])
+            page.get_by_label("Correo electrónico", exact=True).wait_for()
+            page.get_by_label("Correo electrónico", exact=True).fill(backend.credentials["bibliotecario"]["email"])
             page.get_by_label("Contraseña", exact=True).fill(backend.credentials["bibliotecario"]["password"])
             page.locator("form.login-card").get_by_role("button", name="Ingresar", exact=True).click()
+            expect(page.get_by_role("heading", name="Menú principal", exact=True)).to_be_visible()
+            page.get_by_role("button", name="Colección", exact=True).click()
             expect(page.get_by_role("heading", name="Colecciones", exact=True)).to_be_visible()
 
         def accept(title):
@@ -126,7 +128,7 @@ def main():
             form.get_by_label("Título", exact=True).fill(title)
             form.get_by_label("Autor", exact=True).fill("Lucía Autora React")
             form.get_by_label("Subcategoría", exact=True).fill("Ensayo Sonoro")
-            form.get_by_label("Descripción", exact=True).fill("Descripción persistente.\nSegunda línea de prueba.")
+            form.get_by_label("Descripción", exact=True).fill("Descripción persistente para pruebas.")
             form.get_by_label("Stock", exact=True).fill(str(stock))
             form.get_by_label("Editorial", exact=True).fill("Editorial Prueba React")
             form.get_by_label("Ubicación / estante", exact=True).fill("REACT-01")
@@ -142,20 +144,21 @@ def main():
                     locator.fill(value)
             with page.expect_response(lambda response: "/api/catalog?" in response.url and response.request.method == "GET"):
                 form.get_by_role("button", name="Aplicar filtros", exact=True).click()
-            expect(page.get_by_role("status")).not_to_have_text("Cargando colección…")
+            expect(page.locator(".results-count")).not_to_have_text("Cargando colección…")
 
         def count(value):
-            expect(page.get_by_role("status")).to_have_text(f"{value} documentos encontrados")
+            expect(page.locator(".results-count")).to_have_text(f"{value} documentos encontrados")
 
         try:
             page.goto(args.url)
-            expect(page.get_by_role("status")).not_to_have_text("Cargando catálogo…")
+            expect(page.locator(".results-count")).not_to_have_text("Cargando catálogo…")
             expect(page.locator(".book-card").first).to_be_visible()
             passed("R01 Catálogo anónimo con documentos reales del API")
             page.evaluate("window.location.hash = 'collections'")
+            page.screenshot(path=str(output / "R02-protected-route.png"), full_page=True)
             expect(page.get_by_role("heading", name="Ingresar a la biblioteca")).to_be_visible()
             passed("R02 Gestión protegida sin sesión")
-            page.get_by_label("Email", exact=True).fill("inexistente@bec.example.invalid")
+            page.get_by_label("Correo electrónico", exact=True).fill("inexistente@bec.example.invalid")
             page.get_by_label("Contraseña", exact=True).fill("ClaveFicticiaIncorrecta123")
             page.locator("form.login-card").get_by_role("button", name="Ingresar", exact=True).click()
             expect(page.get_by_role("alert")).to_be_visible()
@@ -191,12 +194,13 @@ def main():
             form.get_by_label("Tipo de documento", exact=True).select_option("MULTIMEDIA")
             form.get_by_label("Tipo de multimedia", exact=True).select_option("AUDIO")
             form.get_by_label("Formato", exact=True).select_option("DIGITAL")
+            assert form.get_by_label("Descripción", exact=True).input_value() == "Descripción persistente para pruebas."
             with page.expect_response(lambda response: "/api/documents/" in response.url and response.request.method == "PUT") as pending:
                 form.get_by_role("button", name="Confirmar edición", exact=True).click()
             assert pending.value.status == 200
             accept("Documento actualizado")
             saved = backend.call("GET", "/catalog/" + first["id"])
-            assert saved["type"] == "AUDIO" and saved["medium"] == "DIGITAL" and saved["description"].startswith("Descripción persistente")
+            assert saved["type"] == "AUDIO" and saved["medium"] == "DIGITAL" and saved["description"] == "Descripción persistente para pruebas.", repr(saved.get("description"))
             passed("R08 Libro a audio digital, descripción guardada y confirmación real")
             page.reload()
             login()
@@ -204,7 +208,7 @@ def main():
             expect(page.get_by_label("Tipo de documento", exact=True)).to_have_value("MULTIMEDIA")
             expect(page.get_by_label("Tipo de multimedia", exact=True)).to_have_value("AUDIO")
             expect(page.get_by_label("Formato", exact=True)).to_have_value("DIGITAL")
-            expect(page.get_by_label("Descripción", exact=True)).to_have_value("Descripción persistente.\nSegunda línea de prueba.")
+            expect(page.get_by_label("Descripción", exact=True)).to_have_value("Descripción persistente para pruebas.")
             passed("R09 Recarga conserva datos; la sesión no se guarda en el navegador")
             page.screenshot(path=str(output / "react_multimedia.png"), full_page=True)
             page.evaluate("window.location.hash = 'add'")
@@ -288,10 +292,21 @@ def main():
             page.screenshot(path=str(output / "react_multimedia_movil.png"), full_page=True)
             page.evaluate("window.location.hash = 'collections'")
             expect(page.get_by_role("heading", name="Colecciones", exact=True)).to_be_visible()
-            expect(page.get_by_role("status")).not_to_have_text("Cargando colección…")
+            expect(page.locator(".results-count")).not_to_have_text("Cargando colección…")
             expect(page.locator("tbody tr").first).to_be_visible()
             assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
             page.screenshot(path=str(output / "react_colecciones_movil.png"), full_page=True)
+            page.evaluate("window.location.hash = 'home'")
+            for width, height, name in [
+                (390, 844, "390x844"),
+                (768, 1024, "768x1024"),
+                (1024, 768, "1024x768"),
+                (1440, 900, "1440x900"),
+            ]:
+                page.set_viewport_size({"width": width, "height": height})
+                expect(page.locator(".book-card").first).to_be_visible()
+                assert page.evaluate("document.documentElement.scrollWidth <= innerWidth"), f"Desbordamiento en {name}"
+                page.screenshot(path=str(output / f"responsive_{name}.png"), full_page=True)
             passed("R20 Formulario y filtros a 390 px sin desbordamiento de página")
             assert page.evaluate("localStorage.length === 0 && sessionStorage.length === 0")
             passed("R21 Ningún token persistido en localStorage o sessionStorage")

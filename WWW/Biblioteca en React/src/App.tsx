@@ -1,9 +1,26 @@
-import { useEffect, useState, type FormEvent } from "react";
-import { api, errorMessage, go, type LoanRequest, type Page, type Session } from "./api";
-import { Collections, Home } from "./Catalogue";
+import { useEffect, useRef, useState, type FormEvent } from "react";
+import { Account } from "./Account";
+import { api, errorMessage, go, type Role, type Session } from "./api";
+import { Collections as HomeCollections, Home } from "./Catalogue";
+import { Returns, Overdue } from "./Circulation";
+import { Dashboard } from "./Dashboard";
 import { DocumentForm } from "./DocumentForm";
-import { AdminShell, Dialog, ErrorBox, Header, Status } from "./components";
+import { Mailbox } from "./Mailbox";
+import { Readers } from "./Readers";
+import { Receipt } from "./Receipt";
+import { RequestsQueue } from "./RequestsQueue";
+import { AdminShell, Dialog, ErrorBox, Header, roleName } from "./components";
 import { ApplicationProvider, useApplication } from "./session";
+
+interface Route { name: string; id?: string }
+
+function location(): Route {
+  const [name, rawId] = window.location.hash.slice(1).split("/");
+  let id: string | undefined;
+  try { id = rawId ? decodeURIComponent(rawId) : undefined; } catch { id = undefined; }
+  if (id && !/^[A-Za-z0-9_-]{1,100}$/.test(id)) id = undefined;
+  return { name: name || "home", id };
+}
 
 function Login() {
   const { login } = useApplication();
@@ -18,78 +35,89 @@ function Login() {
     try {
       const session = await api<Session>("/api/auth/login", { method: "POST", body: { email, password } });
       login(session); setPassword("");
-      go(session.role === "LIBRARIAN" ? "collections" : "home");
+      go(session.role === "READER" ? "account" : "menu");
     } catch (reason) { setError(errorMessage(reason)); }
     finally { setBusy(false); }
   }
   return <div className="login-screen">
-    <button className="home-button" onClick={() => go("home")}>Inicio</button>
+    <Header title="Acceso a la biblioteca" />
     <form className="login-card" onSubmit={(event) => { void submit(event); }}>
+      <span className="eyebrow">Biblioteca Estación Central</span>
       <h1>Ingresar a la biblioteca</h1>
-      <p>El perfil se verifica en el servidor según tu cuenta.</p>
-      <label>Email<input type="email" required autoComplete="username" value={email} maxLength={160} disabled={busy} onChange={(event) => setEmail(event.target.value)} /></label>
-      <label>Contraseña<input type="password" required autoComplete="current-password" value={password} maxLength={128} disabled={busy} onChange={(event) => setPassword(event.target.value)} /></label>
-      <ErrorBox message={error} /><button className="dark-button" type="submit" disabled={busy}>{busy ? "Ingresando…" : "Ingresar"}</button>
+      <p>Tu perfil y permisos se determinan desde el servidor.</p>
+      <label><span>Correo electrónico</span><input type="email" required autoComplete="username" value={email} maxLength={160} disabled={busy} onChange={(event) => setEmail(event.target.value)} /></label>
+      <label><span>Contraseña</span><input type="password" required autoComplete="current-password" value={password} maxLength={128} disabled={busy} onChange={(event) => setPassword(event.target.value)} /></label>
+      <ErrorBox message={error} />
+      <button className="dark-button" type="submit" disabled={busy}>{busy ? "Ingresando…" : "Ingresar"}</button>
+      <p className="muted">Por seguridad, la sesión no se conserva al recargar la página.</p>
     </form>
   </div>;
 }
-function Requests() {
-  const [data, setData] = useState<Page<LoanRequest>>({ items: [], total: 0 });
-  const [page, setPage] = useState(0);
-  const [busy, setBusy] = useState(true);
-  const [error, setError] = useState("");
-  useEffect(() => {
-    const controller = new AbortController();
-    setBusy(true); setError("");
-    void api<Page<LoanRequest>>(`/api/requests?page=${page}&size=20`, { signal: controller.signal })
-      .then((value) => { if (!controller.signal.aborted) setData(value); })
-      .catch((reason: unknown) => { if (!controller.signal.aborted) setError(errorMessage(reason)); })
-      .finally(() => { if (!controller.signal.aborted) setBusy(false); });
-    return () => controller.abort();
-  }, [page]);
-  const date = (value?: string) => value ? new Intl.DateTimeFormat("es-CL", { dateStyle: "short", timeStyle: "short" }).format(new Date(value)) : "—";
-  return <AdminShell title="Solicitudes">
-    <h2>Solicitudes recibidas por el backend</h2>
-    <ErrorBox message={error} /><p role="status">{busy ? "Cargando solicitudes…" : `${data.total} solicitudes pendientes`}</p>
-    <div className="table-wrap" aria-busy={busy}><table>
-      <thead><tr>{["ID SOLICITUD", "DOCUMENTOS / EJEMPLARES", "ID LECTOR", "FECHA SOLICITUD", "MODALIDAD", "VENCE RETENCIÓN", "ESTADO"].map((text) => <th key={text}>{text}</th>)}</tr></thead>
-      <tbody>{data.items.map((row) => <tr key={row.id}>
-        <td>{row.id}</td><td>{row.items?.map((item) => `${item.title} (${item.copyId} · ${item.shelf})`).join(", ") || row.copyIds?.join(", ")}</td>
-        <td>{row.ownerId}</td><td>{date(row.createdAt)}</td><td>{row.mode === "HOME" ? "Domicilio" : "Sala"}</td>
-        <td>{date(row.expiresAt)}</td><td><Status>{row.state}</Status></td>
-      </tr>)}{!busy && !data.items.length && <tr><td colSpan={7}>No hay solicitudes pendientes.</td></tr>}</tbody>
-    </table></div>
-    <nav className="pagination" aria-label="Paginación de solicitudes">
-      <button disabled={busy || page === 0} onClick={() => setPage(page - 1)}>Anterior</button>
-      <span>Página {page + 1}</span><button disabled={busy || (page + 1) * 20 >= data.total} onClick={() => setPage(page + 1)}>Siguiente</button>
-    </nav>
-  </AdminShell>;
+
+function AccessDenied({ role }: { role?: Role }) {
+  return <><Header title="Acceso restringido" /><main className="access-denied panel">
+    <span className="eyebrow">Permisos de la cuenta</span><h1>Esta pantalla no está disponible para tu perfil</h1>
+    <p>{role ? `Sesión iniciada como ${roleName(role)}.` : "Inicia sesión con una cuenta autorizada."} El servidor sigue validando cada operación.</p>
+    <button className="dark-button" onClick={() => go("menu")}>Ir a mi menú</button>
+  </main></>;
 }
-function location() {
-  const [name, rawId] = window.location.hash.slice(1).split("/");
-  return { name: name || "home", id: rawId && /^[A-Za-z0-9_-]{1,100}$/.test(rawId) ? rawId : undefined };
-}
+
+const routeRoles: Record<string, Role[]> = {
+  menu: ["READER", "LIBRARIAN", "ADMIN"], account: ["READER"],
+  collections: ["LIBRARIAN"], requests: ["LIBRARIAN"], loan: ["LIBRARIAN"], add: ["LIBRARIAN"], edit: ["LIBRARIAN"], detail: ["LIBRARIAN"],
+  returns: ["LIBRARIAN"], return: ["LIBRARIAN"], receipt: ["READER", "LIBRARIAN"],
+  readers: ["ADMIN"], overdue: ["ADMIN"], mailbox: ["ADMIN"],
+};
+
 function Screens() {
   const [route, setRoute] = useState(location);
   const { session, notice, notify } = useApplication();
+  const activationStarted = useRef(false);
+
   useEffect(() => {
     const changed = () => setRoute(location());
     window.addEventListener("hashchange", changed);
     return () => window.removeEventListener("hashchange", changed);
   }, []);
-  const protectedRoute = ["collections", "requests", "add", "detail", "edit"].includes(route.name);
+
+  useEffect(() => {
+    const token = new URLSearchParams(window.location.search).get("activation");
+    if (!token || activationStarted.current) return;
+    activationStarted.current = true;
+    window.history.replaceState({}, "", `${window.location.pathname}${window.location.hash}`);
+    void api("/api/auth/activate", { method: "POST", body: { token } }).then(() => {
+      notify({ title: "Cuenta activada", message: "El enlace fue validado. Ya puedes iniciar sesión." });
+      go("login");
+    }).catch((reason: unknown) => {
+      notify({ title: "No se pudo activar la cuenta", message: errorMessage(reason) });
+      go("login");
+    });
+  }, [notify]);
+
+  const requiredRoles = routeRoles[route.name];
+  const denied = requiredRoles && session && !requiredRoles.includes(session.role);
+  const needsSession = requiredRoles && !session;
   let screen;
-  if (route.name === "login" || protectedRoute && !session) screen = <Login />;
-  else if (protectedRoute && session?.role !== "LIBRARIAN") screen = <><Header /><main className="access-denied"><h1>Acceso restringido</h1><p>Esta vista requiere una cuenta de bibliotecario.</p><button onClick={() => go("home")}>Volver al catálogo</button></main></>;
-  else if (route.name === "collections") screen = <Collections />;
-  else if (route.name === "requests") screen = <Requests />;
+  if (route.name === "login" || needsSession) screen = <Login />;
+  else if (denied) screen = <AccessDenied role={session?.role} />;
+  else if (route.name === "menu") screen = <Dashboard role={session!.role} />;
+  else if (route.name === "account") screen = <Account />;
+  else if (route.name === "collections") screen = <div id="collections"><HomeCollections /></div>;
+  else if (route.name === "requests" || route.name === "loan") screen = <RequestsQueue selectedId={route.id} />;
   else if (route.name === "add") screen = <DocumentForm key="add" />;
   else if ((route.name === "edit" || route.name === "detail") && route.id) screen = <DocumentForm key={route.id} id={route.id} />;
+  else if (route.name === "returns" || route.name === "return") screen = <Returns />;
+  else if (route.name === "readers") screen = <Readers id={route.id} />;
+  else if (route.name === "overdue") screen = <Overdue />;
+  else if (route.name === "receipt") screen = <Receipt id={route.id} />;
+  else if (route.name === "mailbox") screen = <Mailbox />;
   else screen = <Home />;
+
   return <>{screen}{notice && <Dialog title={notice.title} onCancel={() => { notify(null); notice.afterClose?.(); }}>
     <p>{notice.message}</p><div className="dialog-actions"><button className="dark-button" autoFocus onClick={() => { notify(null); notice.afterClose?.(); }}>Aceptar</button></div>
   </Dialog>}</>;
 }
+
 export default function App() {
   return <ApplicationProvider><Screens /></ApplicationProvider>;
 }
